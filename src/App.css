@@ -175,3 +175,45 @@ margin-left:20px;
 text-decoration:none;
 color:#555;
 }
+
+/*Pages*/
+
+.page{
+padding:60px 20%;
+line-height:1.8;
+}
+
+.page h1{
+color:#1b8f5a;
+margin-bottom:20px;
+}
+
+.page h2{
+margin-top:25px;
+color:#333;
+}
+
+.support-box{
+background:#f3f6f8;
+padding:25px;
+border-radius:10px;
+margin-bottom:30px;
+}
+
+.faq h3{
+margin-top:15px;
+}
+
+.footer{
+display:flex;
+justify-content:space-between;
+padding:20px 40px;
+border-top:1px solid #eee;
+margin-top:50px;
+}
+
+.footer-links a{
+margin-left:20px;
+text-decoration:none;
+color:#555;
+}

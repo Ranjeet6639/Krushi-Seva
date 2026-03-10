@@ -1,6 +1,10 @@
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Support from "./pages/Support";
 
-function App() {
+function Home() {
   return (
     <div className="container">
 
@@ -15,7 +19,6 @@ function App() {
         </button>
       </header>
 
-
       {/* Hero Section */}
       <section className="hero">
 
@@ -26,7 +29,6 @@ function App() {
         <p>
           Simple and direct access for farmers and traders. Choose your role to continue.
         </p>
-
 
         {/* Cards */}
         <div className="cards">
@@ -46,7 +48,7 @@ function App() {
               Farmer Login →
             </button>
 
-            <a href="#">Register as new farmer</a>
+            <Link to="#">Register as new farmer</Link>
 
           </div>
 
@@ -66,12 +68,11 @@ function App() {
               Trader Login →
             </button>
 
-            <a href="#">Register as new trader</a>
+            <Link to="#">Register as new trader</Link>
 
           </div>
 
         </div>
-
 
         {/* Help Section */}
         <div className="help">
@@ -85,6 +86,20 @@ function App() {
 
       </section>
 
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/support" element={<Support />} />
+      </Routes>
 
       {/* Footer */}
       <footer className="footer">
@@ -92,14 +107,14 @@ function App() {
         <p>© 2026 Krushi Seva Digital Platform</p>
 
         <div className="footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Support</a>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/support">Support</Link>
         </div>
 
       </footer>
 
-    </div>
+    </Router>
   );
 }
 
