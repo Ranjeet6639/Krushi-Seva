@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Support from "./pages/Support";
+import Login from "./pages/Login";
 
 function Home() {
   return (
@@ -44,9 +45,11 @@ function Home() {
               Login to sell your crops, check prices, and get expert advice.
             </p>
 
+            <Link to="/login">
             <button className="farmer-btn">
               Farmer Login →
             </button>
+            </Link>
 
             <Link to="#">Register as new farmer</Link>
 
@@ -105,6 +108,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
 
       {/* Footer */}
