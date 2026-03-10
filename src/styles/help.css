@@ -1,0 +1,26 @@
+.help{
+margin:50px auto;
+display:flex;
+align-items:center;
+gap:15px;
+background:#f3f6f8;
+padding:20px 30px;
+border-radius:12px;
+width:320px;
+justify-content:center;
+}
+
+.help span{
+font-size:22px;
+}
+
+.help p{
+font-size:12px;
+color:#666;
+margin:0;
+}
+
+.help h3{
+margin:2px 0;
+font-size:16px;
+}
