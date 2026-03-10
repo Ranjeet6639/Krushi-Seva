@@ -4,6 +4,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Support from "./pages/Support";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function Home() {
   return (
@@ -51,7 +52,7 @@ function Home() {
             </button>
             </Link>
 
-            <Link to="#">Register as new farmer</Link>
+            <Link to="/register">Register as new farmer</Link>
 
           </div>
 
@@ -109,6 +110,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/support" element={<Support />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
       {/* Footer */}
