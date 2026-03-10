@@ -8,7 +8,13 @@ function HelpSection() {
 
       <div>
         <p>NEED HELP?</p>
-        <h3>Call 1800-KRUSHI-SEVA</h3>
+
+        <h3>
+          <a href="tel:+918005787382" className="phone-link">
+            1800-KRUSHI-SEVA
+          </a>
+        </h3>
+
       </div>
 
     </div>
