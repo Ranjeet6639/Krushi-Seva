@@ -13,7 +13,7 @@ function Login() {
 
     setTimeout(() => {
       setLoading(false);
-      navigate("/dashboard");
+      navigate("/farmerdashboard");
     }, 500);
   };
 

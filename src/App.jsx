@@ -5,6 +5,8 @@ import Terms from "./pages/Terms";
 import Support from "./pages/Support";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import FarmerDashboard from "./pages/FarmerDashboard";
+import Logout from "./pages/FarmerLogout";
 
 function Home() {
   return (
@@ -111,6 +113,8 @@ function App() {
         <Route path="/support" element={<Support />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/farmerdashboard" element={<FarmerDashboard />} />
+        <Route path="/logout" element={<FarmerLogout />} />
       </Routes>
 
       {/* Footer */}
