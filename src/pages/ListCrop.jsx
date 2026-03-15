@@ -66,7 +66,7 @@ return (
 <div className="list-header">
 
 <div className="logo">
-✔ Krishi Seva
+✔ Krushi Seva
 </div>
 
 <div className="menu">
