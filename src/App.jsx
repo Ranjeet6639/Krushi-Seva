@@ -11,7 +11,6 @@ import SickCrop from "./pages/SickCrop";
 import SellMyHarvest from "./pages/SellMyHarvest";
 import ListCrop from "./pages/ListCrop";
 import OffersReceived from "./pages/OffersReceived";
-import FarmerProfile from "./pages/FarmerProfile";
 
 function Home() {
   return (
@@ -124,7 +123,6 @@ function App() {
         <Route path="/sellmyharvest" element={<SellMyHarvest />} />
         <Route path="/listcrop" element={<ListCrop />} />
         <Route path="/offersreceived" element={<OffersReceived />} />
-        <Route path="/farmerprofile" element={<FarmerProfile />} />
       </Routes>
 
       {/* Footer */}

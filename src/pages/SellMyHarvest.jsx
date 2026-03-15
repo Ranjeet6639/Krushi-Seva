@@ -4,33 +4,33 @@ import "./SellMyHarvest.css";
 
 function SellMyHarvest() {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const [crops,setCrops] = useState([]);
-const [showProfile,setShowProfile] = useState(false);
+  const [crops,setCrops] = useState([]);
+  const [showProfile,setShowProfile] = useState(false);
 
-useEffect(()=>{
+  useEffect(()=>{
 
-const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
+   const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
 
-setCrops(storedCrops);
+   setCrops(storedCrops);
 
 },[]);
 
-const deleteCrop = (id) => {
+  const deleteCrop = (id) => {
 
-const updatedCrops = crops.filter((crop)=> crop.id !== id);
+  const updatedCrops = crops.filter((crop)=> crop.id !== id);
 
-setCrops(updatedCrops);
+  setCrops(updatedCrops);
 
-localStorage.setItem("crops", JSON.stringify(updatedCrops));
+  localStorage.setItem("crops", JSON.stringify(updatedCrops));
 
 };
 
 return (
-
-<div className="harvest-container">
-          {/* Header */}
+  <>
+    <div className="Sell-Header">
+              {/* Header */}
       <header className="header">
         <div className="logo">
           🌱 <span>Krushi Seva</span>
@@ -40,35 +40,38 @@ return (
           🌐 English / हिन्दी
         </button>
       </header>
+    </div>
 
-{/* SIDEBAR */}
+  <div className="harvest-container">
 
-<div className="harvest-sidebar">
+  {/* SIDEBAR */}
 
-<div className="logo">✔ Krishi Seva</div>
+  <div className="harvest-sidebar">
 
-<button className="active-btn">
-🏠 Sell Crops
-</button>
+  <div className="logo">✔ Krishi Seva</div>
 
-<button onClick={()=>setShowProfile(true)}>
-👤 My Profile
-</button>
+   <button className="active-btn">
+  🏠 Sell Crops
+  </button>
 
-<button onClick={()=>navigate("/offersreceived")}>
-💰 Offers Received
-</button>
+  <button onClick={()=>setShowProfile(true)}>
+  👤 My Profile
+  </button>
 
-<button onClick={()=>navigate("/farmerlogout")}>
-🚪 Logout
-</button>
+  <button onClick={()=>navigate("/offersreceived")}>
+  💰 Offers Received
+  </button>
 
-<div className="farmer-id">
-<p>MAGLER ID</p>
-<h3>TR-72810</h3>
-</div>
+  <button onClick={()=>navigate("/farmerlogout")}>
+  🚪 Logout
+  </button>
 
-</div>
+  <div className="farmer-id">
+  <p>MAGLER ID</p>
+  <h3>TR-72810</h3>
+  </div>
+
+  </div>
 
 
 {/* MAIN AREA */}
@@ -166,7 +169,7 @@ Close
 )}
 
 </div>
-
+  </>
 );
 
 }
