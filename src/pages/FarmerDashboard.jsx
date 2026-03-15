@@ -196,7 +196,7 @@ const verifyOtp = () => {
 
      <div
      className="action-card"
-     onClick={() => navigate("/sell-harvest")}
+     onClick={() => navigate("/sellmyharvest")}
      >
      <img src={sellHarvest} className="card-icon"/>
      <h3>SELL MY<br/>HARVEST</h3>

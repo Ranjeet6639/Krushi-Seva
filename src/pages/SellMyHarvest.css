@@ -1,0 +1,291 @@
+.harvest-container{
+display:flex;
+height:100vh;
+font-family:'Poppins', sans-serif;
+background:linear-gradient(120deg,#f6f9fc,#eef2f7);
+}
+
+
+/* SIDEBAR */
+
+.harvest-sidebar{
+width:250px;
+background:linear-gradient(180deg,#1b8f5a,#146c43);
+padding:35px 20px;
+display:flex;
+flex-direction:column;
+gap:18px;
+color:white;
+box-shadow:4px 0 15px rgba(0,0,0,0.08);
+}
+
+.logo{
+font-size:22px;
+font-weight:600;
+letter-spacing:0.5px;
+margin-bottom:10px;
+}
+
+/* Sidebar buttons */
+
+.harvest-sidebar button{
+padding:12px;
+border:none;
+border-radius:8px;
+background:rgba(255,255,255,0.12);
+color:white;
+cursor:pointer;
+font-size:15px;
+transition:all 0.3s ease;
+}
+
+.harvest-sidebar button:hover{
+background:rgba(255,255,255,0.25);
+transform:translateX(4px);
+}
+
+.active-btn{
+background:white;
+color:#146c43;
+font-weight:600;
+}
+
+/* Farmer ID */
+
+.farmer-id{
+margin-top:auto;
+background:rgba(255,255,255,0.15);
+padding:18px;
+border-radius:10px;
+text-align:center;
+}
+
+.farmer-id p{
+    color: #000000;
+font-size:12px;
+margin:0;
+opacity:0.8;
+}
+
+.farmer-id h3{
+margin-top:4px;
+font-size:16px;
+}
+
+
+/* MAIN AREA */
+
+.harvest-main{
+flex:1;
+padding:40px 60px;
+}
+
+.harvest-header h1{
+margin:0;
+font-size:30px;
+color:#1f2937;
+}
+
+.harvest-header p{
+color:#6b7280;
+margin-bottom:35px;
+font-size:14px;
+}
+
+
+/* CONTROLS */
+
+.top-controls{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.top-controls select{
+padding:10px 14px;
+border-radius:8px;
+border:1px solid #d1d5db;
+font-size:14px;
+background:white;
+cursor:pointer;
+}
+
+/* Add Crop Button */
+
+.new-crop-btn{
+background:linear-gradient(135deg,#1b8f5a,#2fbf71);
+color:white;
+border:none;
+padding:11px 20px;
+border-radius:10px;
+cursor:pointer;
+font-size:14px;
+font-weight:500;
+transition:all 0.25s ease;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.new-crop-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 14px rgba(0,0,0,0.15);
+}
+
+
+/* CROP LIST */
+
+.crop-list{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+/* Crop Card */
+
+.crop-card{
+display:flex;
+align-items:center;
+background:white;
+padding:18px;
+border-radius:14px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+gap:18px;
+transition:all 0.25s ease;
+border:1px solid #f0f0f0;
+}
+
+.crop-card:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 22px rgba(0,0,0,0.12);
+}
+
+.crop-card img{
+width:75px;
+height:75px;
+object-fit:cover;
+border-radius:12px;
+}
+
+.crop-info{
+flex:1;
+}
+
+.crop-info h3{
+margin:0;
+font-size:18px;
+color:#111827;
+}
+
+.crop-info p{
+color:#6b7280;
+margin:4px 0;
+font-size:14px;
+}
+
+/* Status Badge */
+
+.status{
+font-size:12px;
+padding:5px 12px;
+border-radius:20px;
+font-weight:500;
+display:inline-block;
+margin-top:4px;
+}
+
+.status.Active{
+background:#dcfce7;
+color:#15803d;
+}
+
+.status.Pending{
+background:#fff7cd;
+color:#92400e;
+}
+
+.status.Sold{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+
+/* Delete Button */
+
+.delete-btn{
+background:#ef4444;
+color:white;
+border:none;
+padding:8px 18px;
+border-radius:25px;
+cursor:pointer;
+font-size:13px;
+font-weight:500;
+transition:all 0.25s ease;
+}
+
+.delete-btn:hover{
+background:#dc2626;
+transform:scale(1.05);
+}
+
+/* PROFILE POPUP */
+
+.profile-modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+.profile-card{
+background:white;
+padding:35px;
+border-radius:14px;
+width:350px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+animation:popup 0.3s ease;
+}
+
+@keyframes popup{
+from{
+transform:scale(0.9);
+opacity:0;
+}
+to{
+transform:scale(1);
+opacity:1;
+}
+}
+
+.profile-card h2{
+margin-bottom:15px;
+color:#1b8f5a;
+}
+
+.profile-card p{
+margin:8px 0;
+font-size:15px;
+}
+
+.close-btn{
+margin-top:20px;
+width:100%;
+padding:10px;
+border:none;
+background:#1b8f5a;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+.close-btn:hover{
+
+background:#146c43;
+
+}

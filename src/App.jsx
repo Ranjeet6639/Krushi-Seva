@@ -8,6 +8,10 @@ import Register from "./pages/Register";
 import FarmerDashboard from "./pages/FarmerDashboard";
 import FarmerLogout from "./pages/FarmerLogout";
 import SickCrop from "./pages/SickCrop";
+import SellMyHarvest from "./pages/SellMyHarvest";
+import ListCrop from "./pages/ListCrop";
+import OffersReceived from "./pages/OffersReceived";
+import FarmerProfile from "./pages/FarmerProfile";
 
 function Home() {
   return (
@@ -117,6 +121,10 @@ function App() {
         <Route path="/farmerdashboard" element={<FarmerDashboard />} />
         <Route path="/farmerlogout" element={<FarmerLogout />} />
         <Route path="/sickcrop" element={<SickCrop />} />
+        <Route path="/sellmyharvest" element={<SellMyHarvest />} />
+        <Route path="/listcrop" element={<ListCrop />} />
+        <Route path="/offersreceived" element={<OffersReceived />} />
+        <Route path="/farmerprofile" element={<FarmerProfile />} />
       </Routes>
 
       {/* Footer */}
