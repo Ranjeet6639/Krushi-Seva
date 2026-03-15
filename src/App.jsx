@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FarmerDashboard from "./pages/FarmerDashboard";
 import FarmerLogout from "./pages/FarmerLogout";
+import SickCrop from "./pages/SickCrop";
 
 function Home() {
   return (
@@ -115,6 +116,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/farmerdashboard" element={<FarmerDashboard />} />
         <Route path="/farmerlogout" element={<FarmerLogout />} />
+        <Route path="/sickcrop" element={<SickCrop />} />
       </Routes>
 
       {/* Footer */}
