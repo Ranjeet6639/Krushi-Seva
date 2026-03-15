@@ -162,7 +162,7 @@ const verifyOtp = () => {
 
      <button
      className="logout-btn"
-     onClick={() => navigate("/logout")}
+     onClick={() => navigate("/FarmerLogout")}
     >
      Logout
     </button>
