@@ -1,0 +1,155 @@
+.grow-container{
+font-family: "Inter", sans-serif;
+background:#f6f8fb;
+min-height:100vh;
+padding-bottom:40px;
+}
+
+/* header */
+
+.grow-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+}
+
+.logo{
+font-size:20px;
+font-weight:600;
+color:#1e8e63;
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+.lang-btn{
+border:1px solid #dcdcdc;
+padding:8px 16px;
+border-radius:20px;
+background:white;
+cursor:pointer;
+}
+
+/* title */
+
+.grow-title{
+text-align:center;
+margin-top:30px;
+}
+
+.tag{
+background:#d8f3e5;
+color:#1e8e63;
+padding:6px 16px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+}
+
+.grow-title h1{
+font-size:48px;
+margin-top:15px;
+font-weight:700;
+}
+
+.grow-title h1 span{
+color:#1e8e63;
+}
+
+.grow-title p{
+margin-top:10px;
+color:#6b7280;
+font-size:16px;
+}
+
+/* steps */
+
+.steps{
+width:70%;
+margin:30px auto;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.step-card{
+background:white;
+border-radius:18px;
+padding:20px 25px;
+display:flex;
+align-items:center;
+gap:18px;
+box-shadow:0 3px 8px rgba(0,0,0,0.05);
+position:relative;
+}
+
+.icon{
+background:#eaf8f1;
+width:55px;
+height:55px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+color:#1e8e63;
+flex-shrink:0;
+}
+
+.text{
+flex:1;
+}
+
+.text h3{
+font-size:20px;
+margin-top: 20px;
+}
+
+.text p{
+margin-top:14px;
+font-size:16px;
+color:#6b7280;
+}
+
+.number{
+position:absolute;
+right:20px;
+background:#eef2f7;
+width:32px;
+height:32px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+color:#7b8794;
+font-weight:600;
+font-size:14px;
+}
+
+/* back button */
+
+.back-btn{
+display:flex;
+align-items:center;
+gap:10px;
+margin:40px auto;
+background:#0f1b2d;
+color:white;
+width:220px;
+justify-content:center;
+padding:16px;
+border-radius:30px;
+text-decoration:none;
+font-weight:500;
+}
+
+/* footer */
+
+.grow-footer{
+display:flex;
+justify-content:space-between;
+padding:20px 40px;
+color:#8a94a6;
+font-size:14px;
+margin-top:30px;
+}

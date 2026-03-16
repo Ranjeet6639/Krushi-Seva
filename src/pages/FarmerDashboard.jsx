@@ -180,7 +180,7 @@ const verifyOtp = () => {
 
      <div
       className="action-card"
-      onClick={() => navigate("/what-to-grow")}
+      onClick={() => navigate("/whattogrow")}
      >
      <img src={whatToGrow} className="card-icon"/>
      <h3>NEW:<br/>WHAT TO GROW?</h3>
