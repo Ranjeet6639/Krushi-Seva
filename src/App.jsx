@@ -13,6 +13,7 @@ import ListCrop from "./pages/ListCrop";
 import OffersReceived from "./pages/OffersReceived";
 import WhatToGrow from "./pages/WhatToGrow";
 import TraderLogin from "./pages/Trader/TraderLogin";
+import TraderRegister from "./pages/Trader/TraderRegister";
 
 function Home() {
   return (
@@ -81,7 +82,7 @@ function Home() {
             </button>
             </Link>
 
-            <Link to="#">Register as new trader</Link>
+            <Link to="/Trader/TraderRegister">Register as new trader</Link>
 
           </div>
 
@@ -128,6 +129,7 @@ function App() {
         <Route path="/offersreceived" element={<OffersReceived />} />
         <Route path="/whattogrow" element={<WhatToGrow />} />
         <Route path="/Trader/TraderLogin" element={<TraderLogin />} />
+        <Route path="/Trader/TraderRegister" element={<TraderRegister />} />
       </Routes>
 
       {/* Footer */}
