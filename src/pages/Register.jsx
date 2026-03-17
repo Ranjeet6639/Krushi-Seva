@@ -41,7 +41,6 @@ function Register() {
     });
   };
 
-  // ✅ Send OTP
   const sendOTP = () => {
     if (!form.mobile) {
       setError("Enter mobile number first");
@@ -52,7 +51,6 @@ function Register() {
     alert("OTP Sent (demo: 1234)");
   };
 
-  // ✅ Verify OTP
   const verifyOTP = () => {
     if (otp === "1234") {
       setOtpVerified(true);
@@ -66,7 +64,6 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // ✅ Validation
     if (!form.name || !form.mobile || !form.email || !form.password) {
       setError("Please fill required fields");
       return;
@@ -89,7 +86,6 @@ function Register() {
       setLoading(false);
       alert("Farmer Registered Successfully ✅");
 
-      // ✅ Redirect
       navigate("/login");
     }, 800);
   };
