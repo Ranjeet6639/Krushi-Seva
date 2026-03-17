@@ -28,33 +28,34 @@ photo:e.target.files[0]
 });
 };
 
-const handleSubmit=(e)=>{
-e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-// get existing crops
-const existingCrops = JSON.parse(localStorage.getItem("crops")) || [];
+  const existingCrops =
+    JSON.parse(localStorage.getItem("crops")) || [];
 
-// create new crop
-const newCrop = {
-id: Date.now(),
-name: formData.name,
-qty: formData.quantity + " KG Available",
-status: "Active",
-image: formData.photo
-? URL.createObjectURL(formData.photo)
-: "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
-button: "Manage Offer"
-};
+  const newCrop = {
+    id: Date.now(),
+    name: formData.name,
+    quantity: formData.quantity,   // ✅ FIXED
+    price: formData.price,         // ✅ ADDED
+    category: formData.category,
+    status: "active",
 
-// add crop
-existingCrops.push(newCrop);
+    image: formData.photo
+      ? URL.createObjectURL(formData.photo)
+      : "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
 
-// save to storage
-localStorage.setItem("crops", JSON.stringify(existingCrops));
+    farmerName: "Rajesh Kumar"     // ✅ IMPORTANT for trader UI
+  };
 
-alert("Crop Listed Successfully!");
+  existingCrops.push(newCrop);
 
-navigate("/sellmyharvest");
+  localStorage.setItem("crops", JSON.stringify(existingCrops));
+
+  alert("Crop Listed Successfully!");
+
+  navigate("/sellmyharvest");
 };
 
 return (

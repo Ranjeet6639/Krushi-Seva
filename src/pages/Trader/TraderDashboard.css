@@ -67,7 +67,7 @@
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(3, 300px);
-  gap: 25px;
+  gap: 55px;
 }
 
 /* CARD */
@@ -124,5 +124,36 @@
   background: #15803d;
   color: white;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+}
+
+.close-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: red;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
 }

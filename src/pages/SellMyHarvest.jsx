@@ -6,172 +6,150 @@ function SellMyHarvest() {
 
   const navigate = useNavigate();
 
-  const [crops,setCrops] = useState([]);
-  const [showProfile,setShowProfile] = useState(false);
+  const [crops, setCrops] = useState([]);
+  const [showProfile, setShowProfile] = useState(false);
 
-  useEffect(()=>{
+  // ✅ LOAD CROPS FROM LOCAL STORAGE
+  useEffect(() => {
+    const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
+    setCrops(storedCrops);
+  }, []);
 
-   const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
-
-   setCrops(storedCrops);
-
-},[]);
-
+  // ✅ DELETE CROP
   const deleteCrop = (id) => {
+    const updatedCrops = crops.filter((crop) => crop.id !== id);
+    setCrops(updatedCrops);
+    localStorage.setItem("crops", JSON.stringify(updatedCrops));
+  };
 
-  const updatedCrops = crops.filter((crop)=> crop.id !== id);
+  return (
+    <>
+      <div className="Sell-Header">
+        <header className="header">
+          <div className="logo">🌱 <span>Krushi Seva</span></div>
+          <button className="lang-btn">🌐 English / हिन्दी</button>
+        </header>
+      </div>
 
-  setCrops(updatedCrops);
+      <div className="harvest-container">
 
-  localStorage.setItem("crops", JSON.stringify(updatedCrops));
+        {/* SIDEBAR */}
+        <div className="harvest-sidebar">
 
-};
+          <div className="logo">✔ Krishi Seva</div>
 
-return (
-  <>
-    <div className="Sell-Header">
-              {/* Header */}
-      <header className="header">
-        <div className="logo">
-          🌱 <span>Krushi Seva</span>
+          <button className="active-btn">🏠 Sell Crops</button>
+
+          <button onClick={() => setShowProfile(true)}>👤 My Profile</button>
+
+          <button onClick={() => navigate("/offersreceived")}>
+            💰 Offers Received
+          </button>
+
+          <button onClick={() => navigate("/farmerlogout")}>
+            🚪 Logout
+          </button>
+
+          <div className="farmer-id">
+            <p>MAGLER ID</p>
+            <h3>TR-72810</h3>
+          </div>
+
         </div>
 
-        <button className="lang-btn">
-          🌐 English / हिन्दी
-        </button>
-      </header>
-    </div>
+        {/* MAIN */}
+        <div className="harvest-main">
 
-  <div className="harvest-container">
+          <div className="harvest-header">
+            <h1>My Crops</h1>
+            <p>Manage the crops you have listed for sale.</p>
+          </div>
 
-  {/* SIDEBAR */}
+          <div className="top-controls">
 
-  <div className="harvest-sidebar">
+            <select>
+              <option>All Crops</option>
+              <option>Active</option>
+              <option>Pending</option>
+              <option>Sold</option>
+            </select>
 
-  <div className="logo">✔ Krishi Seva</div>
+            <button
+              className="new-crop-btn"
+              onClick={() => navigate("/listcrop")}
+            >
+              + List New Crop
+            </button>
 
-   <button className="active-btn">
-  🏠 Sell Crops
-  </button>
+          </div>
 
-  <button onClick={()=>setShowProfile(true)}>
-  👤 My Profile
-  </button>
+          {/* CROPS LIST */}
+          <div className="crop-list">
 
-  <button onClick={()=>navigate("/offersreceived")}>
-  💰 Offers Received
-  </button>
+            {crops.length === 0 ? (
+              <p>No crops listed yet</p>
+            ) : (
+              crops.map((crop) => (
 
-  <button onClick={()=>navigate("/farmerlogout")}>
-  🚪 Logout
-  </button>
+                <div key={crop.id} className="crop-card">
 
-  <div className="farmer-id">
-  <p>MAGLER ID</p>
-  <h3>TR-72810</h3>
-  </div>
+                  <img
+                    src={crop.image || "https://via.placeholder.com/80"}
+                    alt="crop"
+                  />
 
-  </div>
+                  <div className="crop-info">
+                    <h3>{crop.name}</h3>
+                    <p>{crop.quantity} KG</p>
 
+                    <span className={`status ${crop.status || "active"}`}>
+                      {crop.status || "Active"}
+                    </span>
+                  </div>
 
-{/* MAIN AREA */}
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteCrop(crop.id)}
+                  >
+                    Delete
+                  </button>
 
-<div className="harvest-main">
+                </div>
 
-<div className="harvest-header">
-<h1>My Crops</h1>
-<p>Manage the crops you have listed for sale.</p>
-</div>
+              ))
+            )}
 
-<div className="top-controls">
+          </div>
 
-<select>
-<option>All Crops</option>
-<option>Active</option>
-<option>Pending</option>
-<option>Sold</option>
-</select>
+        </div>
 
-<button
-className="new-crop-btn"
-onClick={()=>navigate("/listcrop")}
->
-+ List New Crop
-</button>
+        {/* PROFILE */}
+        {showProfile && (
+          <div className="profile-modal">
+            <div className="profile-card">
 
-</div>
+              <h2>Farmer Profile</h2>
 
+              <p><b>Name:</b> Ramesh Patil</p>
+              <p><b>Email:</b> ramesh@gmail.com</p>
+              <p><b>Phone:</b> 9876543210</p>
+              <p><b>Village:</b> Nashik</p>
+              <p><b>Farm Size:</b> 5 Acres</p>
 
-{/* CROPS LIST */}
+              <button
+                className="close-btn"
+                onClick={() => setShowProfile(false)}
+              >
+                Close
+              </button>
 
-<div className="crop-list">
+            </div>
+          </div>
+        )}
 
-{crops.map((crop)=>(
-
-<div key={crop.id} className="crop-card">
-
-<img src={crop.image} alt="crop"/>
-
-<div className="crop-info">
-
-<h3>{crop.name}</h3>
-
-<p>{crop.qty}</p>
-
-<span className={`status ${crop.status}`}>
-{crop.status}
-</span>
-
-</div>
-
-<button
-className="delete-btn"
-onClick={()=>deleteCrop(crop.id)}
->
-Delete
-</button>
-
-</div>
-
-))}
-
-</div>
-
-</div>
-
-
-{/* PROFILE POPUP */}
-
-{showProfile && (
-
-<div className="profile-modal">
-
-<div className="profile-card">
-
-<h2>Farmer Profile</h2>
-
-<p><b>Name:</b> Ramesh Patil</p>
-<p><b>Email:</b> ramesh@gmail.com</p>
-<p><b>Phone:</b> 9876543210</p>
-<p><b>Village:</b> Nashik</p>
-<p><b>Farm Size:</b> 5 Acres</p>
-
-<button className="close-btn"
-onClick={()=>setShowProfile(false)}
->
-Close
-</button>
-
-</div>
-
-</div>
-
-)}
-
-</div>
-  </>
-);
-
+      </div>
+    </>
+  );
 }
 
 export default SellMyHarvest;

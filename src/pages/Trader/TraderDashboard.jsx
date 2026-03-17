@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 function TraderDashboard() {
 
   const [crops, setCrops] = useState([]);
+  const [selectedCrop, setSelectedCrop] = useState(null);
 
+  // ✅ LOAD FROM localStorage (instead of backend)
   useEffect(() => {
-  fetch("http://localhost:5000/api/crops")
-    .then(res => res.json())
-    .then(data => setCrops(data));
-   }, []);
+    const data = JSON.parse(localStorage.getItem("crops")) || [];
+    setCrops(data);
+  }, []);
 
   return (
     <div className="dashboard">
@@ -54,13 +55,39 @@ function TraderDashboard() {
                 <h3>₹{crop.price} / kg</h3>
               </div>
 
-              <button className="offer-btn">MAKE OFFER</button>
+              <button
+             className="offer-btn"
+             onClick={() => setSelectedCrop(crop)}
+             >
+             MAKE OFFER
+             </button>
 
             </div>
           ))}
         </div>
 
       </div>
+      
+      {/* ✅ MODAL POPUP */}
+      {selectedCrop && (
+        <div className="modal-overlay">
+          <div className="modal">
+
+            <h2>Farmer Details</h2>
+
+            <p><b>Name:</b> {selectedCrop.farmerName}</p>
+            <p><b>Mobile:</b> {selectedCrop.farmerMobile}</p>
+            <p><b>Address:</b> {selectedCrop.farmerAddress}</p>
+
+            <button
+              className="close-btn"
+              onClick={() => setSelectedCrop(null)}
+            >
+              Close
+            </button>
+               </div>
+        </div>
+      )}
     </div>
   );
 }
