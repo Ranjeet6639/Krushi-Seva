@@ -94,18 +94,18 @@ const verifyOtp = () => {
           />
 
          {showAccount && (
-     <div className="account-popup">
+         <div className="account-popup">
 
-       <p><b>Name:</b> Rajesh Kumar</p>
-       <p><b>Village:</b> Shivpur</p>
-       <p><b>Farmer Address:</b> Shivpur Village, Maharashtra</p>
+         <p><b>Name:</b> Rajesh Kumar</p>
+         <p><b>Village:</b> Shivpur</p>
+         <p><b>Farmer Address:</b> Shivpur Village, Maharashtra</p>
 
-      {/* MOBILE */}
-     <div className="editable-field">
-      <b>Mobile:</b>
+         {/* MOBILE */}
+         <div className="editable-field">
+         <b>Mobile:</b>
 
-      {editMobile ? (
-        <>
+         {editMobile ? (
+          <>
           <input
             type="text"
             value={mobile}

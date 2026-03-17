@@ -51,32 +51,36 @@ function TraderRegister() {
     }
   };
 
-  const handleSubmit = () => {
+   const handleSubmit = () => {
 
-    if (!form.name || !form.email || !form.mobile || !form.password) {
-      setError("Please fill required fields");
-      return;
-    }
+   if (!form.name || !form.email || !form.mobile || !form.password) {
+    setError("Please fill required fields");
+    return;
+   }
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+   if (form.password !== form.confirmPassword) {
+    setError("Passwords do not match");
+    return;
+   }
 
-    if (!otpVerified) {
-      setError("Please verify OTP first");
-      return;
-    }
+   if (!otpVerified) {
+    setError("Please verify OTP first");
+    return;
+   }
 
-    setError("");
+   setError("");
 
-    alert("Trader Registered Successfully ✅");
+   // ✅ SAVE PROFILE DATA (VERY IMPORTANT)
+   const { password, confirmPassword, ...safeData } = form;
+   localStorage.setItem("traderProfile", JSON.stringify(safeData)); 
+
+   alert("Trader Registered Successfully ✅");
 
     // ✅ Redirect to login page
     setTimeout(() => {
-      navigate("/Trader/TraderLogin");
+    navigate("/Trader/TraderLogin");
     }, 1000);
-  };
+   };
 
   return (
     <div className="register-container">
