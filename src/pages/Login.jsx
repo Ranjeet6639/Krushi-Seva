@@ -39,7 +39,7 @@ function Login() {
 
       <div className="login-card">
 
-        <h1>Log in or Sign up</h1>
+        <h1>Farmer Log in or Sign up</h1>
 
         <button className="social-btn">
           <img src="https://img.icons8.com/color/48/google-logo.png" alt="google"/>
