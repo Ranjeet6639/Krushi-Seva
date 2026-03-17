@@ -65,7 +65,7 @@ const verifyOtp = () => {
 
 
   return (
-    <div className="dashboard">
+    <div className="farmerdashboard">
 
       {/* HEADER */}
 
@@ -213,7 +213,7 @@ const verifyOtp = () => {
 
         <div className="advice-text">
 
-          <span className="badge">SMART ADVICE</span>
+          <span className="farmerbadge">SMART ADVICE</span>
 
           <h2>{advice[slide].title}</h2>
 

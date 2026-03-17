@@ -1,4 +1,4 @@
-.dashboard{
+.farmerdashboard{
 background:#f4f6f8;
 padding:30px;
 min-height:100vh;
@@ -113,7 +113,7 @@ object-fit:cover;
 padding:30px;
 }
 
-.badge{
+.farmerbadge{
 background:#fde5d7;
 padding:6px 12px;
 border-radius:20px;

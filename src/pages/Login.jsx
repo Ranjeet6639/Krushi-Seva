@@ -24,7 +24,7 @@ function Login() {
 
     setTimeout(() => {
       setLoading(false);
-      navigate("/farmer/dashboard");
+      navigate("/farmerdashboard");
     }, 500);
   };
 

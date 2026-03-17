@@ -20,7 +20,7 @@ function TraderLogin() {
 
     setTimeout(() => {
       setLoading(false);
-      /*navigate("/trader/dashboard");*/
+      navigate("/Trader/TraderDashboard");
     }, 500);
   };
 
