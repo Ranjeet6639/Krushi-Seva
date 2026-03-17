@@ -12,6 +12,7 @@ import SellMyHarvest from "./pages/SellMyHarvest";
 import ListCrop from "./pages/ListCrop";
 import OffersReceived from "./pages/OffersReceived";
 import WhatToGrow from "./pages/WhatToGrow";
+import TraderLogin from "./pages/Trader/TraderLogin";
 
 function Home() {
   return (
@@ -74,10 +75,11 @@ function Home() {
             <p>
               Login to browse local produce and connect with farmers.
             </p>
-
+            <Link to="/Trader/TraderLogin">
             <button className="trader-btn">
               Trader Login →
             </button>
+            </Link>
 
             <Link to="#">Register as new trader</Link>
 
@@ -125,6 +127,7 @@ function App() {
         <Route path="/listcrop" element={<ListCrop />} />
         <Route path="/offersreceived" element={<OffersReceived />} />
         <Route path="/whattogrow" element={<WhatToGrow />} />
+        <Route path="/Trader/TraderLogin" element={<TraderLogin />} />
       </Routes>
 
       {/* Footer */}
