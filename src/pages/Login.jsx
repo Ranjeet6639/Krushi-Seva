@@ -5,15 +5,26 @@ import { useNavigate } from "react-router-dom";
 function Login() {
 
   const [loading, setLoading] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
   const handleLogin = () => {
 
+    if (!email || !password) {
+      setError("Please enter email and password");
+      return;
+    }
+
+    setError("");
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      navigate("/farmerdashboard");
+      navigate("/farmer/dashboard");
     }, 500);
   };
 
@@ -31,17 +42,17 @@ function Login() {
         <h1>Log in or Sign up</h1>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/color/48/google-logo.png"/>
+          <img src="https://img.icons8.com/color/48/google-logo.png" alt="google"/>
           Continue with Google
         </button>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/color/48/microsoft.png"/>
+          <img src="https://img.icons8.com/color/48/microsoft.png" alt="microsoft"/>
           Continue with Microsoft
         </button>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/ios-filled/50/mac-os.png"/>
+          <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="apple"/>
           Continue with Apple
         </button>
 
@@ -55,16 +66,22 @@ function Login() {
           <span></span>
         </div>
 
+        {error && <p className="error-text">{error}</p>}
+
         <input
           type="email"
           placeholder="Email address"
           className="input-field"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
           className="input-field"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <button
