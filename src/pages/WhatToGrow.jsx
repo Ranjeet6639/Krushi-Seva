@@ -1,9 +1,66 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // ✅ UPDATED
 import "./WhatToGrow.css";
 import { Sprout, Leaf, Droplets, Home } from "lucide-react";
+import axios from "axios";
 
 export default function WhatToGrow() {
+
+  const [formData, setFormData] = useState({
+    location: "",
+    season: "",
+    soil: "",
+    irrigation: "",
+    water: "",
+    previousCrop: "",
+    preference: "",
+    budget: "",
+  });
+
+  const [result, setResult] = useState("");
+  const [showAI, setShowAI] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [navLoading, setNavLoading] = useState(false); // ✅ ADDED
+
+  const navigate = useNavigate(); // ✅ ADDED
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAnalyze = async () => {
+    setLoading(true);
+
+    try {
+      const startTime = Date.now();
+
+      const response = await axios.post("http://localhost:5000/api/recommend", {
+        formData,
+      });
+
+      const elapsed = Date.now() - startTime;
+
+      if (elapsed < 500) {
+        await new Promise((res) => setTimeout(res, 500 - elapsed));
+      }
+
+      setResult(response.data.result);
+
+    } catch (error) {
+      console.error(error);
+      setResult("Error getting recommendation");
+    }
+
+    setLoading(false);
+  };
+
+  // ✅ BACK BUTTON HANDLER ADDED
+  const handleBack = async () => {
+    setNavLoading(true);
+    await new Promise((res) => setTimeout(res, 1000));
+    navigate("/FarmerDashboard");
+  };
+
   return (
     <div className="grow-container">
 
@@ -13,7 +70,7 @@ export default function WhatToGrow() {
         </div>
 
         <button className="lang-btn">
-          🌐 English
+          🌐 English / हिन्दी
         </button>
       </header>
 
@@ -78,10 +135,84 @@ export default function WhatToGrow() {
 
       </div>
 
-      <Link to="/FarmerDashboard" className="back-btn">
+      <div className="ai-toggle">
+        <button onClick={() => setShowAI(!showAI)} className="ai-open-btn">
+          🌱 AI Crop Recommendation
+        </button>
+      </div>
+
+      {showAI && (
+        <div className="ai-section">
+          <h2>🌱 Get AI Crop Recommendation</h2>
+
+          <div className="form-grid">
+
+            <input name="location" placeholder="Location" onChange={handleChange} />
+
+            <select name="season" onChange={handleChange}>
+              <option value="">Season</option>
+              <option>Kharif</option>
+              <option>Rabi</option>
+              <option>Summer</option>
+            </select>
+
+            <select name="soil" onChange={handleChange}>
+              <option value="">Soil Type</option>
+              <option>Black</option>
+              <option>Red</option>
+              <option>Sandy</option>
+              <option>Clay</option>
+              <option>Loamy</option>
+            </select>
+
+            <select name="irrigation" onChange={handleChange}>
+              <option value="">Irrigation</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+
+            <select name="water" onChange={handleChange}>
+              <option value="">Water Level</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+
+            <input name="previousCrop" placeholder="Previous Crop" onChange={handleChange} />
+
+            <select name="preference" onChange={handleChange}>
+              <option value="">Crop Preference</option>
+              <option>Food</option>
+              <option>Cash</option>
+            </select>
+
+            <select name="budget" onChange={handleChange}>
+              <option value="">Budget</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+
+          </div>
+
+          <button className="analyze-btn" onClick={handleAnalyze} disabled={loading}>
+            {loading ? "⏳ Analyzing..." : "🔍 Analyze & Suggest Crop"}
+          </button>
+
+          {result && (
+            <div className="result-box">
+              <h3>🌾 Recommended Crops:</h3>
+              <p>{result}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ✅ UPDATED BACK BUTTON */}
+      <button onClick={handleBack} className="back-btn">
         <Home size={20} />
-        Back to Home
-      </Link>
+        {navLoading ? "⏳ Loading..." : "Back to Home"}
+      </button>
 
     </div>
   );
