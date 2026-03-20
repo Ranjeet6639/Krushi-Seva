@@ -1,6 +1,9 @@
 import "./Login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import appleLogo from "../assets/apple-logo.jpg";
+import googleLogo from "../assets/google-logo.jpg";
+import microsoftLogo from "../assets/microsoft-logo.jpg";
 
 function Login() {
 
@@ -42,17 +45,17 @@ function Login() {
         <h1>Farmer Log in or Sign up</h1>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/color/48/google-logo.png" alt="google"/>
+          <img src={googleLogo} alt="google"/>
           Continue with Google
         </button>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/color/48/microsoft.png" alt="microsoft"/>
+          <img src={microsoftLogo} alt="microsoft"/>
           Continue with Microsoft
         </button>
 
         <button className="social-btn">
-          <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="apple"/>
+          <img src={appleLogo} alt="apple"/>
           Continue with Apple
         </button>
 
