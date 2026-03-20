@@ -157,3 +157,20 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
+/*Logout Button*/
+
+.logout-btn {
+  margin-top: 20px;
+  background: #e53935;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #c62828;
+}

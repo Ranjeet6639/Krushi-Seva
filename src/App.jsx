@@ -15,6 +15,7 @@ import WhatToGrow from "./pages/WhatToGrow";
 import TraderLogin from "./pages/Trader/TraderLogin";
 import TraderRegister from "./pages/Trader/TraderRegister";
 import TraderDashboard from "./pages/Trader/TraderDashboard";
+import TraderLogout from "./pages/Trader/TraderLogout";
 
 function Home() {
   return (
@@ -132,6 +133,7 @@ function App() {
         <Route path="/Trader/TraderLogin" element={<TraderLogin />} />
         <Route path="/Trader/TraderRegister" element={<TraderRegister />} />
         <Route path="/Trader/TraderDashboard" element={<TraderDashboard />} />
+        <Route path="/Trader/TraderLogout" element={<TraderLogout />} />
       </Routes>
 
       {/* Footer */}

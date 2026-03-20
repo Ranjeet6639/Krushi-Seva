@@ -1,12 +1,14 @@
 import "./TraderDashboard.css";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import BuyCrops from "./BuyCrops";
 import TraderProfile from "./TraderProfile";
+import TraderLogout from "./TraderLogout";
 
 function TraderDashboard() {
 
   const [activePage, setActivePage] = useState("buy");
+  const navigate = useNavigate(); // ✅ added
 
   return (
     <div className="dashboard">
@@ -27,6 +29,14 @@ function TraderDashboard() {
           onClick={() => setActivePage("profile")}
         >
           👤 2. My Profile
+        </button>
+
+        {/* ✅ LOGOUT BUTTON ADDED */}
+        <button
+          className="logout-btn"
+          onClick={() => navigate("/Trader/TraderLogout")}
+        >
+          🚪 Logout
         </button>
 
         <div className="trader-id">
