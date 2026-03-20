@@ -48,7 +48,7 @@ function Home() {
           {/* Farmer */}
           <div className="card">
 
-            <div className="icon farmer">🚜</div>
+            <div className="icon">🚜</div>
 
             <h2>Farmer</h2>
 
@@ -70,7 +70,7 @@ function Home() {
           {/* Trader */}
           <div className="card">
 
-            <div className="icon trader">🚚</div>
+            <div className="icon">🚚</div>
 
             <h2>Trader</h2>
 
