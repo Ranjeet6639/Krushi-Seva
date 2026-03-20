@@ -3,6 +3,8 @@ import "./SickCrop.css";
 import cameraIcon from "../assets/Camera.jpg";
 import UploadCamera from "../assets/UploadPhoto.jpg";
 import Helpline from "../assets/Helpline.jpg";
+import { Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function SickCrop() {
 
@@ -11,6 +13,18 @@ function SickCrop() {
   const [solution, setSolution] = useState("");
   const [pesticide, setPesticide] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ✅ NEW STATE FOR NAV LOADING
+  const [navLoading, setNavLoading] = useState(false);
+  const navigate = useNavigate();
+
+  // ✅ BACK BUTTON FUNCTION
+  const handleBack = () => {
+    setNavLoading(true);
+    setTimeout(() => {
+      navigate("/FarmerDashboard");
+    }, 1000);
+  };
 
   // upload photo
   const handleImageUpload = async (event) => {
@@ -68,6 +82,12 @@ function SickCrop() {
 
         <button className="lang-btn">
           🌐 English / हिन्दी
+        </button>
+
+        {/* ✅ BACK BUTTON ADDED */}
+        <button onClick={handleBack} className="back-btn" disabled={navLoading}>
+          <Home size={20} />
+          {navLoading ? "⏳ Loading..." : "Back to Home"}
         </button>
 
       </header>

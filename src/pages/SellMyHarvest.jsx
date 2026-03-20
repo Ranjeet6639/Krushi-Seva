@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Home } from "lucide-react";
 import "./SellMyHarvest.css";
 
 function SellMyHarvest() {
@@ -8,6 +9,17 @@ function SellMyHarvest() {
 
   const [crops, setCrops] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
+
+  // ✅ NEW NAV LOADING STATE
+  const [navLoading, setNavLoading] = useState(false);
+
+  // ✅ BACK BUTTON FUNCTION
+  const handleBack = () => {
+    setNavLoading(true);
+    setTimeout(() => {
+      navigate("/FarmerDashboard");
+    }, 1000);
+  };
 
   // ✅ LOAD CROPS FROM LOCAL STORAGE
   useEffect(() => {
@@ -28,6 +40,13 @@ function SellMyHarvest() {
         <header className="header">
           <div className="logo">🌱 <span>Krushi Seva</span></div>
           <button className="lang-btn">🌐 English / हिन्दी</button>
+
+          {/* ✅ BACK BUTTON ADDED */}
+          <button onClick={handleBack} className="back-btn" disabled={navLoading}>
+            <Home size={20} />
+            {navLoading ? "⏳ Loading..." : "Back to Home"}
+          </button>
+
         </header>
       </div>
 
@@ -35,8 +54,6 @@ function SellMyHarvest() {
 
         {/* SIDEBAR */}
         <div className="harvest-sidebar">
-
-          <div className="logo">✔ Krishi Seva</div>
 
           <button className="active-btn">🏠 Sell Crops</button>
 

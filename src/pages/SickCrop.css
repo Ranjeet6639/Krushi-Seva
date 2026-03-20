@@ -238,3 +238,36 @@ transition:0.3s;
 background:#1b8f5a;
 color:white;
 }
+
+/* BACK BUTTON */
+
+.back-btn {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #0f1b2d;
+  color: white;
+  padding: 8px 14px;
+
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.back-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* VERY IMPORTANT */
+.sick-header {
+  position: relative;
+}
