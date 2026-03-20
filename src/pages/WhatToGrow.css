@@ -240,3 +240,11 @@ margin-top:30px;
   border-radius: 10px;
 }
 
+/* Error State */
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ✅ UPDATED
+import { Link, useNavigate } from "react-router-dom";
 import "./WhatToGrow.css";
 import { Sprout, Leaf, Droplets, Home } from "lucide-react";
 import axios from "axios";
@@ -17,18 +17,36 @@ export default function WhatToGrow() {
     budget: "",
   });
 
+  const [errors, setErrors] = useState({}); // ✅ NEW
   const [result, setResult] = useState("");
   const [showAI, setShowAI] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [navLoading, setNavLoading] = useState(false); // ✅ ADDED
+  const [navLoading, setNavLoading] = useState(false);
 
-  const navigate = useNavigate(); // ✅ ADDED
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // ✅ remove error when user types
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleAnalyze = async () => {
+
+    // ✅ VALIDATION
+    let newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key]) {
+        newErrors[key] = "Required";
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -54,7 +72,6 @@ export default function WhatToGrow() {
     setLoading(false);
   };
 
-  // ✅ BACK BUTTON HANDLER ADDED
   const handleBack = async () => {
     setNavLoading(true);
     await new Promise((res) => setTimeout(res, 1000));
@@ -89,47 +106,29 @@ export default function WhatToGrow() {
       <div className="steps">
 
         <div className="step-card">
-          <div className="icon">
-            <Sprout size={28} />
-          </div>
-
+          <div className="icon"><Sprout size={28} /></div>
           <div className="text">
             <h3>Step 1: Prepare Soil</h3>
-            <p>
-              Plough the field twice to make the soil loose.Add natural or compost for better growth.
-            </p>
+            <p>Plough the field twice to make the soil loose.Add natural or compost for better growth.</p>
           </div>
-
           <div className="number">1</div>
         </div>
 
         <div className="step-card">
-          <div className="icon">
-            <Leaf size={28} />
-          </div>
-
+          <div className="icon"><Leaf size={28} /></div>
           <div className="text">
             <h3>Step 2: Sowing</h3>
-            <p>
-              Plant seeds 2-3cm deep in the ground.Keep a distance of 10cm between each plant.
-            </p>
+            <p>Plant seeds 2-3cm deep in the ground.Keep a distance of 10cm between each plant.</p>
           </div>
-
           <div className="number">2</div>
         </div>
 
         <div className="step-card">
-          <div className="icon">
-            <Droplets size={28} />
-          </div>
-
+          <div className="icon"><Droplets size={28} /></div>
           <div className="text">
             <h3>Step 3: Watering</h3>
-            <p>
-              Water the field immediately after sowing.After that,water only when the soil feels very dry.
-            </p>
+            <p>Water the field immediately after sowing.After that,water only when the soil feels very dry.</p>
           </div>
-
           <div className="number">3</div>
         </div>
 
@@ -147,51 +146,75 @@ export default function WhatToGrow() {
 
           <div className="form-grid">
 
-            <input name="location" placeholder="Location" onChange={handleChange} />
+            <div>
+              <input name="location" placeholder="Location" onChange={handleChange} />
+              {errors.location && <small className="error-text">{errors.location}</small>}
+            </div>
 
-            <select name="season" onChange={handleChange}>
-              <option value="">Season</option>
-              <option>Kharif</option>
-              <option>Rabi</option>
-              <option>Summer</option>
-            </select>
+            <div>
+              <select name="season" onChange={handleChange}>
+                <option value="">Season</option>
+                <option>Kharif</option>
+                <option>Rabi</option>
+                <option>Summer</option>
+              </select>
+              {errors.season && <small className="error-text">{errors.season}</small>}
+            </div>
 
-            <select name="soil" onChange={handleChange}>
-              <option value="">Soil Type</option>
-              <option>Black</option>
-              <option>Red</option>
-              <option>Sandy</option>
-              <option>Clay</option>
-              <option>Loamy</option>
-            </select>
+            <div>
+              <select name="soil" onChange={handleChange}>
+                <option value="">Soil Type</option>
+                <option>Black</option>
+                <option>Red</option>
+                <option>Sandy</option>
+                <option>Clay</option>
+                <option>Loamy</option>
+              </select>
+              {errors.soil && <small className="error-text">{errors.soil}</small>}
+            </div>
 
-            <select name="irrigation" onChange={handleChange}>
-              <option value="">Irrigation</option>
-              <option>Yes</option>
-              <option>No</option>
-            </select>
+            <div>
+              <select name="irrigation" onChange={handleChange}>
+                <option value="">Irrigation</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+              {errors.irrigation && <small className="error-text">{errors.irrigation}</small>}
+            </div>
 
-            <select name="water" onChange={handleChange}>
-              <option value="">Water Level</option>
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
-            </select>
+            <div>
+              <select name="water" onChange={handleChange}>
+                <option value="">Water Level</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+              {errors.water && <small className="error-text">{errors.water}</small>}
+            </div>
 
-            <input name="previousCrop" placeholder="Previous Crop" onChange={handleChange} />
+            <div>
+              <input name="previousCrop" placeholder="Previous Crop" onChange={handleChange} />
+              {errors.previousCrop && <small className="error-text">{errors.previousCrop}</small>}
+            </div>
 
-            <select name="preference" onChange={handleChange}>
-              <option value="">Crop Preference</option>
-              <option>Food</option>
-              <option>Cash</option>
-            </select>
+            <div>
+              <select name="preference" onChange={handleChange}>
+                <option value="">Crop Preference</option>
+                <option>Food</option>
+                <option>Cash</option>
+              </select>
+              {errors.preference && <small className="error-text">{errors.preference}</small>}
+            </div>
 
-            <select name="budget" onChange={handleChange}>
-              <option value="">Budget</option>
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
-            </select>
+            <div>
+              <select name="budget" onChange={handleChange}>
+                <option value="">Budget</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+              {errors.budget && <small className="error-text">{errors.budget}</small>}
+            </div>
 
           </div>
 
@@ -208,8 +231,7 @@ export default function WhatToGrow() {
         </div>
       )}
 
-      {/* ✅ UPDATED BACK BUTTON */}
-      <button onClick={handleBack} className="back-btn">
+      <button onClick={handleBack} className="back-btn" disabled={navLoading}>
         <Home size={20} />
         {navLoading ? "⏳ Loading..." : "Back to Home"}
       </button>
