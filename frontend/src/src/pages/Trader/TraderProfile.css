@@ -1,0 +1,41 @@
+.profile-container {
+  padding: 40px;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.profile-card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 450px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.profile-field {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-field input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.profile-field button {
+  padding: 6px 10px;
+  background: #15803d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.otp-box {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
