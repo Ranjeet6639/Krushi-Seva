@@ -27,35 +27,35 @@ function ListCrop() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-    const existingCrops = JSON.parse(localStorage.getItem("crops")) || [];
-    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const newCrop = {
+    farmerId: currentUser?.userCode || "FR-000000",
+    farmerName: currentUser?.name || "Farmer",
+    farmerMobile: currentUser?.mobile || "",
+    farmerAddress: currentUser?.address || "",
+    farmerVillage: currentUser?.profile?.village || "",
+    name: formData.name,
+    quantity: formData.quantity,
+    price: formData.price,
+    category: formData.category,
+    image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924"
+  };
 
-    const newCrop = {
-      id: Date.now(),
-      name: formData.name,
-      quantity: formData.quantity,
-      price: formData.price,
-      category: formData.category,
-      status: "Active",
-      image: formData.photo
-        ? URL.createObjectURL(formData.photo)
-        : "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
-      farmerName: currentUser?.name || "Farmer",
-      farmerMobile: currentUser?.mobile || "Not added",
-      farmerAddress: currentUser?.address || "Address not added",
-      farmerVillage: currentUser?.profile?.village || "Village not added",
-      farmerId: currentUser?.userCode || "FR-000000"
-    };
-
-    existingCrops.push(newCrop);
-    localStorage.setItem("crops", JSON.stringify(existingCrops));
-
+  try {
+    await fetch("http://localhost:5000/api/crops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCrop)
+    });
     alert("Crop Listed Successfully!");
     navigate("/sellmyharvest");
-  };
+  } catch (err) {
+    alert("Failed to list crop. Please try again.");
+  }
+};
 
   return (
     <div className="list-container">
