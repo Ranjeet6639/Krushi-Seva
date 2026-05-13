@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { connectDb } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import cropRoutes from "./routes/cropRoutes.js"; 
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/crops", cropRoutes); 
 
 app.use((error, _req, res, _next) => {
   const statusCode = error.statusCode || 500;
