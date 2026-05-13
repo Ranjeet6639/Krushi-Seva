@@ -26,10 +26,9 @@ function SellMyHarvest() {
     .then(data => setCrops(data.crops || []));
   }, []);
 
-  const deleteCrop = (id) => {
-    const updatedCrops = crops.filter((crop) => crop.id !== id);
-    setCrops(updatedCrops);
-    localStorage.setItem("crops", JSON.stringify(updatedCrops));
+  const deleteCrop = async (id) => {
+  await fetch(`http://localhost:5000/api/crops/${id}`, { method: "DELETE" });
+  setCrops(crops.filter(c => c._id !== id));
   };
 
   const displayName = currentUser?.name || "Farmer";
