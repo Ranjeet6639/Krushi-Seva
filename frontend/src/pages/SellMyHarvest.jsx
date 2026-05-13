@@ -18,13 +18,12 @@ function SellMyHarvest() {
   };
 
   useEffect(() => {
-    const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
-    setCrops(storedCrops);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+  if (user) setCurrentUser(user);
 
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
+  fetch(`http://localhost:5000/api/crops/farmer/${user?.userCode}`)
+    .then(r => r.json())
+    .then(data => setCrops(data.crops || []));
   }, []);
 
   const deleteCrop = (id) => {
