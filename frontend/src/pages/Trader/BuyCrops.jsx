@@ -5,8 +5,9 @@ function BuyCrops() {
   const [selectedCrop, setSelectedCrop] = useState(null);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("crops")) || [];
-    setCrops(data);
+  fetch("http://localhost:5000/api/crops")
+    .then(r => r.json())
+    .then(data => setCrops(data.crops || []));
   }, []);
 
   return (
