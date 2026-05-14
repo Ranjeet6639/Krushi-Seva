@@ -23,7 +23,7 @@ function BuyCrops() {
 
       <div className="grid">
         {crops.map((crop) => (
-          <div className="card" key={crop.id}>
+          <div className="card" key={crop._id}>
             <div className="image-box">
               <img src={crop.image || "https://via.placeholder.com/300"} />
               <span className="badge">{crop.quantity} KG Available</span>

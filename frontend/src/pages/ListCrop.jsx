@@ -28,34 +28,99 @@ function ListCrop() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-  const newCrop = {
-    farmerId: currentUser?.userCode || "FR-000000",
-    farmerName: currentUser?.name || "Farmer",
-    farmerMobile: currentUser?.mobile || "",
-    farmerAddress: currentUser?.address || "",
-    farmerVillage: currentUser?.profile?.village || "",
-    name: formData.name,
-    quantity: formData.quantity,
-    price: formData.price,
-    category: formData.category,
-    image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924"
-  };
+  e.preventDefault();
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser") || "null"
+  );
+
+  const formDataToSend = new FormData();
+
+  formDataToSend.append(
+    "farmerId",
+    currentUser?.userCode || "FR-000000"
+  );
+
+  formDataToSend.append(
+    "farmerName",
+    currentUser?.name || "Farmer"
+  );
+
+  formDataToSend.append(
+    "farmerMobile",
+    currentUser?.mobile || ""
+  );
+
+  formDataToSend.append(
+    "farmerAddress",
+    currentUser?.address || ""
+  );
+
+  formDataToSend.append(
+    "farmerVillage",
+    currentUser?.profile?.village || ""
+  );
+
+  formDataToSend.append(
+    "name",
+    formData.name
+  );
+
+  formDataToSend.append(
+    "quantity",
+    formData.quantity
+  );
+
+  formDataToSend.append(
+    "price",
+    formData.price
+  );
+
+  formDataToSend.append(
+    "category",
+    formData.category
+  );
+
+  /* THIS IS THE IMPORTANT PART */
+  if (formData.photo) {
+
+    formDataToSend.append(
+      "image",
+      formData.photo
+    );
+
+  }
 
   try {
-    await fetch("http://localhost:5000/api/crops", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCrop)
-    });
+
+    const response = await fetch(
+      "http://localhost:5000/api/crops",
+      {
+        method: "POST",
+        body: formDataToSend
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
     alert("Crop Listed Successfully!");
+
     navigate("/sellmyharvest");
+
   } catch (err) {
-    alert("Failed to list crop. Please try again.");
+
+    console.error(err);
+
+    alert(
+      "Failed to list crop. Please try again."
+    );
+
   }
-};
+
+ };
 
   return (
     <div className="list-container">

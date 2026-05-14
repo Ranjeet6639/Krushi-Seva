@@ -91,7 +91,7 @@ function SellMyHarvest() {
               <p>No crops listed yet</p>
             ) : (
               crops.map((crop) => (
-                <div key={crop.id} className="crop-card">
+                <div key={crop._id} className="crop-card">
                   <img src={crop.image || "https://via.placeholder.com/80"} alt="crop" />
 
                   <div className="crop-info">
@@ -103,7 +103,7 @@ function SellMyHarvest() {
                     </span>
                   </div>
 
-                  <button className="delete-btn" onClick={() => deleteCrop(crop.id)}>
+                  <button className="delete-btn" onClick={() => deleteCrop(crop._id)}>
                     Delete
                   </button>
                 </div>
