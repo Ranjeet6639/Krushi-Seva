@@ -30,7 +30,15 @@ function Login() {
         role: "farmer"
       });
 
-      localStorage.setItem("currentUser", JSON.stringify(response.data.user));
+      localStorage.setItem(
+      "currentUser",
+      JSON.stringify(response.data.user)
+     );
+
+     localStorage.setItem(
+     "token",
+     response.data.token
+    );
       navigate("/farmerdashboard");
     } catch (apiError) {
       setError(apiError.response?.data?.message || "Login failed");

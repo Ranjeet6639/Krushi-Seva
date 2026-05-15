@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { OtpVerification } from "../models/OtpVerification.js";
 import { User } from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 function normalizeMobile(mobile = "") {
   return mobile.replace(/\D/g, "");
@@ -8,6 +9,20 @@ function normalizeMobile(mobile = "") {
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function generateToken(user) {
+  return jwt.sign(
+    {
+      id: user._id,
+      role: user.role,
+      userCode: user.userCode
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "7d"
+    }
+  );
 }
 
 function getOtpExpiryDate() {
@@ -243,10 +258,13 @@ export async function loginUser(req, res, next) {
       await user.save();
     }
 
-    return res.json({
-      message: "Login successful",
-      user: buildUserResponse(user)
-    });
+    const token = generateToken(user);
+
+    res.json({
+   token,
+   message: "Login successful",
+   user: buildUserResponse(user)
+  });
   } catch (error) {
     next(error);
   }
