@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import "./SellMyHarvest.css";
+import api from "../lib/api";
 
 function SellMyHarvest() {
   const navigate = useNavigate();
@@ -18,17 +19,74 @@ function SellMyHarvest() {
   };
 
   useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
-  if (user) setCurrentUser(user);
 
-  fetch(`http://localhost:5000/api/crops/farmer/${user?.userCode}`)
-    .then(r => r.json())
-    .then(data => setCrops(data.crops || []));
+  const fetchCrops = async () => {
+
+    try {
+
+      const user = JSON.parse(
+        localStorage.getItem("currentUser") || "null"
+      );
+
+      if (user) {
+        setCurrentUser(user);
+      }
+
+      const token = localStorage.getItem("token");
+
+      const response = await api.get(
+        `/crops/farmer/${user?.userCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setCrops(response.data.crops || []);
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  };
+
+  fetchCrops();
+
   }, []);
 
   const deleteCrop = async (id) => {
-  await fetch(`http://localhost:5000/api/crops/${id}`, { method: "DELETE" });
-  setCrops(crops.filter(c => c._id !== id));
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await api.delete(
+      `/crops/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setCrops(
+      crops.filter(c => c._id !== id)
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      err?.response?.data?.message ||
+      "Failed to delete crop"
+    );
+
+  }
+
   };
 
   const displayName = currentUser?.name || "Farmer";
@@ -92,8 +150,7 @@ function SellMyHarvest() {
             ) : (
               crops.map((crop) => (
                 <div key={crop._id} className="crop-card">
-                  <img src={crop.image || "https://via.placeholder.com/80"} alt="crop" />
-
+                  <img src={crop.image ? `http://localhost:5000${crop.image}`: "https://via.placeholder.com/80"}alt="crop"/>
                   <div className="crop-info">
                     <h3>{crop.name}</h3>
                     <p>{crop.quantity} KG</p>

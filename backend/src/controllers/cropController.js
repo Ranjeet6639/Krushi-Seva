@@ -7,8 +7,8 @@ export async function listCrop(req, res, next) {
       ...req.body,
 
       image: req.file
-        ? `http://localhost:5000/uploads/${req.file.filename}`
-        : ""
+      ? `/uploads/${req.file.filename}`
+      : ""
     });
 
     res.status(201).json({

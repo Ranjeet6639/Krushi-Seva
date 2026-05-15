@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ListCrop.css";
 import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
 
 function ListCrop() {
   const navigate = useNavigate();
@@ -94,31 +95,35 @@ function ListCrop() {
 
   try {
 
-    const response = await fetch(
-      "http://localhost:5000/api/crops",
-      {
-        method: "POST",
-        body: formDataToSend
+  const token = localStorage.getItem("token");
+
+  const response = await api.post(
+    "/crops",
+    formDataToSend,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data"
       }
-    );
+    }
+  );
 
-    const data = await response.json();
+  console.log(response.data);
 
-    console.log(data);
+  alert("Crop Listed Successfully!");
 
-    alert("Crop Listed Successfully!");
+  navigate("/sellmyharvest");
 
-    navigate("/sellmyharvest");
+ } catch (err) {
 
-  } catch (err) {
+  console.error(err);
 
-    console.error(err);
+  alert(
+    err?.response?.data?.message ||
+    "Failed to list crop. Please try again."
+  );
 
-    alert(
-      "Failed to list crop. Please try again."
-    );
-
-  }
+ }
 
  };
 

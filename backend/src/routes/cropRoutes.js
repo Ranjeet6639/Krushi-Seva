@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import multer from "multer";
 import path from "path";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 import {
   listCrop,
@@ -16,7 +17,10 @@ const storage = multer.diskStorage({
 
   destination: function (_req, _file, cb) {
 
-    cb(null, "uploads/");
+  cb(
+    null,
+    path.join(process.cwd(), "uploads")
+  );
 
   },
 
@@ -38,6 +42,7 @@ const upload = multer({ storage });
 router.post(
   "/",
   upload.single("image"),
+  requireAuth,
   listCrop
 );
 
@@ -50,12 +55,14 @@ router.get(
 /* Farmer sees own crops */
 router.get(
   "/farmer/:farmerId",
+  requireAuth,
   getFarmerCrops
 );
 
 /* Delete crop */
 router.delete(
   "/:id",
+  requireAuth,
   deleteCrop
 );
 

@@ -25,7 +25,18 @@ function BuyCrops() {
         {crops.map((crop) => (
           <div className="card" key={crop._id}>
             <div className="image-box">
-              <img src={crop.image || "https://via.placeholder.com/300"} />
+              <img
+  src={
+    crop.image?.startsWith("http")
+      ? crop.image
+      : `http://localhost:5000${crop.image}`
+  }
+  alt={crop.name}
+  className="crop-image"
+  onError={(e) => {
+    e.target.src = "https://via.placeholder.com/300";
+  }}
+/>
               <span className="badge">{crop.quantity} KG Available</span>
             </div>
 

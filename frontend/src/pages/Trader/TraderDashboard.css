@@ -130,10 +130,19 @@
   position: relative;
 }
 
-.trader-dashboard .image-box img {
+.trader-dashboard .image-box {
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #f3f3f3;
+}
+
+.trader-dashboard .image-box img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
   border-radius: 15px;
 }
 
