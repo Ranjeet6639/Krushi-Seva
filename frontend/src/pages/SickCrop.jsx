@@ -5,6 +5,7 @@ import UploadCamera from "../assets/UploadPhoto.jpg";
 import Helpline from "../assets/Helpline.jpg";
 import { Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
 
 function SickCrop() {
 
@@ -28,47 +29,36 @@ function SickCrop() {
 
   // upload photo
   const handleImageUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-    const file = event.target.files[0];
-    if (!file) return;
+  setImage(URL.createObjectURL(file));
+  setLoading(true);
+  setDisease("");
 
-    setImage(URL.createObjectURL(file));
-    setLoading(true);
-    setDisease("");
+  const formData = new FormData();
+  formData.append("image", file);
 
-    const formData = new FormData();
-    formData.append("image", file);
+  try {
+    const response = await api.post("/detect", formData);   // ← uses api.js, correct path
 
-    try {
+    setTimeout(() => {
+      setDisease(response.data.disease);
+      setSolution(response.data.solution);
+      setPesticide(response.data.pesticide);
+      setLoading(false);
+    }, 1000);
 
-      const res = await fetch("http://localhost:5000/detect", {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-
-      setTimeout(() => {
-        setDisease(data.disease);
-        setSolution(data.solution);
-        setPesticide(data.pesticide);
-        setLoading(false);
-      }, 1000);
-
-    } 
-    catch (error) {
-
-     console.log("Backend error:", error);
-
-     setTimeout(() => {
-     setDisease("Detection Failed");
-     setSolution("Please try again or check backend connection.");
-     setPesticide("-");
-     setLoading(false);
-     }, 1000);
-     
-}
-  };
+  } catch (error) {
+    console.error("Backend error:", error);
+    setTimeout(() => {
+      setDisease("Detection Failed");
+      setSolution("Please try again or check backend connection.");
+      setPesticide("-");
+      setLoading(false);
+    }, 1000);
+  }
+};
 
   return (
     <div>
