@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import whatToGrow from "../assets/what-to-grow.jpg";
 import sickCrops from "../assets/sick-crops.jpg";
 import sellHarvest from "../assets/sell-harvest.jpg";
+import api from "../lib/api";
 
 function FarmerDashboard() {
+  const [crops, setCrops] = useState([]);
   const navigate = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
   const [slide, setSlide] = useState(0);
@@ -43,7 +45,17 @@ function FarmerDashboard() {
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
     }
-  }, []);
+  },
+  
+  useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const token = localStorage.getItem("token");
+  if (user?.userCode && token) {
+    api.get(`/crops/farmer/${user.userCode}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(r => setCrops(r.data.crops || [])).catch(console.error);
+  }
+  }, []));
 
   const displayName = currentUser?.name || "Farmer";
   const displayVillage = currentUser?.profile?.village || currentUser?.district || "Village not added";
@@ -97,7 +109,7 @@ function FarmerDashboard() {
 
               <button
                 className="logout-btn"
-                onClick={() => navigate("/FarmerLogout")}
+                onClick={() => navigate("/farmerlogout")}
               >
                 Logout
               </button>
@@ -112,7 +124,7 @@ function FarmerDashboard() {
           <h3>NEW:<br />WHAT TO GROW?</h3>
         </div>
 
-        <div className="action-card" onClick={() => navigate("/SickCrop")}>
+        <div className="action-card" onClick={() => navigate("/sickcrops")}>
           <img src={sickCrops} className="card-icon" />
           <h3>CHECK<br />SICK CROPS</h3>
         </div>
@@ -156,7 +168,20 @@ function FarmerDashboard() {
         </div>
 
         <div className="listing-box">
-          <h3>Trader Offers</h3>
+        <h3>Active Listings</h3>
+        {crops.length === 0 ? (
+        <p style={{ fontSize: "14px", color: "#888" }}>No crops listed yet.</p>
+        ) : (
+        crops.slice(0, 3).map((crop) => (
+        <div className="listing-item" key={crop._id}>
+         <div>
+          <b>{crop.name}</b>
+          <p>{crop.quantity} KG</p>
+        </div>
+        <span>₹{crop.price}/kg</span>
+      </div>
+   ))
+ )}
 
           <div className="listing-item">
             <div>AgroCorp Ind.</div>
