@@ -4,6 +4,8 @@ import { Home } from "lucide-react";
 import "./SellMyHarvest.css";
 import api from "../lib/api";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://localhost:5000";
+
 function SellMyHarvest() {
   const navigate = useNavigate();
   const [crops, setCrops] = useState([]);
@@ -150,7 +152,11 @@ function SellMyHarvest() {
             ) : (
               crops.map((crop) => (
                 <div key={crop._id} className="crop-card">
-                  <img src={crop.image ? `http://localhost:5000${crop.image}`: "https://via.placeholder.com/80"}alt="crop"/>
+                  <img
+                    src={crop.image ? `${BASE_URL}${crop.image}` : "https://via.placeholder.com/80"}
+                    alt="crop"
+                    onError={(e) => { e.target.src = "https://via.placeholder.com/80"; }}
+                    />
                   <div className="crop-info">
                     <h3>{crop.name}</h3>
                     <p>{crop.quantity} KG</p>
