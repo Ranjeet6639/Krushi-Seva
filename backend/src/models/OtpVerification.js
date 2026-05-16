@@ -26,6 +26,11 @@ const otpVerificationSchema = new mongoose.Schema(
     },
     verifiedAt: {
       type: Date
+    },
+    // FIX 6: track wrong attempts to prevent brute-force
+    attempts: {
+      type: Number,
+      default: 0
     }
   },
   {

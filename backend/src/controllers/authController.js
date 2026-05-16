@@ -135,23 +135,48 @@ export async function verifyOtp(req, res, next) {
       role
     }).sort({ createdAt: -1 });
 
+    // No OTP record found
     if (!otpRecord) {
-      return res.status(404).json({ message: "OTP not found. Please request a new OTP." });
+      return res.status(404).json({
+        message: "OTP not found. Please request a new OTP."
+      });
     }
 
+    // OTP has expired
     if (otpRecord.expiresAt < new Date()) {
-      return res.status(400).json({ message: "OTP expired. Please request a new OTP." });
+      return res.status(400).json({
+        message: "OTP expired. Please request a new OTP."
+      });
     }
 
+    // FIX 6: Block after 5 wrong attempts
+    if (otpRecord.attempts >= 5) {
+      return res.status(429).json({
+        message: "Too many incorrect attempts. Please request a new OTP."
+      });
+    }
+
+    // Wrong OTP — increment attempt counter before rejecting
     if (otpRecord.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+
+      const remaining = 5 - otpRecord.attempts;
+
+      return res.status(400).json({
+        message: remaining > 0
+          ? `Invalid OTP. ${remaining} attempt${remaining === 1 ? "" : "s"} remaining.`
+          : "Too many incorrect attempts. Please request a new OTP."
+      });
     }
 
+    // OTP is correct — mark as verified
     otpRecord.verified = true;
     otpRecord.verifiedAt = new Date();
     await otpRecord.save();
 
     return res.json({ message: "Phone number verified successfully" });
+
   } catch (error) {
     next(error);
   }
