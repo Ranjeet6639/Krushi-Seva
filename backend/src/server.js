@@ -6,6 +6,8 @@ import { connectDb } from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
+import detectRoutes from "./routes/detectRoutes.js";
+import recommendRoutes from "./routes/recommendRoutes.js";
 
 dotenv.config();
 
@@ -37,8 +39,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/crops", cropRoutes);
+app.use("/api/detect", detectRoutes);
+app.use("/api/recommend", recommendRoutes);
 
 app.use((error, _req, res, _next) => {
 
