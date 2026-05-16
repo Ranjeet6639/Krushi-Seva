@@ -31,6 +31,7 @@ function TraderLogin() {
       });
 
       localStorage.setItem("currentUser", JSON.stringify(response.data.user));
+      localStorage.setItem("token", response.data.token);
       navigate("/Trader/TraderDashboard");
     } catch (apiError) {
       setError(apiError.response?.data?.message || "Login failed");
