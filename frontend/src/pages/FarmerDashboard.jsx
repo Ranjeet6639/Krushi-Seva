@@ -31,31 +31,33 @@ function FarmerDashboard() {
     }
   ];
 
+  // Slideshow timer
   useEffect(() => {
     const timer = setInterval(() => {
       setSlide((prev) => (prev + 1) % advice.length);
     }, 5000);
-
     return () => clearInterval(timer);
   }, [advice.length]);
 
+  // FIX 1: Two separate useEffect calls — NOT nested inside each other
+  // Load current user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
-
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
     }
-  },
-  
+  }, []);
+
+  // Fetch real crops from API
   useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
-  const token = localStorage.getItem("token");
-  if (user?.userCode && token) {
-    api.get(`/crops/farmer/${user.userCode}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(r => setCrops(r.data.crops || [])).catch(console.error);
-  }
-  }, []));
+    const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+    const token = localStorage.getItem("token");
+    if (user?.userCode && token) {
+      api.get(`/crops/farmer/${user.userCode}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(r => setCrops(r.data.crops || [])).catch(console.error);
+    }
+  }, []);
 
   const displayName = currentUser?.name || "Farmer";
   const displayVillage = currentUser?.profile?.village || currentUser?.district || "Village not added";
@@ -124,7 +126,8 @@ function FarmerDashboard() {
           <h3>NEW:<br />WHAT TO GROW?</h3>
         </div>
 
-        <div className="action-card" onClick={() => navigate("/sickcrops")}>
+        {/* FIX 2: was "/sickcrops" — route in App.jsx is "/sickcrop" */}
+        <div className="action-card" onClick={() => navigate("/sickcrop")}>
           <img src={sickCrops} className="card-icon" />
           <h3>CHECK<br />SICK CROPS</h3>
         </div>
@@ -137,7 +140,6 @@ function FarmerDashboard() {
 
       <div className="advice-card">
         <img src={advice[slide].img} />
-
         <div className="advice-text">
           <span className="farmerbadge">SMART ADVICE</span>
           <h2>{advice[slide].title}</h2>
@@ -146,53 +148,31 @@ function FarmerDashboard() {
         </div>
       </div>
 
+      {/* FIX 3: Clean separate boxes — no dummy data, no mixed content */}
       <div className="listings">
+
         <div className="listing-box">
           <h3>Active Listings</h3>
-
-          <div className="listing-item">
-            <div>
-              <b>Organic Wheat</b>
-              <p>150 Quintals</p>
-            </div>
-            <span>₹2,100/q</span>
-          </div>
-
-          <div className="listing-item">
-            <div>
-              <b>Basmati Rice</b>
-              <p>80 Quintals</p>
-            </div>
-            <span>₹2,850/q</span>
-          </div>
+          {crops.length === 0 ? (
+            <p style={{ fontSize: "14px", color: "#888" }}>No crops listed yet.</p>
+          ) : (
+            crops.slice(0, 3).map((crop) => (
+              <div className="listing-item" key={crop._id}>
+                <div>
+                  <b>{crop.name}</b>
+                  <p>{crop.quantity} KG</p>
+                </div>
+                <span>₹{crop.price}/kg</span>
+              </div>
+            ))
+          )}
         </div>
 
         <div className="listing-box">
-        <h3>Active Listings</h3>
-        {crops.length === 0 ? (
-        <p style={{ fontSize: "14px", color: "#888" }}>No crops listed yet.</p>
-        ) : (
-        crops.slice(0, 3).map((crop) => (
-        <div className="listing-item" key={crop._id}>
-         <div>
-          <b>{crop.name}</b>
-          <p>{crop.quantity} KG</p>
+          <h3>Trader Offers</h3>
+          <p style={{ fontSize: "14px", color: "#888" }}>No offers yet.</p>
         </div>
-        <span>₹{crop.price}/kg</span>
-      </div>
-   ))
- )}
 
-          <div className="listing-item">
-            <div>AgroCorp Ind.</div>
-            <span>₹2,200/q</span>
-          </div>
-
-          <div className="listing-item">
-            <div>S.K. Exports</div>
-            <span>₹2,950/q</span>
-          </div>
-        </div>
       </div>
     </div>
   );
