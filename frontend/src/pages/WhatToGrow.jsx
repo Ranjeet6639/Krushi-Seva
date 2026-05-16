@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./WhatToGrow.css";
 import { Sprout, Leaf, Droplets, Home } from "lucide-react";
-import axios from "axios";
+import api from "../lib/api";
 
 export default function WhatToGrow() {
 
@@ -45,34 +45,31 @@ export default function WhatToGrow() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
-    }
+   }
 
     setLoading(true);
 
-    try {
-      const startTime = Date.now();
+   try {
+   const startTime = Date.now();
 
-      const response = await axios.post("http://localhost:5000/api/recommend", {
-        formData,
-      });
+   const response = await api.post("/recommend", { formData });  // ← uses api.js, correct path
 
-      const elapsed = Date.now() - startTime;
+   const elapsed = Date.now() - startTime;
+   if (elapsed < 500) {
+    await new Promise((res) => setTimeout(res, 500 - elapsed));
+ }
 
-      if (elapsed < 500) {
-        await new Promise((res) => setTimeout(res, 500 - elapsed));
-      }
+   setResult(response.data.result);
 
-      setResult(response.data.result);
-
-    } catch (error) {
-      console.error(error);
-      setResult("Error getting recommendation");
-    }
+  } catch (error) {
+   console.error(error);
+   setResult("Error getting recommendation. Please try again.");
+ }
 
     setLoading(false);
   };
 
-  const handleBack = async () => {
+   const handleBack = async () => {
     setNavLoading(true);
     await new Promise((res) => setTimeout(res, 1000));
     navigate("/FarmerDashboard");
