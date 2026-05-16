@@ -39,12 +39,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* Farmer lists crop with image */
-router.post(
-  "/",
-  upload.single("image"),
-  requireAuth,
-  listCrop
-);
+router.post("/", requireAuth, upload.single("image"), listCrop);
 
 /* Trader sees all crops */
 router.get(
