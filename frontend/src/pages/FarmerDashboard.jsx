@@ -39,7 +39,6 @@ function FarmerDashboard() {
     return () => clearInterval(timer);
   }, [advice.length]);
 
-  // FIX 1: Two separate useEffect calls — NOT nested inside each other
   // Load current user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -48,14 +47,13 @@ function FarmerDashboard() {
     }
   }, []);
 
-  // Fetch real crops from API
+  // Fetch real crops from API — interceptor handles the token automatically
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser") || "null");
-    const token = localStorage.getItem("token");
-    if (user?.userCode && token) {
-      api.get(`/crops/farmer/${user.userCode}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(r => setCrops(r.data.crops || [])).catch(console.error);
+    if (user?.userCode) {
+      api.get(`/crops/farmer/${user.userCode}`)
+        .then(r => setCrops(r.data.crops || []))
+        .catch(console.error);
     }
   }, []);
 
@@ -122,24 +120,23 @@ function FarmerDashboard() {
 
       <div className="action-cards">
         <div className="action-card" onClick={() => navigate("/whattogrow")}>
-          <img src={whatToGrow} className="card-icon" />
+          <img src={whatToGrow} className="card-icon" alt="What to grow" />
           <h3>NEW:<br />WHAT TO GROW?</h3>
         </div>
 
-        {/* FIX 2: was "/sickcrops" — route in App.jsx is "/sickcrop" */}
         <div className="action-card" onClick={() => navigate("/sickcrop")}>
-          <img src={sickCrops} className="card-icon" />
+          <img src={sickCrops} className="card-icon" alt="Sick crops" />
           <h3>CHECK<br />SICK CROPS</h3>
         </div>
 
         <div className="action-card" onClick={() => navigate("/sellmyharvest")}>
-          <img src={sellHarvest} className="card-icon" />
+          <img src={sellHarvest} className="card-icon" alt="Sell harvest" />
           <h3>SELL MY<br />HARVEST</h3>
         </div>
       </div>
 
       <div className="advice-card">
-        <img src={advice[slide].img} />
+        <img src={advice[slide].img} alt="advice" />
         <div className="advice-text">
           <span className="farmerbadge">SMART ADVICE</span>
           <h2>{advice[slide].title}</h2>
@@ -148,7 +145,6 @@ function FarmerDashboard() {
         </div>
       </div>
 
-      {/* FIX 3: Clean separate boxes — no dummy data, no mixed content */}
       <div className="listings">
 
         <div className="listing-box">

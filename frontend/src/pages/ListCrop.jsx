@@ -95,18 +95,11 @@ function ListCrop() {
 
   try {
 
-  const token = localStorage.getItem("token");
-
-  const response = await api.post(
-    "/crops",
-    formDataToSend,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data"
-      }
-    }
-  );
+  const response = await api.post("/crops", formDataToSend, {
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
+});
 
   console.log(response.data);
 

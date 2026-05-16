@@ -16,7 +16,7 @@ function SellMyHarvest() {
   const handleBack = () => {
     setNavLoading(true);
     setTimeout(() => {
-      navigate("/FarmerDashboard");
+      navigate("/farmerdashboard");
     }, 1000);
   };
 
@@ -34,16 +34,7 @@ function SellMyHarvest() {
         setCurrentUser(user);
       }
 
-      const token = localStorage.getItem("token");
-
-      const response = await api.get(
-        `/crops/farmer/${user?.userCode}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await api.get(`/crops/farmer/${user?.userCode}`);
 
       setCrops(response.data.crops || []);
 
@@ -62,17 +53,7 @@ function SellMyHarvest() {
   const deleteCrop = async (id) => {
 
   try {
-
-    const token = localStorage.getItem("token");
-
-    await api.delete(
-      `/crops/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    await api.delete(`/crops/${id}`);
 
     setCrops(
       crops.filter(c => c._id !== id)

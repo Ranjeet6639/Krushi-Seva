@@ -23,7 +23,7 @@ function SickCrop() {
   const handleBack = () => {
     setNavLoading(true);
     setTimeout(() => {
-      navigate("/FarmerDashboard");
+      navigate("/farmerDashboard");
     }, 1000);
   };
 

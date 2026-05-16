@@ -32,6 +32,7 @@ export async function getAllCrops(req, res, next) {
 
 export async function getFarmerCrops(req, res, next) {
   try {
+    console.log("Looking for farmerId:", req.params.farmerId);
     const crops = await Crop.find({
       farmerId: req.params.farmerId
     }).sort({ createdAt: -1 });

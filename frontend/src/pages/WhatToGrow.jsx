@@ -72,7 +72,7 @@ export default function WhatToGrow() {
    const handleBack = async () => {
     setNavLoading(true);
     await new Promise((res) => setTimeout(res, 1000));
-    navigate("/FarmerDashboard");
+    navigate("/farmerDashboard");
   };
 
   return (
