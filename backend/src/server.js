@@ -1,5 +1,7 @@
-import cors from "cors";
+
 import dotenv from "dotenv";
+dotenv.config();
+import cors from "cors";
 import express from "express";
 
 import { connectDb } from "./config/db.js";
@@ -9,7 +11,6 @@ import cropRoutes from "./routes/cropRoutes.js";
 import detectRoutes from "./routes/detectRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js";
 
-dotenv.config();
 
 const app = express();
 

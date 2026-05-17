@@ -18,6 +18,8 @@ export default function WhatToGrow() {
   });
 
   const [errors, setErrors] = useState({}); // ✅ NEW
+  const [crops, setCrops] = useState([]);
+  const [tips, setTips] = useState("");
   const [result, setResult] = useState("");
   const [showAI, setShowAI] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -59,7 +61,9 @@ export default function WhatToGrow() {
     await new Promise((res) => setTimeout(res, 500 - elapsed));
  }
 
-   setResult(response.data.result);
+   setResult(response.data.result || "No recommendation found.");
+   setCrops(response.data.crops || []);
+   setTips(response.data.tips || "");
 
   } catch (error) {
    console.error(error);
@@ -220,11 +224,30 @@ export default function WhatToGrow() {
           </button>
 
           {result && (
-            <div className="result-box">
-              <h3>🌾 Recommended Crops:</h3>
-              <p>{result}</p>
-            </div>
-          )}
+  <div className="ai-result-box">
+    <h2>🌱 AI Recommendation</h2>
+
+    <p>{result}</p>
+
+    {crops.length > 0 && (
+      <>
+        <h3>Recommended Crops</h3>
+        <ul>
+          {crops.map((crop, index) => (
+            <li key={index}>{crop}</li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    {tips && (
+      <div>
+        <h3>Farming Tips</h3>
+        <p>{tips}</p>
+      </div>
+    )}
+  </div>
+)}
         </div>
       )}
 

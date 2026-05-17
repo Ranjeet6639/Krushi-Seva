@@ -10,6 +10,7 @@ import api from "../lib/api";
 function SickCrop() {
 
   const [image, setImage] = useState(null);
+  const [confidence, setConfidence] = useState("");
   const [disease, setDisease] = useState("");
   const [solution, setSolution] = useState("");
   const [pesticide, setPesticide] = useState("");
@@ -43,11 +44,12 @@ function SickCrop() {
     const response = await api.post("/detect", formData);   // ← uses api.js, correct path
 
     setTimeout(() => {
-      setDisease(response.data.disease);
-      setSolution(response.data.solution);
-      setPesticide(response.data.pesticide);
-      setLoading(false);
-    }, 1000);
+  setDisease(response.data.disease);
+  setSolution(response.data.solution);
+  setPesticide(response.data.pesticide);
+  setConfidence(response.data.confidence || "");
+  setLoading(false);
+}, 1000);
 
   } catch (error) {
     console.error("Backend error:", error);
@@ -130,34 +132,37 @@ function SickCrop() {
         )}
 
         {/* Disease Result */}
-        {!loading && disease && (
+       {!loading && disease && (
+      <div className="result-box">
 
-          <div className="result-box">
+    <h3>Disease Found</h3>
+    <h1>{disease}</h1>
 
-            <h3>Disease Found</h3>
-            <h1>{disease}</h1>
+    {/* Show confidence if available */}
+    {confidence && (
+      <p style={{ fontSize: "14px", color: "#666", marginBottom: "8px" }}>
+        Confidence: <strong>{confidence}</strong>
+      </p>
+    )}
 
-            <div className="buttons">
+    <div className="buttons">
+      <button
+        className="fix-btn"
+        onClick={() => alert(solution)}
+      >
+        How to Fix
+      </button>
 
-              <button
-                className="fix-btn"
-                onClick={() => alert(solution)}
-              >
-                How to Fix
-              </button>
+      <button
+        className="pesticide-btn"
+        onClick={() => alert(pesticide)}
+      >
+        Pesticide Name
+      </button>
+    </div>
 
-              <button
-                className="pesticide-btn"
-                onClick={() => alert(pesticide)}
-              >
-                Pesticide Name
-              </button>
-
-            </div>
-
-          </div>
-
-        )}
+  </div>
+)}
 
       {/* Help Section */}
       <div className="expert-help">
