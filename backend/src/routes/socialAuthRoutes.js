@@ -2,8 +2,10 @@ import { Router } from "express";
 import admin from "../config/firebaseAdmin.js";
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
-import { generateUniqueUserCode } from "../controllers/authController.js";
-
+import {
+  generateUniqueUserCode,
+  buildUserResponse        // ← import this so we return ALL fields
+} from "../controllers/authController.js";
 
 const router = Router();
 
@@ -29,18 +31,24 @@ router.post("/social-login", async (req, res, next) => {
       const userCode = await generateUniqueUserCode(role);
 
       user = await User.create({
-      name: name || email.split("@")[0],
-      email,
-      mobile: "",
-      passwordHash: uid,     // ← correct field name
-      role,
-      userCode,              // ← generate a userCode too
-      firebaseUid: uid,
-      phoneVerifiedAt: new Date()
-    });
+        name: name || email.split("@")[0],
+        email,
+        mobile: uid,           // use Firebase UID as unique placeholder
+        passwordHash: uid,
+        role,
+        userCode,
+        firebaseUid: uid,
+        phoneVerifiedAt: new Date()
+      });
+    } else {
+      // Existing user — update firebaseUid if not set yet
+      if (!user.firebaseUid) {
+        user.firebaseUid = uid;
+        await user.save();
+      }
     }
 
-    // Issue your own JWT same as regular login
+    // Issue JWT
     const token = jwt.sign(
       {
         id: user._id,
@@ -51,17 +59,11 @@ router.post("/social-login", async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
+    // Return ALL user fields — same as regular login
     res.json({
       message: "Login successful",
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        userCode: user.userCode,
-        mobile: user.mobile
-      }
+      user: buildUserResponse(user)    // ← now returns state, district, address, pincode, profile etc.
     });
 
   } catch (error) {

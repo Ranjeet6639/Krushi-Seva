@@ -61,7 +61,7 @@ export async function generateUniqueUserCode(role) {
   }
 }
 
-function buildUserResponse(user) {
+export function buildUserResponse(user) {
   return {
     id: user._id,
     userCode: user.userCode,
