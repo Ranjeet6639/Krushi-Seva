@@ -5,84 +5,106 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["farmer", "trader"],
-      required: true
+      required: true,
     },
+
     userCode: {
       type: String,
       unique: true,
       sparse: true,
-      trim: true
+      trim: true,
     },
+
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
+
     gender: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     dob: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     mobile: {
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
+
     passwordHash: {
       type: String,
-      required: true
+      required: true,
     },
+
+    firebaseUid: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     state: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     district: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     address: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     pincode: {
       type: String,
-      trim: true
+      trim: true,
     },
+
     phoneVerifiedAt: {
-      type: Date
+      type: Date,
     },
+
     profile: {
       ration: {
         type: String,
-        trim: true
+        trim: true,
       },
+
       fileName: {
         type: String,
-        trim: true
+        trim: true,
       },
+
       taluka: {
         type: String,
-        trim: true
+        trim: true,
       },
+
       village: {
         type: String,
-        trim: true
-      }
-    }
+        trim: true,
+      },
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

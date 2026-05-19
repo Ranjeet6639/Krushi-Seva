@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import detectRoutes from "./routes/detectRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js";
+import socialAuthRoutes from "./routes/socialAuthRoutes.js";
 
 
 const app = express();
@@ -40,6 +41,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", socialAuthRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/detect", detectRoutes);
 app.use("/api/recommend", recommendRoutes);

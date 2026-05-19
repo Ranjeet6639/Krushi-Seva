@@ -1,10 +1,8 @@
 import "./Login.css";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import appleLogo from "../assets/apple-logo.jpg";
-import googleLogo from "../assets/google-logo.jpg";
-import microsoftLogo from "../assets/microsoft-logo.jpg";
 import api from "../lib/api";
+import SocialLogin from "../components/SocialLogin";
 
 function Login() {
   const [loading, setLoading] = useState(false);
@@ -30,16 +28,11 @@ function Login() {
         role: "farmer"
       });
 
-      localStorage.setItem(
-      "currentUser",
-      JSON.stringify(response.data.user)
-     );
+      localStorage.setItem("currentUser", JSON.stringify(response.data.user));
+      localStorage.setItem("token", response.data.token);
 
-     localStorage.setItem(
-     "token",
-     response.data.token
-    );
       navigate("/farmerdashboard");
+
     } catch (apiError) {
       setError(apiError.response?.data?.message || "Login failed");
     } finally {
@@ -58,22 +51,11 @@ function Login() {
       <div className="login-card">
         <h1>Farmer Log in or Sign up</h1>
 
-        <button className="social-btn">
-          <img src={googleLogo} alt="google" />
-          Continue with Google
-        </button>
-
-        <button className="social-btn">
-          <img src={microsoftLogo} alt="microsoft" />
-          Continue with Microsoft
-        </button>
-
-        <button className="social-btn">
-          <img src={appleLogo} alt="apple" />
-          Continue with Apple
-        </button>
-
-        <button className="social-btn">Continue with Phone</button>
+        {/* Social login buttons — Google, Microsoft, Apple */}
+        <SocialLogin
+          role="farmer"
+          dashboardPath="/farmerdashboard"
+        />
 
         <div className="divider">
           <span></span>
@@ -81,7 +63,10 @@ function Login() {
           <span></span>
         </div>
 
-        {location.state?.successMessage && <p className="success-text">{location.state.successMessage}</p>}
+        {location.state?.successMessage && (
+          <p className="success-text">{location.state.successMessage}</p>
+        )}
+
         {error && <p className="error-text">{error}</p>}
 
         <input
