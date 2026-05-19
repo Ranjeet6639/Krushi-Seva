@@ -117,6 +117,9 @@ function App() {
         <Route path="/whattogrow" element={
           <ProtectedRoute><WhatToGrow /></ProtectedRoute>
         } />
+        <Route path="/farmerdashboard" element={
+       <ProtectedRoute requiredRole="farmer"><FarmerDashboard /></ProtectedRoute>
+       } />
 
         {/* Trader protected routes — redirects to /login if not logged in */}
         <Route path="/Trader/TraderDashboard" element={
@@ -131,7 +134,11 @@ function App() {
         <Route path="/Trader/BuyCrops" element={
           <ProtectedRoute><TraderBuyCrops /></ProtectedRoute>
         } />
+        <Route path="/Trader/TraderDashboard" element={
+        <ProtectedRoute requiredRole="trader"><TraderDashboard /></ProtectedRoute>
+        } />
       </Routes>
+      
 
       <footer className="footer">
         <p>© 2026 Krushi Seva Digital Platform</p>

@@ -47,7 +47,7 @@ function getUserPrefix(role) {
   return role === "farmer" ? "FR" : "TR";
 }
 
-async function generateUniqueUserCode(role) {
+export async function generateUniqueUserCode(role) {
   const prefix = getUserPrefix(role);
 
   while (true) {
