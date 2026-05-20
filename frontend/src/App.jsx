@@ -19,6 +19,7 @@ import TraderDashboard from "./pages/Trader/TraderDashboard";
 import TraderLogout from "./pages/Trader/TraderLogout";
 import TraderProfile from "./pages/Trader/TraderProfile";
 import TraderBuyCrops from "./pages/Trader/BuyCrops";
+import EditProfile from "./pages/EditProfile";
 
 function Home() {
   return (
@@ -119,6 +120,9 @@ function App() {
         } />
         <Route path="/farmerdashboard" element={
        <ProtectedRoute requiredRole="farmer"><FarmerDashboard /></ProtectedRoute>
+       } />
+       <Route path="/editprofile" element={
+       <ProtectedRoute><EditProfile /></ProtectedRoute>
        } />
 
         {/* Trader protected routes — redirects to /login if not logged in */}

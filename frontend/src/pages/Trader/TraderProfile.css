@@ -39,3 +39,26 @@
   display: flex;
   gap: 10px;
 }
+
+/*Edit Profile styles*/
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.edit-btn {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #c8e6c9;
+}

@@ -3,14 +3,13 @@ import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
 import express from "express";
-
 import { connectDb } from "./config/db.js";
-
 import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import detectRoutes from "./routes/detectRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js";
 import socialAuthRoutes from "./routes/socialAuthRoutes.js";
+import userRoutes from "./routes/userRoutes.js"; 
 
 
 const app = express();
@@ -45,6 +44,7 @@ app.use("/api/auth", socialAuthRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/detect", detectRoutes);
 app.use("/api/recommend", recommendRoutes);
+app.use("/api/user", userRoutes);
 
 app.use((error, _req, res, _next) => {
 

@@ -191,3 +191,21 @@ cursor:pointer;
     max-height: 260px;
   }
 }
+
+/* Edit Profile Page */
+.edit-profile-btn {
+  width: 100%;
+  padding: 8px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.edit-profile-btn:hover {
+  background: #c8e6c9;
+}

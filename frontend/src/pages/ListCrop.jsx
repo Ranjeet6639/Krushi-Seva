@@ -3,6 +3,18 @@ import "./ListCrop.css";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 
+// Check if farmer has filled all required profile fields
+function isProfileComplete(user) {
+  return !!(
+    user?.name &&
+    user?.mobile &&
+    user?.state &&
+    user?.district &&
+    user?.address &&
+    user?.pincode
+  );
+}
+
 function ListCrop() {
   const navigate = useNavigate();
 
@@ -15,110 +27,57 @@ function ListCrop() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handlePhoto = (e) => {
-    setFormData({
-      ...formData,
-      photo: e.target.files[0]
-    });
+    setFormData({ ...formData, photo: e.target.files[0] });
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-  const currentUser = JSON.parse(
-    localStorage.getItem("currentUser") || "null"
-  );
+    // ✅ Profile completeness check — redirect to EditProfile if incomplete
+    if (!isProfileComplete(currentUser)) {
+      alert(
+        "Please complete your profile first.\n\n" +
+        "Mobile number, State, District, Address and Pincode are required before listing a crop."
+      );
+      navigate("/editprofile");
+      return;
+    }
 
-  const formDataToSend = new FormData();
+    const formDataToSend = new FormData();
+    formDataToSend.append("farmerId",      currentUser?.userCode || "FR-000000");
+    formDataToSend.append("farmerName",    currentUser?.name || "Farmer");
+    formDataToSend.append("farmerMobile",  currentUser?.mobile || "");
+    formDataToSend.append("farmerAddress", currentUser?.address || "");
+    formDataToSend.append("farmerVillage", currentUser?.profile?.village || "");
+    formDataToSend.append("name",          formData.name);
+    formDataToSend.append("quantity",      formData.quantity);
+    formDataToSend.append("price",         formData.price);
+    formDataToSend.append("category",      formData.category);
 
-  formDataToSend.append(
-    "farmerId",
-    currentUser?.userCode || "FR-000000"
-  );
+    if (formData.photo) {
+      formDataToSend.append("image", formData.photo);
+    }
 
-  formDataToSend.append(
-    "farmerName",
-    currentUser?.name || "Farmer"
-  );
+    try {
+      const response = await api.post("/crops", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
 
-  formDataToSend.append(
-    "farmerMobile",
-    currentUser?.mobile || ""
-  );
+      console.log(response.data);
+      alert("Crop Listed Successfully!");
+      navigate("/sellmyharvest");
 
-  formDataToSend.append(
-    "farmerAddress",
-    currentUser?.address || ""
-  );
-
-  formDataToSend.append(
-    "farmerVillage",
-    currentUser?.profile?.village || ""
-  );
-
-  formDataToSend.append(
-    "name",
-    formData.name
-  );
-
-  formDataToSend.append(
-    "quantity",
-    formData.quantity
-  );
-
-  formDataToSend.append(
-    "price",
-    formData.price
-  );
-
-  formDataToSend.append(
-    "category",
-    formData.category
-  );
-
-  /* THIS IS THE IMPORTANT PART */
-  if (formData.photo) {
-
-    formDataToSend.append(
-      "image",
-      formData.photo
-    );
-
-  }
-
-  try {
-
-  const response = await api.post("/crops", formDataToSend, {
-  headers: {
-    "Content-Type": "multipart/form-data"
-  }
-});
-
-  console.log(response.data);
-
-  alert("Crop Listed Successfully!");
-
-  navigate("/sellmyharvest");
-
- } catch (err) {
-
-  console.error(err);
-
-  alert(
-    err?.response?.data?.message ||
-    "Failed to list crop. Please try again."
-  );
-
- }
-
- };
+    } catch (err) {
+      console.error(err);
+      alert(err?.response?.data?.message || "Failed to list crop. Please try again.");
+    }
+  };
 
   return (
     <div className="list-container">

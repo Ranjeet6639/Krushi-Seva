@@ -1,0 +1,191 @@
+.edit-profile-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20px;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.edit-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.edit-profile-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.back-button {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #0f1b2d;
+  color: white;
+  padding: 15px 54px;
+
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.back-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.back-button:hover {
+  background: #000000;
+}
+
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.form-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.edit-profile-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.edit-profile-form input,
+.edit-profile-form select,
+.edit-profile-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.edit-profile-form input:focus,
+.edit-profile-form select:focus,
+.edit-profile-form textarea:focus {
+  outline: none;
+  border-color: #2e7d32;
+  background: white;
+}
+
+.save-btn {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.save-btn:hover {
+  background: #1b5e20;
+}
+
+.save-btn:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  text-align: center;
+  padding: 8px;
+  background: #fff0f0;
+  border-radius: 8px;
+}
+
+.success-text {
+  color: #2e7d32;
+  font-size: 13px;
+  text-align: center;
+  padding: 8px;
+  background: #f0fff0;
+  border-radius: 8px;
+}
+
+/*OTP Verification styles*/
+.otp-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.otp-row input {
+  flex: 1;
+}
+
+.otp-btn {
+  background: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.otp-btn:hover {
+  background: #0d47a1;
+}
+
+.otp-btn:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.otp-verify-btn {
+  background: #2e7d32;
+}
+
+.otp-verify-btn:hover {
+  background: #1b5e20;
+}
+
+.otp-input {
+  letter-spacing: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}

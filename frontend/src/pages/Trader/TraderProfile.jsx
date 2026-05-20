@@ -1,15 +1,14 @@
 import "./TraderProfile.css";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function TraderProfile() {
   const [profile, setProfile] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
-
-    if (storedUser) {
-      setProfile(JSON.parse(storedUser));
-    }
+    if (storedUser) setProfile(JSON.parse(storedUser));
   }, []);
 
   if (!profile) {
@@ -24,7 +23,15 @@ function TraderProfile() {
 
   return (
     <div className="profile-container">
-      <h2>Trader Profile</h2>
+      <div className="profile-header">
+        <h2>Trader Profile</h2>
+        <button
+          className="edit-btn"
+          onClick={() => navigate("/editprofile")}
+        >
+          ✏️ Edit Profile
+        </button>
+      </div>
 
       <div className="profile-card">
         <p><b>Name:</b> {profile.name}</p>

@@ -98,23 +98,31 @@ function FarmerDashboard() {
           </button>
 
           {showAccount && (
-            <div className="account-popup">
-              <p><b>Name:</b> {displayName}</p>
-              <p><b>Village:</b> {displayVillage}</p>
-              <p><b>District:</b> {displayDistrict}</p>
-              <p><b>State:</b> {displayState}</p>
-              <p><b>Farmer Address:</b> {displayAddress}</p>
-              <p><b>Mobile:</b> {displayMobile}</p>
-              <p><b>Email:</b> {displayEmail}</p>
+  <div className="account-popup">
+    <p><b>Name:</b> {displayName}</p>
+    <p><b>Village:</b> {displayVillage}</p>
+    <p><b>District:</b> {displayDistrict}</p>
+    <p><b>State:</b> {displayState}</p>
+    <p><b>Farmer Address:</b> {displayAddress}</p>
+    <p><b>Mobile:</b> {displayMobile}</p>
+    <p><b>Email:</b> {displayEmail}</p>
 
-              <button
-                className="logout-btn"
-                onClick={() => navigate("/farmerlogout")}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+    {/* Edit Profile button */}
+    <button
+      className="edit-profile-btn"
+      onClick={() => navigate("/editprofile")}
+    >
+      Edit Profile
+    </button>
+
+    <button
+      className="logout-btn"
+      onClick={() => navigate("/farmerlogout")}
+    >
+      Logout
+    </button>
+  </div>
+)}
         </div>
       </div>
 
