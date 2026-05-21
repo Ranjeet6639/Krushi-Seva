@@ -173,9 +173,9 @@
   color: #15803d;
 }
 
-.trader-dashboard .offer-btn {
-  width: 100%;
-  padding: 12px;
+.trader-dashboard .farmer-details-btn {
+  width: 90%;
+  padding: 18px 12px;
   border-radius: 25px;
   border: none;
   background: #15803d;

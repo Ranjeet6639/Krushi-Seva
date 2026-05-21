@@ -54,8 +54,8 @@ function BuyCrops() {
                 <h3>Rs {crop.price} / kg</h3>
               </div>
 
-              <button className="offer-btn" onClick={() => setSelectedCrop(crop)}>
-                MAKE OFFER
+              <button className="farmer-details-btn" onClick={() => setSelectedCrop(crop)}>
+                FARMER DETAILS
               </button>
             </div>
           ))

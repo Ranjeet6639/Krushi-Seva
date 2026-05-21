@@ -1,86 +1,396 @@
-.offers-page{
-padding:40px;
+/* ── PAGE ── */
+.offers-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0fdf4 0%, #e8f5e9 50%, #f5f5f5 100%);
+  font-family: 'Poppins', sans-serif;
+  padding: 32px 40px;
 }
 
-.offer-card{
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
+/* ── PAGE HEADER ── */
+.offers-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-.offer-buttons{
-margin-top:10px;
-display:flex;
-gap:10px;
+.offers-back-button {
+  position: absolute;
+  top: 50px;
+  right: 40px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #0f1b2d;
+  color: white;
+  padding: 15px 25px;
+
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.accept-btn{
-background:#1b8f5a;
-color:white;
-border:none;
-padding:8px 15px;
-border-radius:8px;
-cursor:pointer;
+.offers-back-button:hover {
+  background: #7f7f7f;
+  border-color: #bbb;
+  transform: translateX(-2px);
 }
 
-.reject-btn{
-background:#f44336;
-color:white;
-border:none;
-padding:8px 15px;
-border-radius:8px;
-cursor:pointer;
-}
-.status{
-font-weight:600;
-margin-top:8px;
+.offers-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.3px;
 }
 
-.status.Pending{
-color:#f57c00;
+.offers-subtitle {
+  font-size: 14px;
+  color: #777;
+  margin: 0 0 28px 0;
 }
 
-.status.Accepted{
-color:#2e7d32;
+/* ── STATS ROW ── */
+.offers-stats {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 28px;
 }
 
-.status.Rejected{
-color:#d32f2f;
+.offers-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  flex: 1;
+  border-top: 3px solid transparent;
 }
 
-/* POPUP OVERLAY */
+.offers-stat.pending  { border-top-color: #f57c00; }
+.offers-stat.accepted { border-top-color: #2e7d32; }
+.offers-stat.rejected { border-top-color: #ef4444; }
 
-.popup-overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.4);
-display:flex;
-justify-content:center;
-align-items:center;
+.offers-stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1a1a1a;
 }
 
-/* POPUP CARD */
-
-.popup-card{
-background:white;
-padding:30px;
-border-radius:12px;
-width:320px;
-text-align:center;
-box-shadow:0 5px 20px rgba(0,0,0,0.2);
+.offers-stat-label {
+  font-size: 12px;
+  color: #888;
+  margin-top: 3px;
 }
 
-.close-btn{
-margin-top:15px;
-padding:10px 18px;
-background:#1b8f5a;
-color:white;
-border:none;
-border-radius:20px;
-cursor:pointer;
+/* ── EMPTY STATE ── */
+.offers-empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.offers-empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.offers-empty h3 {
+  font-size: 20px;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.offers-empty p {
+  font-size: 14px;
+  color: #888;
+  max-width: 300px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── OFFER CARD ── */
+.offer-card {
+  background: white;
+  border-radius: 18px;
+  padding: 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  border: 1px solid #f0f0f0;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.offer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.11);
+}
+
+/* coloured left accent based on status */
+.offer-card.Pending  { border-left: 5px solid #f57c00; }
+.offer-card.Accepted { border-left: 5px solid #2e7d32; }
+.offer-card.Rejected { border-left: 5px solid #ef4444; }
+
+.offer-card-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  padding: 20px 24px;
+}
+
+/* crop icon circle */
+.offer-crop-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.offer-card-body {
+  flex: 1;
+}
+
+.offer-crop-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.offer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.offer-meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #f7f7f7;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: #555;
+}
+
+.offer-meta-chip b {
+  color: #222;
+}
+
+.offer-message {
+  font-size: 13px;
+  color: #777;
+  font-style: italic;
+  margin: 6px 0 0;
+  padding: 8px 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  border-left: 3px solid #e0e0e0;
+}
+
+.offer-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+/* ── STATUS BADGE ── */
+.status {
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: 0.3px;
+}
+
+.status.Pending {
+  background: #fff8e1;
+  color: #f57c00;
+}
+
+.status.Accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.Rejected {
+  background: #fdecea;
+  color: #c62828;
+}
+
+/* ── ACTION BUTTONS ── */
+.offer-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.accept-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(46,125,50,0.3);
+  transition: all 0.2s ease;
+}
+
+.accept-btn:hover {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(46,125,50,0.4);
+}
+
+.reject-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: white;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  padding: 9px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.reject-btn:hover {
+  background: #fdecea;
+  transform: translateY(-1px);
+}
+
+/* ── POPUP ── */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.popup-card {
+  background: white;
+  border-radius: 20px;
+  width: 400px;
+  max-width: 92vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  overflow: hidden;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.popup-header {
+  background: linear-gradient(135deg, #1b8f5a, #2fbf71);
+  padding: 24px 28px 20px;
+  text-align: center;
+}
+
+.popup-header-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.popup-header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+}
+
+.popup-body {
+  padding: 24px 28px;
+}
+
+.popup-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 14px;
+}
+
+.popup-row:last-of-type {
+  border-bottom: none;
+}
+
+.popup-row-label {
+  color: #888;
+  font-size: 13px;
+}
+
+.popup-row-value {
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.close-btn {
+  display: block;
+  width: calc(100% - 56px);
+  margin: 0 28px 24px;
+  padding: 13px;
+  border: none;
+  background: linear-gradient(135deg, #1b8f5a, #2fbf71);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(27,143,90,0.3);
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: linear-gradient(135deg, #146c43, #1b8f5a);
+  box-shadow: 0 6px 16px rgba(27,143,90,0.4);
 }

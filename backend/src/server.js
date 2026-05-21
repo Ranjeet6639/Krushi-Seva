@@ -10,6 +10,7 @@ import detectRoutes from "./routes/detectRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js";
 import socialAuthRoutes from "./routes/socialAuthRoutes.js";
 import userRoutes from "./routes/userRoutes.js"; 
+import offerRoutes from "./routes/offerRoutes.js";
 
 
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/crops", cropRoutes);
 app.use("/api/detect", detectRoutes);
 app.use("/api/recommend", recommendRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/offers", offerRoutes);
 
 app.use((error, _req, res, _next) => {
 

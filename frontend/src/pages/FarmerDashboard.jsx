@@ -12,6 +12,7 @@ function FarmerDashboard() {
   const [showAccount, setShowAccount] = useState(false);
   const [slide, setSlide] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
+  const [offers, setOffers] = useState([]);
 
   const advice = [
     {
@@ -56,6 +57,16 @@ function FarmerDashboard() {
         .catch(console.error);
     }
   }, []);
+
+  //offer received from traders
+  useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+  if (user?.userCode) {
+    api.get(`/offers/farmer/${user.userCode}`)
+      .then(r => setOffers(r.data.offers || []))
+      .catch(console.error);
+  }
+}, []);
 
   const displayName = currentUser?.name || "Farmer";
   const displayVillage = currentUser?.profile?.village || currentUser?.district || "Village not added";
@@ -173,9 +184,46 @@ function FarmerDashboard() {
         </div>
 
         <div className="listing-box">
-          <h3>Trader Offers</h3>
-          <p style={{ fontSize: "14px", color: "#888" }}>No offers yet.</p>
-        </div>
+            <h3>Trader Offers</h3>
+            {offers.length === 0 ? (
+            <p style={{ fontSize: "14px", color: "#888" }}>No offers yet.</p>
+           ) : (
+            offers.slice(0, 3).map((offer) => (
+            <div className="listing-item" key={offer._id}>
+           <div>
+           <b>{offer.cropName}</b>
+           <p>{offer.traderName}</p>
+         </div>
+           <span style={{
+           color: offer.status === "Accepted" ? "#2e7d32"
+            : offer.status === "Rejected" ? "#c62828"
+            : "#f57c00",
+           fontWeight: "600",
+           fontSize: "13px"
+          }}>
+            ₹{offer.offerPrice}/kg · {offer.status}
+           </span>
+      </div>
+    ))
+  )}
+  {offers.length > 0 && (
+    <button
+      onClick={() => navigate("/offersreceived")}
+      style={{
+        marginTop: "10px",
+        background: "none",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "6px 14px",
+        fontSize: "13px",
+        cursor: "pointer",
+        width: "100%"
+      }}
+    >
+      View All Offers →
+    </button>
+  )}
+</div>
 
       </div>
     </div>

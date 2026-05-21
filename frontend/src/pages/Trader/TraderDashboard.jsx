@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BuyCrops from "./BuyCrops";
 import TraderProfile from "./TraderProfile";
+import TraderOffers from "./TraderOffers";
 
 function TraderDashboard() {
   const [activePage, setActivePage] = useState("buy");
@@ -11,21 +12,20 @@ function TraderDashboard() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
-
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
+    if (storedUser) setCurrentUser(JSON.parse(storedUser));
   }, []);
 
-  const displayName = currentUser?.name || "Trader";
+  const displayName     = currentUser?.name     || "Trader";
   const displayLocation = currentUser?.district || currentUser?.state || "Location not added";
   const avatarLabel =
-    displayName
-      .split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
-      .join("") || "T";
+    displayName.split(" ").filter(Boolean).slice(0, 2)
+      .map((part) => part[0]?.toUpperCase()).join("") || "T";
+
+  const pageTitle = {
+    buy:     "Buy Crops",
+    offers:  "My Offers",
+    profile: "My Profile"
+  }[activePage];
 
   return (
     <div className="trader-dashboard">
@@ -37,6 +37,13 @@ function TraderDashboard() {
           onClick={() => setActivePage("buy")}
         >
           Buy Crops
+        </button>
+
+        <button
+          className={activePage === "offers" ? "active" : ""}
+          onClick={() => setActivePage("offers")}
+        >
+          My Offers
         </button>
 
         <button
@@ -61,7 +68,7 @@ function TraderDashboard() {
       <div className="main">
         <div className="trader-topbar">
           <div>
-            <h2>{activePage === "buy" ? "Buy Crops" : "My Profile"}</h2>
+            <h2>{pageTitle}</h2>
             <p>{displayLocation}</p>
           </div>
 
@@ -74,7 +81,8 @@ function TraderDashboard() {
           </div>
         </div>
 
-        {activePage === "buy" && <BuyCrops />}
+        {activePage === "buy"     && <BuyCrops />}
+        {activePage === "offers"  && <TraderOffers />}
         {activePage === "profile" && <TraderProfile />}
       </div>
     </div>

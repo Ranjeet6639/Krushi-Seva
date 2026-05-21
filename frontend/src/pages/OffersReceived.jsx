@@ -1,160 +1,215 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
 import "./OffersReceived.css";
 
 function OffersReceived() {
+  const navigate = useNavigate();
+  const [offers, setOffers]               = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [error, setError]                 = useState("");
 
-const [offers,setOffers] = useState([]);
-const [selectedTrader,setSelectedTrader] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
-useEffect(()=>{
+  useEffect(() => {
+    if (!currentUser?.userCode) {
+      setLoading(false);
+      return;
+    }
 
-const storedOffers = JSON.parse(localStorage.getItem("offers"));
+    api.get(`/offers/farmer/${currentUser.userCode}`)
+      .then(r => setOffers(r.data.offers || []))
+      .catch(() => setError("Failed to load offers."))
+      .finally(() => setLoading(false));
+  }, []);
 
-if(storedOffers){
-setOffers(storedOffers);
-}else{
+  const updateStatus = async (offerId, status) => {
+    try {
+      const res = await api.patch(`/offers/${offerId}`, { status });
 
-const demoOffers = [
-{
-id:1,
-crop:"Fresh Tomatoes",
-trader:"Trader DX-9307",
-price:22,
-quantity:200,
-phone:"9876543210",
-location:"Pune Market",
-status:"Pending"
-},
-{
-id:2,
-crop:"New Potatoes",
-trader:"Trader DX-98521",
-price:17,
-quantity:300,
-phone:"9123456780",
-location:"Mumbai APMC",
-status:"Pending"
-}
-];
+      // Update local state
+      const updatedOffers = offers.map(o =>
+        o._id === offerId ? { ...o, status: res.data.offer.status } : o
+      );
+      setOffers(updatedOffers);
 
-setOffers(demoOffers);
-localStorage.setItem("offers",JSON.stringify(demoOffers));
-}
+      // Show trader details popup when accepted
+      if (status === "Accepted") {
+        const acceptedOffer = offers.find(o => o._id === offerId);
+        setSelectedOffer(acceptedOffer);
+      }
 
-},[]);
+    } catch (err) {
+      alert(err?.response?.data?.message || "Failed to update offer.");
+    }
+  };
 
+  if (loading) return <p style={{ padding: "2rem" }}>Loading offers...</p>;
 
-const acceptOffer = (offer)=>{
+  return (
+  <div className="offers-page">
 
-const updatedOffers = offers.map((o)=>{
-if(o.id === offer.id){
-return {...o,status:"Accepted"};
-}
-return o;
-});
+    {/* Header */}
+    <div className="offers-page-header">
+      <button className="offers-back-button" onClick={() => navigate("/sellmyharvest")}>
+         Back to Sell page
+      </button>
+      <h2 className="offers-title">Offers Received</h2>
+    </div>
 
-setOffers(updatedOffers);
+    <p className="offers-subtitle">
+      Review and respond to trader offers for your crops.
+    </p>
 
-localStorage.setItem("offers",JSON.stringify(updatedOffers));
+    {error && <p style={{ color: "red", marginBottom: "16px" }}>{error}</p>}
 
-setSelectedTrader(offer);
+    {/* Stats row */}
+    {offers.length > 0 && (
+      <div className="offers-stats">
+        <div className="offers-stat pending">
+          <div className="offers-stat-num">
+            {offers.filter(o => o.status === "Pending").length}
+          </div>
+          <div className="offers-stat-label">Pending</div>
+        </div>
+        <div className="offers-stat accepted">
+          <div className="offers-stat-num">
+            {offers.filter(o => o.status === "Accepted").length}
+          </div>
+          <div className="offers-stat-label">Accepted</div>
+        </div>
+        <div className="offers-stat rejected">
+          <div className="offers-stat-num">
+            {offers.filter(o => o.status === "Rejected").length}
+          </div>
+          <div className="offers-stat-label">Rejected</div>
+        </div>
+      </div>
+    )}
 
-};
+    {/* Empty state */}
+    {offers.length === 0 ? (
+      <div className="offers-empty">
+        <div className="offers-empty-icon">📭</div>
+        <h3>No offers yet</h3>
+        <p>Traders will send offers when they are interested in your crops.</p>
+      </div>
+    ) : (
+      <div>
+        {offers.map((offer) => (
+          <div className={`offer-card ${offer.status}`} key={offer._id}>
+            <div className="offer-card-inner">
 
+              <div className="offer-crop-icon">🌾</div>
 
-const rejectOffer = (id)=>{
+              <div className="offer-card-body">
+                <h3 className="offer-crop-name">{offer.cropName}</h3>
 
-const updatedOffers = offers.map((o)=>{
-if(o.id === id){
-return {...o,status:"Rejected"};
-}
-return o;
-});
+                <div className="offer-meta">
+                  <div className="offer-meta-chip">
+                    👤 <b>{offer.traderName}</b>
+                  </div>
+                  <div className="offer-meta-chip">
+                    💰 <b>₹{offer.offerPrice}/kg</b>
+                  </div>
+                  <div className="offer-meta-chip">
+                    📦 <b>{offer.quantity} KG</b>
+                  </div>
+                </div>
 
-setOffers(updatedOffers);
+                {offer.message && (
+                  <p className="offer-message">"{offer.message}"</p>
+                )}
+              </div>
 
-localStorage.setItem("offers",JSON.stringify(updatedOffers));
+              <div className="offer-card-actions">
+                <span className={`status ${offer.status}`}>
+                  {offer.status}
+                </span>
 
-};
+                {offer.status === "Pending" && (
+                  <div className="offer-buttons">
+                    <button
+                      className="accept-btn"
+                      onClick={() => updateStatus(offer._id, "Accepted")}
+                    >
+                      ✓ Accept
+                    </button>
+                    <button
+                      className="reject-btn"
+                      onClick={() => updateStatus(offer._id, "Rejected")}
+                    >
+                      ✕ Reject
+                    </button>
+                  </div>
+                )}
+              </div>
 
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
 
-return (
+    {/* Accepted offer popup */}
+    {selectedOffer && (
+      <div className="popup-overlay">
+        <div className="popup-card">
 
-<div className="offers-page">
+          <div className="popup-header">
+            <div className="popup-header-icon">🤝</div>
+            <h3>Offer Accepted!</h3>
+            <p>Here are the trader's contact details</p>
+          </div>
 
-<h2>Offers Received</h2>
+          <div className="popup-body">
+            <div className="popup-row">
+              <span className="popup-row-label">Trader Name</span>
+              <span className="popup-row-value">{selectedOffer.traderName}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Trader ID</span>
+              <span className="popup-row-value">{selectedOffer.traderCode || "—"}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Mobile</span>
+              <span className="popup-row-value">{selectedOffer.traderMobile}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Email</span>
+              <span className="popup-row-value">{selectedOffer.traderEmail || "Not added"}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Address</span>
+              <span className="popup-row-value">{selectedOffer.traderAddress || "Not added"}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Crop</span>
+              <span className="popup-row-value">{selectedOffer.cropName}</span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Agreed Price</span>
+              <span className="popup-row-value" style={{ color: "#2e7d32" }}>
+                ₹{selectedOffer.offerPrice}/kg
+              </span>
+            </div>
+            <div className="popup-row">
+              <span className="popup-row-label">Quantity</span>
+              <span className="popup-row-value">{selectedOffer.quantity} KG</span>
+            </div>
+          </div>
 
-{offers.map((offer)=>(
-<div className="offer-card" key={offer.id}>
+          <button className="close-btn" onClick={() => setSelectedOffer(null)}>
+            Done
+          </button>
 
-<h3>{offer.crop}</h3>
+        </div>
+      </div>
+    )}
 
-<p>Trader: {offer.trader}</p>
-
-<p>Offer Price: ₹{offer.price}/kg</p>
-
-<p>{offer.quantity} KG</p>
-
-<p className={`status ${offer.status}`}>
-Status: {offer.status}
-</p>
-
-<div className="offer-buttons">
-
-<button
-className="accept-btn"
-onClick={()=>acceptOffer(offer)}
->
-Accept
-</button>
-
-<button
-className="reject-btn"
-onClick={()=>rejectOffer(offer.id)}
->
-Reject
-</button>
-
-</div>
-
-</div>
-))}
-
-{/* POPUP */}
-
-{selectedTrader && (
-
-<div className="popup-overlay">
-
-<div className="popup-card">
-
-<h3>Trader Details</h3>
-
-<p><strong>ID:</strong> {selectedTrader.trader}</p>
-
-<p><strong>Phone:</strong> {selectedTrader.phone}</p>
-
-<p><strong>Location:</strong> {selectedTrader.location}</p>
-
-<p><strong>Offer Price:</strong> ₹{selectedTrader.price}/kg</p>
-
-<button
-className="close-btn"
-onClick={()=>setSelectedTrader(null)}
->
-Close
-</button>
-
-</div>
-
-</div>
-
-)}
-
-</div>
-
+  </div>
 );
-
 }
 
 export default OffersReceived;
