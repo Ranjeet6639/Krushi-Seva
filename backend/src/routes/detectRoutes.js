@@ -31,7 +31,6 @@ router.post("/", upload.single("image"), async (req, res) => {
       },
       body: JSON.stringify({
         model: "google/gemma-4-31b-it:free",
-        max_tokens: 500,
         messages: [
           {
             role: "user",
