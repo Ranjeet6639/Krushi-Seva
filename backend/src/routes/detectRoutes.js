@@ -30,7 +30,8 @@ router.post("/", upload.single("image"), async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "google/gemini-3.1-flash-lite",
+        model: "google/gemini-2.0-flash-exp:free",
+        max_tokens: 500,
         messages: [
           {
             role: "user",
