@@ -1,23 +1,10 @@
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
 
 const router = Router();
 
-// Ensure uploads folder exists when server starts
-if (!fs.existsSync("uploads")) {
-  fs.mkdirSync("uploads");
-}
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, "uploads/"),
-  filename: (_req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname))
-});
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter(_req, file, cb) {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
@@ -33,8 +20,7 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 
   try {
-    const imageBuffer = fs.readFileSync(req.file.path);
-    const base64Image = imageBuffer.toString("base64");
+    const base64Image = req.file.buffer.toString("base64");
     const mimeType = req.file.mimetype;
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -82,15 +68,13 @@ If the image is not a plant or leaf respond with:
     });
 
     const data = await response.json();
-    
-    // Check for API-level errors
+
     if (data.error) {
       throw new Error(data.error.message || "OpenRouter API error");
     }
 
     const text = data.choices[0].message.content;
 
-    // Strip markdown code fences if present
     const cleaned = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -101,9 +85,6 @@ If the image is not a plant or leaf respond with:
 
     const parsed = JSON.parse(jsonMatch[0]);
 
-    // Delete uploaded image after analysis
-    fs.unlinkSync(req.file.path);
-
     res.json({
       disease: parsed.disease || "Unknown",
       confidence: parsed.confidence || "Low",
@@ -113,12 +94,6 @@ If the image is not a plant or leaf respond with:
 
   } catch (error) {
     console.error("Detect error:", error.message);
-
-    // Clean up file if analysis failed
-    if (req.file?.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
-
     res.status(500).json({
       disease: "Detection Failed",
       solution: "Could not analyze the image. Please try again.",
