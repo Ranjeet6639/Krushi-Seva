@@ -3,35 +3,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 14px 16px;
   border-bottom: 1px solid #eee;
   background: white;
   width: 100%;
   box-sizing: border-box;
   position: relative;
-  gap: 12px;
+  gap: 10px;
+  overflow: hidden;
 }
 
-.sick-logo{
-font-size:22px;
-font-weight:600;
-color:#1b8f5a;
-display:flex;
-gap:8px;
-align-items:center;
+.sick-logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1b8f5a;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* PAGE CONTENT */
-.sick-page{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:flex-start;
-padding:40px;
-font-family:Poppins;
-width:100%;
-max-width:1200px;
-margin:0 auto;
+.sick-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 16px;
+  font-family: Poppins;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* Upload box */
@@ -336,5 +344,59 @@ color:white;
 
   .sick-page {
     padding: 20px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sick-header {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .sick-logo {
+    font-size: 15px;
+  }
+
+  .lang-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    border-radius: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    position: static !important;
+    padding: 8px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .upload-box {
+    width: min(450px, 92vw);
+    padding: 30px 20px;
+  }
+
+  .loading-box {
+    width: min(420px, 92vw);
+  }
+
+  .result-box {
+    width: min(420px, 92vw);
+  }
+
+  .expert-help {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 16px;
+    margin: 30px 0;
+    gap: 10px;
+    max-width: 92vw;
+  }
+
+  .help-text h2 {
+    font-size: 18px;
+    margin-right: 0;
   }
 }
