@@ -1,4 +1,4 @@
-/* HEADER */
+/* ── HEADER ── */
 .Sell-Header {
   background: white;
   border-bottom: 1px solid #eee;
@@ -12,7 +12,6 @@
   align-items: center;
   padding: 14px 20px;
   gap: 10px;
-  position: relative;
   box-sizing: border-box;
 }
 
@@ -51,12 +50,12 @@
   cursor: not-allowed;
 }
 
-/* Back row (shown only on mobile, below header) */
+/* Hidden on desktop, shown on mobile */
 .sell-back-row {
   display: none;
 }
 
-/* MAIN CONTAINER */
+/* ── MAIN CONTAINER ── */
 .harvest-container {
   display: flex;
   height: 100vh;
@@ -64,7 +63,7 @@
   background: linear-gradient(120deg, #f6f9fc, #eef2f7);
 }
 
-/* SIDEBAR */
+/* ── SIDEBAR ── */
 .harvest-sidebar {
   width: 250px;
   background: linear-gradient(180deg, #1b8f5a, #146c43);
@@ -106,7 +105,7 @@
   font-weight: 600;
 }
 
-/* Farmer ID */
+/* ── FARMER ID (desktop card) ── */
 .farmer-id {
   margin-top: auto;
   background: rgba(255,255,255,0.15);
@@ -125,9 +124,70 @@
 .farmer-id h3 {
   margin-top: 4px;
   font-size: 16px;
+  color: white;
 }
 
-/* MAIN AREA */
+/* ── 3-DOT MENU (hidden on desktop) ── */
+.sidebar-mobile-top {
+  display: none;
+}
+
+.three-dot-btn {
+  background: rgba(255,255,255,0.2) !important;
+  color: white !important;
+  border: none;
+  border-radius: 50% !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: unset !important;
+  flex: unset !important;
+  font-size: 22px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  flex-shrink: 0;
+  line-height: 1;
+  transform: none !important;
+}
+
+.three-dot-btn:hover {
+  background: rgba(255,255,255,0.35) !important;
+  transform: none !important;
+}
+
+.farmer-id-inline {
+  display: flex;
+  flex-direction: column;
+}
+
+.farmer-id-inline span {
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.5px;
+}
+
+.farmer-id-inline strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+}
+
+/* Desktop: sidebar-menu flows normally inside flex column sidebar */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+/* desktop-only farmer ID card */
+.desktop-only {
+  display: block;
+}
+
+/* ── MAIN AREA ── */
 .harvest-main {
   flex: 1;
   padding: 40px 60px;
@@ -146,7 +206,7 @@
   font-size: 14px;
 }
 
-/* CONTROLS */
+/* ── CONTROLS ── */
 .top-controls {
   display: flex;
   justify-content: space-between;
@@ -182,7 +242,7 @@
   box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
-/* CROP LIST */
+/* ── CROP LIST ── */
 .crop-list {
   display: flex;
   flex-direction: column;
@@ -213,9 +273,7 @@
   border-radius: 12px;
 }
 
-.crop-info {
-  flex: 1;
-}
+.crop-info { flex: 1; }
 
 .crop-info h3 {
   margin: 0;
@@ -229,7 +287,7 @@
   font-size: 14px;
 }
 
-/* Status Badge */
+/* ── STATUS BADGE ── */
 .status {
   font-size: 12px;
   padding: 5px 12px;
@@ -243,7 +301,7 @@
 .status.Pending { background: #fff7cd; color: #92400e; }
 .status.Sold    { background: #fee2e2; color: #b91c1c; }
 
-/* Delete Button */
+/* ── DELETE BUTTON ── */
 .delete-btn {
   background: #ef4444;
   color: white;
@@ -261,13 +319,11 @@
   transform: scale(1.05);
 }
 
-/* PROFILE POPUP */
+/* ── PROFILE POPUP ── */
 .profile-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
@@ -305,14 +361,12 @@
 
 .close-btn:hover { background: #146c43; }
 
-/* ── MOBILE ── */
+/* ── SINGLE MOBILE MEDIA QUERY ── */
 @media (max-width: 768px) {
-  /* Hide back-btn inside header on mobile */
-  .header .back-btn {
-    display: none;
-  }
 
-  /* Show the separate back row instead */
+  /* Header: hide desktop back-btn, show back-row below */
+  .header .back-btn { display: none; }
+
   .sell-back-row {
     display: flex;
     justify-content: center;
@@ -325,13 +379,9 @@
     margin: 0;
   }
 
-  .header {
-    padding: 12px 14px;
-  }
+  .header { padding: 12px 14px; }
 
-  .header .logo {
-    font-size: 15px;
-  }
+  .header .logo { font-size: 15px; }
 
   .lang-btn {
     padding: 6px 8px;
@@ -340,37 +390,57 @@
     flex-shrink: 0;
   }
 
+  /* Container stacks vertically */
   .harvest-container {
     flex-direction: column;
     height: auto;
   }
 
+  /* Sidebar becomes compact column */
   .harvest-sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 16px;
-    gap: 10px;
-    border-radius: 0;
+    width: 100% !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    padding: 14px 16px !important;
+    gap: 0 !important;
+    border-radius: 0 !important;
   }
 
-  .harvest-sidebar button {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px 8px;
-    font-size: 13px;
+  /* Show 3-dot top bar */
+  .sidebar-mobile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
-  .farmer-id {
+  /* Hide desktop farmer-id card */
+  .desktop-only { display: none !important; }
+
+  /* Menu hidden by default */
+  .sidebar-menu {
+    display: none;
+    flex-direction: column;
     width: 100%;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  /* Menu open */
+  .sidebar-menu.open { display: flex; }
+
+  .sidebar-menu button {
+    width: 100% !important;
+    flex: unset !important;
+    min-width: unset !important;
     text-align: left;
-    padding: 10px 12px;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+    transform: none !important;
   }
 
-  .harvest-main {
-    padding: 20px 16px;
-  }
+  /* Main content */
+  .harvest-main { padding: 20px 16px; }
 
   .harvest-header h1 { font-size: 22px; }
 

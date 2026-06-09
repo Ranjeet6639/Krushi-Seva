@@ -9,6 +9,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http
 function SellMyHarvest() {
   const navigate = useNavigate();
   const [crops, setCrops] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [navLoading, setNavLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -98,17 +99,35 @@ function SellMyHarvest() {
 </div>
 
       <div className="harvest-container">
-        <div className="harvest-sidebar">
-          <button className="active-btn">Sell Crops</button>
-          <button onClick={() => setShowProfile(true)}>My Profile</button>
-          <button onClick={() => navigate("/offersreceived")}>Offers Received</button>
-          <button onClick={() => navigate("/farmerlogout")}>Logout</button>
+     <div className="harvest-sidebar">
+       {/* 3-dot menu button — only visible on mobile */}
+    <div className="sidebar-mobile-top">
+      <span className="farmer-id-inline">
+      <span>FARMER ID</span>
+      <strong>{displayFarmerId}</strong>
+    </span>
+    <button
+      className="three-dot-btn"
+      onClick={() => setShowMenu(prev => !prev)}
+    >
+      ⋮
+    </button>
+  </div>
 
-          <div className="farmer-id">
-            <p>FARMER ID</p>
-            <h3>{displayFarmerId}</h3>
-          </div>
-        </div>
+  {/* Menu items — always visible on desktop, toggle on mobile */}
+  <div className={`sidebar-menu ${showMenu ? "open" : ""}`}>
+    <button className="active-btn">Sell Crops</button>
+    <button onClick={() => setShowProfile(true)}>My Profile</button>
+    <button onClick={() => navigate("/offersreceived")}>Offers Received</button>
+    <button onClick={() => navigate("/farmerlogout")}>Logout</button>
+  </div>
+
+  {/* Farmer ID — only on desktop */}
+  <div className="farmer-id desktop-only">
+    <p>FARMER ID</p>
+    <h3>{displayFarmerId}</h3>
+  </div>
+</div>
 
         <div className="harvest-main">
           <div className="harvest-header">
