@@ -38,7 +38,7 @@ background:#f6f8fb;
 border:2px dashed #d8dee6;
 padding:50px 40px;
 border-radius:25px;
-width:450px;
+width: min(450px, 90vw);
 text-align:center;
 margin:auto;
 box-shadow:0 10px 30px rgba(0,0,0,0.05);
@@ -119,7 +119,7 @@ margin-top:40px;
 border:2px dashed #cbd5e1;
 border-radius:20px;
 padding:30px;
-width:420px;
+width: min(420px, 90vw);
 text-align:center;
 background:#f8fafc;
 }
@@ -130,7 +130,7 @@ margin:40px auto;
 border:2px solid #1aa36f;
 border-radius:20px;
 padding:30px;
-width:420px;
+width: min(420px, 90vw);
 text-align:center;
 }
 
@@ -270,4 +270,35 @@ color:white;
 /* VERY IMPORTANT */
 .sick-header {
   position: relative;
+}
+
+@media (max-width: 600px) {
+  .back-btn {
+    position: static;
+    margin: 12px auto 0;
+    display: flex;
+    width: fit-content;
+  }
+
+  .sick-page {
+    padding: 20px 16px;
+  }
+
+  .upload-btn {
+    padding: 10px 30px;
+    font-size: 14px;
+  }
+
+  .expert-help {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 12px;
+    margin: 30px 16px;
+  }
+
+  .help-text h2 {
+    font-size: 18px;
+    margin-right: 0;
+  }
 }
