@@ -180,7 +180,7 @@ function TraderOffers() {
               border: selectedCrop?._id === crop._id ? "2px solid #2e7d32" : "1px solid #f0f0f0"
             }}>
               <img
-                src={crop.image ? `${BASE_URL}${crop.image}` : "https://via.placeholder.com/200x120"}
+                src={crop.image || "https://via.placeholder.com/300x200?text=No+Image"}
                 alt={crop.name}
                 style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px" }}
                 onError={(e) => { e.target.src = "https://via.placeholder.com/200x120"; }}
