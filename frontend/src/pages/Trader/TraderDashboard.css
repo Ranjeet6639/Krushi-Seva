@@ -231,3 +231,51 @@
 .trader-dashboard .logout-btn:hover {
   background: #c62828;
 }
+
+@media (max-width: 768px) {
+  .trader-dashboard {
+    flex-direction: column;
+  }
+
+  .trader-dashboard .sidebar {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .trader-dashboard .logo {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .trader-dashboard .sidebar button {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 8px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .trader-dashboard .trader-id {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .trader-dashboard .main {
+    padding: 16px;
+  }
+
+  .trader-dashboard .trader-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .trader-dashboard .grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
