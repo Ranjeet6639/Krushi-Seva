@@ -4,7 +4,7 @@ export async function listCrop(req, res, next) {
   try {
     const crop = await Crop.create({
       ...req.body,
-      image: req.file ? `/uploads/${req.file.filename}` : ""
+      image: req.file ? req.file.path : ""
     });
 
     res.status(201).json({

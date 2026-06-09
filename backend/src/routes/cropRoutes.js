@@ -1,7 +1,6 @@
 import { Router } from "express";
 
-import multer from "multer";
-import path from "path";
+import { upload } from "../config/cloudinary.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 
 import {
@@ -12,31 +11,6 @@ import {
 } from "../controllers/cropController.js";
 
 const router = Router();
-
-const storage = multer.diskStorage({
-
-  destination: function (_req, _file, cb) {
-
-  cb(
-    null,
-    path.join(process.cwd(), "uploads")
-  );
-
-  },
-
-  filename: function (_req, file, cb) {
-
-    cb(
-      null,
-      Date.now() +
-      path.extname(file.originalname)
-    );
-
-  }
-
-});
-
-const upload = multer({ storage });
 
 /* Farmer lists crop with image */
 router.post("/", requireAuth, upload.single("image"), listCrop);

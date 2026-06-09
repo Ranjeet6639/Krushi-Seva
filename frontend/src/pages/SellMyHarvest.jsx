@@ -124,7 +124,7 @@ function SellMyHarvest() {
               crops.map((crop) => (
                 <div key={crop._id} className="crop-card">
                   <img
-                    src={crop.image ? `${BASE_URL}${crop.image}` : "https://via.placeholder.com/80"}
+                    src={crop.image || "https://via.placeholder.com/80"}
                     alt="crop"
                     onError={(e) => { e.target.src = "https://via.placeholder.com/80"; }}
                   />
