@@ -10,7 +10,6 @@
   box-sizing: border-box;
   position: relative;
   gap: 10px;
-  overflow: hidden;
 }
 
 .sick-logo {
@@ -43,221 +42,209 @@
 }
 
 /* Upload box */
-.upload-box{
-background:#f6f8fb;
-border:2px dashed #d8dee6;
-padding:50px 40px;
-border-radius:25px;
-width: min(450px, 90vw);
-text-align:center;
-margin:auto;
-box-shadow:0 10px 30px rgba(0,0,0,0.05);
+.upload-box {
+  background: #f6f8fb;
+  border: 2px dashed #d8dee6;
+  padding: 50px 40px;
+  border-radius: 25px;
+  width: min(450px, 90vw);
+  text-align: center;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.upload-box h2{
-font-size:24px;
-font-weight:600;
-margin-bottom:25px;
-color:#1a1a1a
+.upload-box h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #1a1a1a;
 }
 
-
-.camera-circle{
-width:90px;
-height:90px;
-background:#eef2f6;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-margin:25px auto;
-box-shadow:0 6px 12px rgba(0,0,0,0.05);
+.camera-circle {
+  width: 90px;
+  height: 90px;
+  background: #eef2f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 25px auto;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
 }
 
-.camera-icon{
-width:100px;
-opacity:0.7;
+.camera-icon {
+  width: 100px;
+  opacity: 0.7;
 }
 
-.preview{
-width:200px;
-margin:20px 0;
-border-radius:10px;
+.preview {
+  width: 200px;
+  margin: 20px 0;
+  border-radius: 10px;
 }
 
-.upload-camera{
-width:70px;
-height:52px;
-margin-right:10px;
-vertical-align:middle;
+.upload-camera {
+  width: 70px;
+  height: 52px;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
-.upload-btn{
-background:#17966c;
-color:white;
-padding:10px 70px;
-border-radius:16px;
-cursor:pointer;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-weight:600;
-font-size:16px;
-gap:10px;
-box-shadow:0 8px 20px rgba(23,150,108,0.35);
-transition:0.25s;
+.upload-btn {
+  background: #17966c;
+  color: white;
+  padding: 10px 70px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(23,150,108,0.35);
+  transition: 0.25s;
 }
 
-.upload-btn:hover{
-background:#14845f;
-transform:translateY(-2px);
+.upload-btn:hover {
+  background: #14845f;
+  transform: translateY(-2px);
 }
 
-.upload-btn input{
-display:none;
+.upload-btn input {
+  display: none;
 }
 
-.hint{
-margin-top:15px;
-font-size:16px;
-color:#7a869a;
+.hint {
+  margin-top: 15px;
+  font-size: 16px;
+  color: #7a869a;
 }
 
 /* Loading box */
-.loading-box{
-margin-top:40px;
-border:2px dashed #cbd5e1;
-border-radius:20px;
-padding:30px;
-width: min(420px, 90vw);
-text-align:center;
-background:#f8fafc;
+.loading-box {
+  margin-top: 40px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 20px;
+  padding: 30px;
+  width: min(420px, 90vw);
+  text-align: center;
+  background: #f8fafc;
 }
 
 /* Result box */
-.result-box{
-margin:40px auto;  
-border:2px solid #1aa36f;
-border-radius:20px;
-padding:30px;
-width: min(420px, 90vw);
-text-align:center;
+.result-box {
+  margin: 40px auto;
+  border: 2px solid #1aa36f;
+  border-radius: 20px;
+  padding: 30px;
+  width: min(420px, 90vw);
+  text-align: center;
 }
 
-.buttons{
-display:flex;
-gap:20px;
-margin-top:20px;
+.buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
-.fix-btn{
-background:#f59e0b;
-border:none;
-padding:15px;
-flex:1;
-border-radius:10px;
-color:white;
-font-weight:600;
-cursor:pointer;
+.fix-btn {
+  background: #f59e0b;
+  border: none;
+  padding: 15px;
+  flex: 1;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.pesticide-btn{
-background:#0f172a;
-border:none;
-padding:15px;
-flex:1;
-border-radius:10px;
-color:white;
-font-weight:600;
-cursor:pointer;
+.pesticide-btn {
+  background: #0f172a;
+  border: none;
+  padding: 15px;
+  flex: 1;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 /* HELP SECTION */
-
-.expert-help{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#eef1f4;
-padding:22px 35px;
-border-radius:14px;
-max-width:700px;
-margin:60px auto;
-border:1px solid #e3e6ea;
+.expert-help {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eef1f4;
+  padding: 22px 35px;
+  border-radius: 14px;
+  max-width: 700px;
+  margin: 60px auto;
+  border: 1px solid #e3e6ea;
 }
 
-/* LEFT SIDE */
-
-.help-left{
-display:flex;
-align-items:center;
-gap:18px;
+.help-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-/* PHONE ICON */
-
-/* ICON CONTAINER */
-.help-icon{
-width:45px;
-height:45px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
+.help-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* IMAGE INSIDE ICON */
-.helpline-icon{
-width:84px;
-height:84px;
-object-fit:contain;
+.helpline-icon {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
 }
 
-/* TEXT */
-
-.help-text p{
-margin:0;
-font-size:12px;
-color:#6c757d;
-font-weight:500;
-letter-spacing:0.5px;
+.help-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-.help-text h2{
-margin:2px 0 0;
-font-size:22px;
-font-weight:700;
-margin-right: 50px;
-color:#222;
+.help-text h2 {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  margin-right: 50px;
+  color: #222;
 }
 
 /* CALL BUTTON */
-
-.call-btn{
-padding:10px 22px;
-border:2px solid #1b8f5a;
-border-radius:10px;
-color:#1b8f5a;
-font-weight:600;
-text-decoration:none;
-transition:0.3s;
+.call-btn {
+  padding: 10px 22px;
+  border: 2px solid #1b8f5a;
+  border-radius: 10px;
+  color: #1b8f5a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
-.call-btn:hover{
-background:#1b8f5a;
-color:white;
+.call-btn:hover {
+  background: #1b8f5a;
+  color: white;
 }
 
 /* BACK BUTTON */
-
 .back-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   background: #0f1b2d;
   color: white;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -272,89 +259,18 @@ color:white;
   cursor: not-allowed;
 }
 
-/* VERY IMPORTANT */
-.sick-header {
-  position: relative;
-}
-
-@media (max-width: 600px) {
-  .back-btn {
-    position: static;
-    margin: 12px auto 0;
-    display: flex;
-    width: fit-content;
-  }
-
-  .sick-page {
-    padding: 20px 16px;
-  }
-
-  .upload-btn {
-    padding: 10px 30px;
-    font-size: 14px;
-  }
-
-  .expert-help {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px 16px;
-    gap: 12px;
-    margin: 30px 16px;
-  }
-
-  .help-text h2 {
-    font-size: 18px;
-    margin-right: 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .sick-header {
-    padding: 12px 16px;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-  }
-
-  .sick-logo {
-    font-size: 17px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .sick-logo span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .lang-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .back-btn {
-    position: static;
-    padding: 8px 12px;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  .sick-page {
-    padding: 20px 16px;
-  }
-}
-
+/* SINGLE media query — no duplicates */
 @media (max-width: 600px) {
   .sick-header {
     padding: 12px 14px;
     gap: 8px;
+    flex-wrap: nowrap;
   }
 
   .sick-logo {
     font-size: 15px;
+    flex: 1;
+    min-width: 0;
   }
 
   .lang-btn {
@@ -367,15 +283,25 @@ color:white;
 
   .back-btn {
     position: static !important;
-    padding: 8px 12px;
+    padding: 8px 10px;
     font-size: 12px;
     flex-shrink: 0;
     white-space: nowrap;
+    margin: 0;
+  }
+
+  .sick-page {
+    padding: 20px 16px;
   }
 
   .upload-box {
     width: min(450px, 92vw);
     padding: 30px 20px;
+  }
+
+  .upload-btn {
+    padding: 10px 30px;
+    font-size: 14px;
   }
 
   .loading-box {
