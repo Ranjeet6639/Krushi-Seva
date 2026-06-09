@@ -1,39 +1,35 @@
-.farmerdashboard{
-background:#f4f6f8;
-padding:30px;
-min-height:100vh;
-font-family: "Segoe UI", sans-serif;
+.farmerdashboard {
+  background: #f4f6f8;
+  padding: 30px;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
 }
 
-
-/* HEADER */
-
+/* ── HEADER ── */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
   width: 100%;
+  position: relative;
 }
 
-.brand{
-display:flex;
-align-items:center;
-gap:10px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.brand h2{
-margin:0;
+.brand h2 { margin: 0; }
+
+.brand p {
+  margin: 0;
+  font-size: 14px;
+  color: #777;
 }
 
-.brand p{
-margin:0;
-font-size:14px;
-color:#777;
-}
-
-/* ACCOUNT */
-
+/* ── ACCOUNT ── */
 .account-section {
   display: flex;
   align-items: center;
@@ -49,140 +45,163 @@ color:#777;
   text-align: right;
 }
 
-.avatar{
-width:45px;
-height:45px;
-border-radius:50%;
-cursor:pointer;
-border:none;
-background:linear-gradient(135deg, #1b8f5a, #146c43);
-color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:16px;
-font-weight:700;
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #1b8f5a, #146c43);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
-.account-popup{
-position:absolute;
-right:0;
-top:60px;
-background:white;
-padding:15px;
-border-radius:10px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-min-width:280px;
-z-index:20;
+.account-popup {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  min-width: 280px;
+  z-index: 100;
 }
 
-.action-cards{
-display:flex;
-gap:25px;
-margin-bottom:25px;
+.account-popup p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+  word-break: break-word;
 }
 
-.action-card{
-flex:1;
-background:white;
-padding:40px;
-border-radius:15px;
-text-align:center;
-font-size:20px;
-font-weight:600;
-cursor:pointer;
-transition:0.3s;
-box-shadow:
-0 4px 10px rgba(0,0,0,0.08),
-0 10px 25px rgba(0,0,0,0.12);
+/* ── ACTION CARDS ── */
+.action-cards {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 25px;
 }
 
-.action-card:hover{
-transform:translateY(-5px);
+.action-card {
+  flex: 1;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.08),
+    0 10px 25px rgba(0,0,0,0.12);
 }
 
-.advice-card{
-display:flex;
-background:white;
-border-radius:15px;
-overflow:hidden;
-margin-bottom:25px;
-box-shadow:
-0 4px 10px rgba(0,0,0,0.08),
-0 10px 25px rgba(0,0,0,0.12);
+.action-card:hover { transform: translateY(-5px); }
+
+.card-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  object-fit: contain;
 }
 
-.advice-card img{
-width:350px;
-object-fit:cover;
+/* ── ADVICE CARD ── */
+.advice-card {
+  display: flex;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.08),
+    0 10px 25px rgba(0,0,0,0.12);
 }
 
-.advice-text{
-padding:30px;
+.advice-card img {
+  width: 350px;
+  object-fit: cover;
 }
 
-.farmerbadge{
-background:#fde5d7;
-padding:6px 12px;
-border-radius:20px;
-font-size:12px;
-letter-spacing:1px;
-color:#ff7a00;
+.advice-text { padding: 30px; }
+
+.farmerbadge {
+  background: #fde5d7;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #ff7a00;
 }
 
-.later-btn{
-margin-top:15px;
-padding:10px 18px;
-border:none;
-border-radius:8px;
-background:#e6e8ec;
-cursor:pointer;
+.later-btn {
+  margin-top: 15px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #e6e8ec;
+  cursor: pointer;
 }
 
-.listings{
-display:flex;
-gap:25px;
+/* ── LISTINGS ── */
+.listings {
+  display: flex;
+  gap: 25px;
 }
 
-.listing-box{
-flex:1;
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:
-0 4px 10px rgba(0,0,0,0.08),
-0 10px 25px rgba(0,0,0,0.12);
+.listing-box {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.08),
+    0 10px 25px rgba(0,0,0,0.12);
 }
 
-.listing-item{
-display:flex;
-justify-content:space-between;
-padding:15px;
-border:1px solid #eee;
-border-radius:10px;
-margin-top:10px;
+.listing-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 
-.card-icon{
-width:100px;
-height:100px;
-margin-bottom:10px;
-object-fit:contain;
+/* ── BUTTONS ── */
+.logout-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 8px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.logout-btn{
-margin-top:12px;
-width:100%;
-padding:8px;
-background:red;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
+.edit-profile-btn {
+  width: 100%;
+  padding: 8px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
 }
 
+.edit-profile-btn:hover { background: #c8e6c9; }
+
+/* ── TABLET ── */
 @media (max-width: 960px) {
-  .dashboard-header,
   .action-cards,
   .listings,
   .advice-card {
@@ -201,73 +220,21 @@ cursor:pointer;
   }
 }
 
+/* ── MOBILE ── */
 @media (max-width: 600px) {
+
   .farmerdashboard {
     padding: 16px;
   }
 
-  .dashboard-header {
-    gap: 12px;
-  }
-
-  .brand h2 {
-    font-size: 18px;
-  }
-
-  .account-info {
-    font-size: 12px;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .account-popup {
-    right: 0;
-    left: auto;
-    max-width: calc(100vw - 32px);
-    min-width: unset;
-    width: 280px;
-  }
-
-  .listing-box {
-    width: 100%;
-  }
-
-  .advice-text {
-    padding: 16px;
-  }
-
-  .advice-text h2 {
-    font-size: 18px;
-  }
-}
-
-/* Edit Profile Page */
-.edit-profile-btn {
-  width: 100%;
-  padding: 8px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-
-.edit-profile-btn:hover {
-  background: #c8e6c9;
-}
-
-@media (max-width: 600px) {
+  /* Header stays as row */
   .dashboard-header {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
     gap: 8px;
+    margin-bottom: 20px;
   }
 
   .brand {
@@ -281,7 +248,7 @@ cursor:pointer;
   }
 
   .brand p {
-    font-size: 12px;
+    font-size: 11px;
     color: #888;
   }
 
@@ -294,7 +261,6 @@ cursor:pointer;
     text-align: right;
     font-size: 12px;
     max-width: 110px;
-    overflow: hidden;
   }
 
   .account-info strong {
@@ -313,13 +279,92 @@ cursor:pointer;
     color: #999;
   }
 
+  /* ── POPUP FIX: fixed to screen, never covers header ── */
   .account-popup {
     position: fixed;
-    top: auto;
+    top: 70px;        /* always below the header */
     right: 12px;
     left: auto;
     width: calc(100vw - 24px);
     max-width: 320px;
-    z-index: 100;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    z-index: 200;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    padding: 18px;
+  }
+
+  .account-popup p {
+    font-size: 13px;
+    margin: 5px 0;
+  }
+
+  /* ── ACTION CARDS: compact on mobile ── */
+  .action-cards {
+    flex-direction: row;   /* keep 3 in a row */
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .action-card {
+    flex: 1;
+    padding: 16px 8px;
+    font-size: 11px;
+    border-radius: 12px;
+    min-width: 0;
+  }
+
+  .card-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+  }
+
+  .action-card h3 {
+    font-size: 11px;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  /* ── ADVICE CARD ── */
+  .advice-card {
+    flex-direction: column;
+  }
+
+  .advice-card img {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+  }
+
+  .advice-text {
+    padding: 14px 16px;
+  }
+
+  .advice-text h2 {
+    font-size: 16px;
+    margin: 8px 0 6px;
+  }
+
+  .advice-text p {
+    font-size: 13px;
+    color: #555;
+  }
+
+  /* ── LISTINGS ── */
+  .listings {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .listing-box {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .listing-item {
+    padding: 10px 12px;
+    font-size: 13px;
   }
 }
