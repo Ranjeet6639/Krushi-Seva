@@ -8,11 +8,12 @@ font-family: "Segoe UI", sans-serif;
 
 /* HEADER */
 
-.dashboard-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:25px;
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  width: 100%;
 }
 
 .brand{
@@ -33,17 +34,19 @@ color:#777;
 
 /* ACCOUNT */
 
-.account-section{
-display:flex;
-align-items:center;
-gap:10px;
-position:relative;
+.account-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin-left: auto;
 }
 
-.account-info{
-display:flex;
-flex-direction:column;
-font-size:14px;
+.account-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  text-align: right;
 }
 
 .avatar{
@@ -256,4 +259,67 @@ cursor:pointer;
 
 .edit-profile-btn:hover {
   background: #c8e6c9;
+}
+
+@media (max-width: 600px) {
+  .dashboard-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .brand {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .brand h2 {
+    font-size: 17px;
+    white-space: nowrap;
+  }
+
+  .brand p {
+    font-size: 12px;
+    color: #888;
+  }
+
+  .account-section {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .account-info {
+    text-align: right;
+    font-size: 12px;
+    max-width: 110px;
+    overflow: hidden;
+  }
+
+  .account-info strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .account-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 11px;
+    color: #999;
+  }
+
+  .account-popup {
+    position: fixed;
+    top: auto;
+    right: 12px;
+    left: auto;
+    width: calc(100vw - 24px);
+    max-width: 320px;
+    z-index: 100;
+  }
 }
