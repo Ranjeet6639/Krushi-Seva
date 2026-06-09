@@ -326,3 +326,73 @@ background:#146c43;
 .header {
   position: relative;
 }
+
+@media (max-width: 768px) {
+  .harvest-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .harvest-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 10px;
+    border-radius: 0;
+  }
+
+  .harvest-sidebar .logo {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .harvest-sidebar button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .farmer-id {
+    width: 100%;
+    margin-top: 8px;
+    text-align: left;
+    padding: 10px 12px;
+  }
+
+  .harvest-main {
+    padding: 20px 16px;
+  }
+
+  .harvest-header h1 {
+    font-size: 22px;
+  }
+
+  .top-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .top-controls select {
+    width: 100%;
+  }
+
+  .new-crop-btn {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .crop-card {
+    flex-wrap: wrap;
+  }
+
+  .back-btn {
+    position: static;
+    margin: 0 0 16px 0;
+    width: auto;
+    align-self: flex-start;
+  }
+}
