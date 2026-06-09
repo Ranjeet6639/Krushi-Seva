@@ -3,7 +3,7 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-/* SIDEBAR */
+/* ── SIDEBAR ── */
 .trader-dashboard .sidebar {
   width: 250px;
   background: #f5f7f6;
@@ -26,6 +26,7 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .trader-dashboard .sidebar .active {
@@ -41,7 +42,7 @@
   font-size: 12px;
 }
 
-/* MAIN */
+/* ── MAIN ── */
 .trader-dashboard .main {
   flex: 1;
   padding: 30px;
@@ -94,6 +95,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .trader-dashboard .header {
@@ -110,7 +112,7 @@
   cursor: pointer;
 }
 
-/* GRID */
+/* ── GRID ── */
 .trader-dashboard .grid {
   margin-top: 20px;
   display: grid;
@@ -118,7 +120,7 @@
   gap: 55px;
 }
 
-/* CARD */
+/* ── CARD ── */
 .trader-dashboard .card {
   background: white;
   border-radius: 20px;
@@ -128,9 +130,6 @@
 
 .trader-dashboard .image-box {
   position: relative;
-}
-
-.trader-dashboard .image-box {
   width: 100%;
   height: 220px;
   overflow: hidden;
@@ -184,12 +183,11 @@
   cursor: pointer;
 }
 
+/* ── MODAL ── */
 .trader-dashboard .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
@@ -215,67 +213,209 @@
   cursor: pointer;
 }
 
-/*Logout Button*/
-
+/* ── LOGOUT ── */
 .trader-dashboard .logout-btn {
   margin-top: 20px;
   background: #e53935;
-  color: rgb(0, 0, 0);
+  color: white;
   border: none;
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  width: 100%;
 }
 
 .trader-dashboard .logout-btn:hover {
   background: #c62828;
 }
 
+/* ── TABLET ── */
 @media (max-width: 768px) {
   .trader-dashboard {
     flex-direction: column;
   }
 
+  .trader-dashboard .grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+
+  .trader-dashboard {
+    flex-direction: column;
+  }
+
+  /* ── Sidebar: top nav bar style ── */
   .trader-dashboard .sidebar {
     width: 100%;
     height: auto;
+    padding: 12px 14px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px 16px;
+    flex-direction: column;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
 
+  /* Logo row */
   .trader-dashboard .logo {
     width: 100%;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Nav buttons in a single row */
+  .trader-dashboard .sidebar-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: nowrap;
   }
 
   .trader-dashboard .sidebar button {
     flex: 1;
-    min-width: 100px;
-    padding: 10px 8px;
-    font-size: 13px;
+    padding: 9px 6px;
+    font-size: 12px;
     text-align: center;
+    margin-bottom: 0;
+    border-radius: 20px;
+    white-space: nowrap;
   }
 
+  /* Trader ID below nav */
   .trader-dashboard .trader-id {
+    margin-top: 10px;
     width: 100%;
-    margin-top: 4px;
+    font-size: 11px;
+    padding: 8px 12px;
+    background: #e5e7eb;
+    border-radius: 8px;
   }
 
+  /* Logout full width below trader ID */
+  .trader-dashboard .logout-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 9px;
+    font-size: 13px;
+    border-radius: 20px;
+  }
+
+  /* ── Main content ── */
   .trader-dashboard .main {
     padding: 16px;
   }
 
+  /* Topbar: title left, badge right */
   .trader-dashboard .trader-topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    margin-bottom: 16px;
   }
 
+  .trader-dashboard .trader-topbar h2 {
+    font-size: 18px;
+  }
+
+  .trader-dashboard .trader-topbar p {
+    font-size: 12px;
+  }
+
+  /* User badge compact */
+  .trader-dashboard .trader-user-badge {
+    padding: 8px 10px;
+    gap: 8px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .trader-dashboard .trader-user-badge strong {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+
+  .trader-dashboard .trader-user-badge span {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+
+  .trader-dashboard .trader-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  /* Header row: Available Crops + Filter button */
+  .trader-dashboard .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .trader-dashboard .header h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .trader-dashboard .filter-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* ── Grid: single column ── */
   .trader-dashboard .grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  /* ── Card: compact image ── */
+  .trader-dashboard .card {
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .trader-dashboard .image-box {
+    height: 180px;  /* shorter image on mobile */
+    border-radius: 12px;
+  }
+
+  .trader-dashboard .image-box img {
+    border-radius: 12px;
+  }
+
+  .trader-dashboard .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .trader-dashboard .price-box {
+    padding: 8px 10px;
+    margin: 8px 0;
+  }
+
+  .trader-dashboard .farmer-details-btn {
+    width: 100%;
+    padding: 13px 12px;
+    font-size: 14px;
+    border-radius: 20px;
   }
 }

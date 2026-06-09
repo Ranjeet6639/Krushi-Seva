@@ -29,30 +29,45 @@ function TraderDashboard() {
 
   return (
     <div className="trader-dashboard">
+
+      {/* ── SIDEBAR ── */}
       <div className="sidebar">
+
+        {/* Logo */}
         <h2 className="logo">🌱 Krushi Seva</h2>
 
-        <button
-          className={activePage === "buy" ? "active" : ""}
-          onClick={() => setActivePage("buy")}
-        >
-          Buy Crops
-        </button>
+        {/* Nav buttons wrapped for mobile row layout */}
+        <div className="sidebar-nav">
+          <button
+            className={activePage === "buy" ? "active" : ""}
+            onClick={() => setActivePage("buy")}
+          >
+            Buy Crops
+          </button>
 
-        <button
-          className={activePage === "offers" ? "active" : ""}
-          onClick={() => setActivePage("offers")}
-        >
-          My Offers
-        </button>
+          <button
+            className={activePage === "offers" ? "active" : ""}
+            onClick={() => setActivePage("offers")}
+          >
+            My Offers
+          </button>
 
-        <button
-          className={activePage === "profile" ? "active" : ""}
-          onClick={() => setActivePage("profile")}
-        >
-          My Profile
-        </button>
+          <button
+            className={activePage === "profile" ? "active" : ""}
+            onClick={() => setActivePage("profile")}
+          >
+            My Profile
+          </button>
+        </div>
 
+        {/* Trader ID */}
+        <div className="trader-id">
+          {currentUser?.userCode
+            ? `TRADER ID ${currentUser.userCode}`
+            : "TRADER ID"}
+        </div>
+
+        {/* Logout below trader ID */}
         <button
           className="logout-btn"
           onClick={() => navigate("/Trader/TraderLogout")}
@@ -60,12 +75,11 @@ function TraderDashboard() {
           Logout
         </button>
 
-        <div className="trader-id">
-          {currentUser?.userCode ? `TRADER ID ${currentUser.userCode}` : "TRADER ID"}
-        </div>
       </div>
 
+      {/* ── MAIN ── */}
       <div className="main">
+
         <div className="trader-topbar">
           <div>
             <h2>{pageTitle}</h2>
@@ -84,6 +98,7 @@ function TraderDashboard() {
         {activePage === "buy"     && <BuyCrops />}
         {activePage === "offers"  && <TraderOffers />}
         {activePage === "profile" && <TraderProfile />}
+
       </div>
     </div>
   );
