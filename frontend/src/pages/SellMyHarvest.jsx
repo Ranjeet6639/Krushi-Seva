@@ -83,17 +83,19 @@ function SellMyHarvest() {
 
   return (
     <>
-      <div className="Sell-Header">
-        <header className="header">
-          <div className="logo">🌱 <span>Krushi Seva</span></div>
-          <button className="lang-btn">🌐 English / हिन्दी</button>
+     <div className="Sell-Header">
+       <header className="header">
+       <div className="logo">🌱 <span>Krushi Seva</span></div>
+       <button className="lang-btn">🌐 English / हिन्दी</button>
+     </header>
 
-          <button onClick={handleBack} className="back-btn" disabled={navLoading}>
-            <Home size={20} />
-            {navLoading ? "Loading..." : "Back to Home"}
-          </button>
-        </header>
-      </div>
+    <div className="sell-back-row">
+      <button onClick={handleBack} className="back-btn" disabled={navLoading}>
+      <Home size={20} />
+      {navLoading ? "Loading..." : "Back to Home"}
+    </button>
+  </div>
+</div>
 
       <div className="harvest-container">
         <div className="harvest-sidebar">
