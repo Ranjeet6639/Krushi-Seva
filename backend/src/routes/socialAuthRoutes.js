@@ -1,10 +1,10 @@
 import { Router } from "express";
-import admin from "../config/firebaseAdmin.js";
+import { auth } from "../config/firebaseAdmin.js";
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
 import {
   generateUniqueUserCode,
-  buildUserResponse        // ← import this so we return ALL fields
+  buildUserResponse
 } from "../controllers/authController.js";
 
 const router = Router();
@@ -19,36 +19,55 @@ router.post("/social-login", async (req, res, next) => {
       });
     }
 
-    // Verify the Firebase token
-    const decoded = await admin.auth().verifyIdToken(firebaseToken);
-    const { uid, email, name, picture } = decoded;
+    // Verify Firebase ID Token
+    const decoded = await auth.verifyIdToken(firebaseToken);
+
+    const {
+      uid,
+      email,
+      name,
+      picture
+    } = decoded;
 
     // Check if user already exists
-    let user = await User.findOne({ email, role });
+    let user = await User.findOne({
+      email,
+      role
+    });
 
     if (!user) {
-      // First time — create user automatically
       const userCode = await generateUniqueUserCode(role);
 
       user = await User.create({
-        name: name || email.split("@")[0],
+        name: name || email?.split("@")[0] || "User",
         email,
-        mobile: uid,           // use Firebase UID as unique placeholder
+        mobile: uid,
         passwordHash: uid,
         role,
         userCode,
         firebaseUid: uid,
+        profileImage: picture || "",
         phoneVerifiedAt: new Date()
       });
     } else {
-      // Existing user — update firebaseUid if not set yet
+      let updated = false;
+
       if (!user.firebaseUid) {
         user.firebaseUid = uid;
+        updated = true;
+      }
+
+      if (picture && !user.profileImage) {
+        user.profileImage = picture;
+        updated = true;
+      }
+
+      if (updated) {
         await user.save();
       }
     }
 
-    // Issue JWT
+    // Generate JWT
     const token = jwt.sign(
       {
         id: user._id,
@@ -56,18 +75,19 @@ router.post("/social-login", async (req, res, next) => {
         userCode: user.userCode
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      {
+        expiresIn: "7d"
+      }
     );
 
-    // Return ALL user fields — same as regular login
-    res.json({
+    return res.status(200).json({
       message: "Login successful",
       token,
-      user: buildUserResponse(user)    // ← now returns state, district, address, pincode, profile etc.
+      user: buildUserResponse(user)
     });
 
   } catch (error) {
-    console.error("Social login error:", error.message);
+    console.error("Social login error:", error);
     next(error);
   }
 });

@@ -7,7 +7,7 @@ const serviceAccount = JSON.parse(
 
 if (!getApps().length) {
   initializeApp({
-    credential: cert(serviceAccount),
+    credential: cert(serviceAccount)
   });
 }
 
