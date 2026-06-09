@@ -37,7 +37,7 @@ function BuyCrops() {
             <div className="card" key={crop._id}>
               <div className="image-box">
                 <img
-                  src={crop.image ? `${BASE_URL}${crop.image}` : "https://via.placeholder.com/300"}
+                  src={crop.image || "https://via.placeholder.com/300x200?text=No+Image"}
                   alt={crop.name}
                   className="crop-image"
                   onError={(e) => { e.target.src = "https://via.placeholder.com/300"; }}

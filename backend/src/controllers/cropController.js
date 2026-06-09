@@ -1,10 +1,19 @@
 import { Crop } from "../models/Crop.js";
+import { uploadToCloudinary } from "../config/cloudinary.js";
 
 export async function listCrop(req, res, next) {
   try {
+    let imageUrl = "";
+
+    // If a file was uploaded, send it to Cloudinary
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      imageUrl = result.secure_url; // permanent Cloudinary URL
+    }
+
     const crop = await Crop.create({
       ...req.body,
-      image: req.file ? req.file.path : ""
+      image: imageUrl
     });
 
     res.status(201).json({
@@ -45,23 +54,18 @@ export async function getFarmerCrops(req, res, next) {
 
 export async function deleteCrop(req, res, next) {
   try {
-    // Step 1: Find the crop first (don't delete blindly)
     const crop = await Crop.findById(req.params.id);
 
-    // Step 2: If crop doesn't exist, return 404
     if (!crop) {
       return res.status(404).json({ message: "Crop not found" });
     }
 
-    // Step 3: Check that the logged-in farmer owns this crop
-    // req.user.userCode is attached by requireAuth middleware
     if (crop.farmerId !== req.user.userCode) {
       return res.status(403).json({
         message: "You are not authorized to delete this crop"
       });
     }
 
-    // Step 4: Safe to delete now
     await crop.deleteOne();
 
     res.json({ message: "Crop deleted" });
