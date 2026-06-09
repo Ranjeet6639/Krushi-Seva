@@ -42,7 +42,13 @@
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
+  width: auto;
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #16253d;
 }
 
 .back-btn:disabled {
@@ -194,15 +200,23 @@
   overflow-y: auto;
 }
 
-.harvest-header h1 {
+/* ── MY CROPS HEADER ROW ── */
+.harvest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.harvest-header-text h1 {
   margin: 0;
   font-size: 30px;
   color: #1f2937;
 }
 
-.harvest-header p {
+.harvest-header-text p {
   color: #6b7280;
-  margin-bottom: 35px;
+  margin: 4px 0 0;
   font-size: 14px;
 }
 
@@ -442,7 +456,21 @@
   /* Main content */
   .harvest-main { padding: 20px 16px; }
 
-  .harvest-header h1 { font-size: 22px; }
+  /* My Crops header row on mobile */
+  .harvest-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .harvest-header-text h1 { font-size: 22px; }
+
+  .harvest-header-text p { font-size: 12px; }
+
+  .harvest-header .back-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
 
   .top-controls {
     flex-direction: column;

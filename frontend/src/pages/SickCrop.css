@@ -239,99 +239,91 @@
 
 /* BACK BUTTON */
 .back-btn {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-background: #0f1b2d;
-color: white;
-padding: 10px 18px;
-border: none;
-border-radius: 30px;
-cursor: pointer;
-font-size: 14px;
-font-weight: 500;
-white-space: nowrap;
-transition: all 0.3s ease;
-}
-
-.back-btn:hover {
-background: #16253d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f1b2d;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .back-btn:disabled {
-opacity: 0.6;
-cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .sick-back-row {
-display: flex;
-justify-content: center;
-width: 100%;
-padding: 16px 20px;
-box-sizing: border-box;
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
-
-.sick-header {
-padding: 12px 14px;
-gap: 8px;
-}
-
-.sick-logo {
-font-size: 15px;
-}
-
-.lang-btn {
-padding: 6px 8px;
-font-size: 11px;
-border-radius: 14px;
-flex-shrink: 0;
-}
-
-.sick-back-row {
-width: 100%;
-padding: 12px 16px;
+  display: flex;
+  justify-content: center;
+  padding: 16px 20px 0;
 }
 
 .sick-back-row .back-btn {
-width: 100%;
-max-width: 400px;
-justify-content: center;
+  position: static;
+  margin: 0;
 }
+/* SINGLE media query — no duplicates */
+@media (max-width: 600px) {
+  .sick-header {
+    padding: 12px 14px;
+    gap: 8px;
+  }
 
-.sick-page {
-padding: 20px 16px;
-}
+  .sick-logo {
+    font-size: 15px;
+  }
 
-.upload-box {
-width: min(450px, 92vw);
-padding: 30px 20px;
-}
+  .lang-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    border-radius: 14px;
+    flex-shrink: 0;
+  }
 
-.upload-btn {
-padding: 10px 30px;
-font-size: 14px;
-}
+  .sick-back-row {
+    padding: 12px 16px 0;
+  }
 
-.loading-box,
-.result-box {
-width: min(420px, 92vw);
-}
+  .sick-page {
+    padding: 20px 16px;
+  }
 
-.expert-help {
-flex-direction: column;
-text-align: center;
-padding: 18px 16px;
-margin: 30px 0;
-gap: 10px;
-max-width: 92vw;
-}
+  .upload-box {
+    width: min(450px, 92vw);
+    padding: 30px 20px;
+  }
 
-.help-text h2 {
-font-size: 18px;
-margin-right: 0;
-}
+  .upload-btn {
+    padding: 10px 30px;
+    font-size: 14px;
+  }
+
+  .loading-box {
+    width: min(420px, 92vw);
+  }
+
+  .result-box {
+    width: min(420px, 92vw);
+  }
+
+  .expert-help {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 16px;
+    margin: 30px 0;
+    gap: 10px;
+    max-width: 92vw;
+  }
+
+  .help-text h2 {
+    font-size: 18px;
+    margin-right: 0;
+  }
 }
