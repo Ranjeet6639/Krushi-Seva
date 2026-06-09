@@ -56,9 +56,9 @@
   cursor: not-allowed;
 }
 
-/* Hidden on desktop, shown on mobile */
+/* Always hidden — no longer used */
 .sell-back-row {
-  display: none;
+  display: none !important;
 }
 
 /* ── MAIN CONTAINER ── */
@@ -203,9 +203,12 @@
 /* ── MY CROPS HEADER ROW ── */
 .harvest-header {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap;
   margin-bottom: 35px;
+  gap: 12px;
 }
 
 .harvest-header-text h1 {
@@ -378,21 +381,6 @@
 /* ── SINGLE MOBILE MEDIA QUERY ── */
 @media (max-width: 768px) {
 
-  /* Header: hide desktop back-btn, show back-row below */
-  .header .back-btn { display: none; }
-
-  .sell-back-row {
-    display: flex;
-    justify-content: center;
-    padding: 12px 16px 0;
-  }
-
-  .sell-back-row .back-btn {
-    display: flex;
-    position: static;
-    margin: 0;
-  }
-
   .header { padding: 12px 14px; }
 
   .header .logo { font-size: 15px; }
@@ -456,20 +444,32 @@
   /* Main content */
   .harvest-main { padding: 20px 16px; }
 
-  /* My Crops header row on mobile */
+  /* ── KEY FIX: force row layout on mobile ── */
   .harvest-header {
-    flex-wrap: wrap;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
     gap: 10px;
     margin-bottom: 20px;
   }
 
-  .harvest-header-text h1 { font-size: 22px; }
+  .harvest-header-text h1 {
+    font-size: 20px;
+  }
 
-  .harvest-header-text p { font-size: 12px; }
+  .harvest-header-text p {
+    font-size: 12px;
+  }
 
+  /* Back button stays compact — never full width */
   .harvest-header .back-btn {
-    padding: 8px 14px;
-    font-size: 13px;
+    width: auto !important;
+    max-width: none !important;
+    padding: 8px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
   }
 
   .top-controls {
