@@ -67,22 +67,21 @@ function SickCrop() {
 
       {/* Header */}
       <header className="sick-header">
+      <div className="sick-logo">
+      🌱 <span>Krushi Seva</span>
+     </div>
+     <button className="lang-btn">
+      🌐 English / हिन्दी
+    </button>
+  </header>
 
-        <div className="sick-logo">
-          🌱 <span>Krushi Seva</span>
-        </div>
-
-        <button className="lang-btn">
-          🌐 English / हिन्दी
-        </button>
-
-        {/* ✅ BACK BUTTON ADDED */}
-        <button onClick={handleBack} className="back-btn" disabled={navLoading}>
-          <Home size={20} />
-          {navLoading ? "⏳ Loading..." : "Back to Home"}
-        </button>
-
-      </header>
+   {/* Back button row — below header, like WhatToGrow */}
+   <div className="sick-back-row">
+    <button onClick={handleBack} className="back-btn" disabled={navLoading}>
+     <Home size={20} />
+     {navLoading ? "⏳ Loading..." : "Back to Home"}
+  </button>
+</div>
 
       {/* Page Container */}
       <div className="sick-page">
