@@ -1,13 +1,15 @@
 /* HEADER */
-.sick-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 40px;
-border-bottom:1px solid #eee;
-background:white;
-width:100%;
-box-sizing:border-box;
+.sick-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  gap: 12px;
 }
 
 .sick-logo{
@@ -242,24 +244,19 @@ color:white;
 /* BACK BUTTON */
 
 .back-btn {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-
   display: flex;
   align-items: center;
   gap: 8px;
-
   background: #0f1b2d;
   color: white;
-  padding: 8px 14px;
-
+  padding: 8px 16px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
-
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .back-btn:disabled {
@@ -300,5 +297,44 @@ color:white;
   .help-text h2 {
     font-size: 18px;
     margin-right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .sick-header {
+    padding: 12px 16px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .sick-logo {
+    font-size: 17px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sick-logo span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lang-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    position: static;
+    padding: 8px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .sick-page {
+    padding: 20px 16px;
   }
 }
