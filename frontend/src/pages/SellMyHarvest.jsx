@@ -89,13 +89,6 @@ function SellMyHarvest() {
        <div className="logo">🌱 <span>Krushi Seva</span></div>
        <button className="lang-btn">🌐 English / हिन्दी</button>
      </header>
-
-    <div className="sell-back-row">
-      <button onClick={handleBack} className="back-btn" disabled={navLoading}>
-      <Home size={20} />
-      {navLoading ? "Loading..." : "Back to Home"}
-    </button>
-  </div>
 </div>
 
       <div className="harvest-container">
@@ -130,6 +123,12 @@ function SellMyHarvest() {
 </div>
 
         <div className="harvest-main">
+              <div className="sell-back-row">
+      <button onClick={handleBack} className="back-btn" disabled={navLoading}>
+      <Home size={20} />
+      {navLoading ? "Loading..." : "Back to Home"}
+    </button>
+  </div>
           <div className="harvest-header">
             <h1>My Crops</h1>
             <p>Manage the crops you have listed for sale.</p>
