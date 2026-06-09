@@ -248,3 +248,29 @@ margin-top:30px;
   margin-top: 4px;
   display: block;
 }
+
+@media (max-width: 600px) {
+  .grow-title h1 {
+    font-size: clamp(28px, 7vw, 48px);
+  }
+
+  .steps {
+    width: 95%;
+  }
+
+  .grow-header {
+    padding: 16px;
+  }
+
+  .grow-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .back-btn {
+    width: 80%;
+  }
+}
