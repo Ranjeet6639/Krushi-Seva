@@ -10,8 +10,8 @@
 
 | Service  | URL |
 |----------|-----|
-| Frontend | [krushi-seva.vercel.app](https://krushi-seva.vercel.app) *(replace with your Vercel URL)* |
-| Backend  | [krushi-seva-api.onrender.com](https://krushi-seva-api.onrender.com) *(replace with your Render URL)* |
+| Frontend | [krushi-seva.vercel.app](https://krushi-seva.vercel.app) |
+| Backend  | [krushi-seva-api.onrender.com](https://krushi-seva-api.onrender.com) |
 
 ---
 
