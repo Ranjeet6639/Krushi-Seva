@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { OtpVerification } from "../models/OtpVerification.js";
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
-import { sendOtpSms } from "../services/smsService.js";
 
 function normalizeMobile(mobile = "") {
   return mobile.replace(/\D/g, "");
@@ -117,27 +116,8 @@ export async function sendOtp(req, res, next) {
       expiresAt: getOtpExpiryDate()
     });
 
-    // Send the actual SMS via Fast2SMS. If it fails, we still let the user
-    // proceed in development mode (devOtp is returned), but in production
-    // we surface the failure so the user knows the OTP didn't actually arrive.
-    let smsSent = false;
-    try {
-      await sendOtpSms(normalizedMobile, otp);
-      smsSent = true;
-    } catch (smsError) {
-      console.error("Could not send OTP SMS:", smsError.message);
-
-      if (process.env.NODE_ENV !== "development") {
-        return res.status(502).json({
-          message: "Could not send OTP to this number. Please try again in a moment."
-        });
-      }
-    }
-
     return res.status(201).json({
-      message: smsSent
-        ? "OTP sent successfully"
-        : "OTP generated successfully (SMS not sent — development mode)",
+      message: "OTP generated successfully",
       devOtp: process.env.NODE_ENV === "development" ? otp : undefined
     });
   } catch (error) {
