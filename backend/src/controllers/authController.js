@@ -118,7 +118,7 @@ export async function sendOtp(req, res, next) {
 
     return res.status(201).json({
       message: "OTP generated successfully",
-      devOtp: process.env.NODE_ENV === "development" ? otp : undefined
+      devOtp: otp
     });
   } catch (error) {
     next(error);
