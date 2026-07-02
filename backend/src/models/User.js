@@ -81,6 +81,15 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
 
+    resetPasswordToken: {
+      type: String,
+      default: "",
+    },
+
+    resetPasswordExpires: {
+      type: Date,
+    },
+
     profile: {
       ration: {
         type: String,

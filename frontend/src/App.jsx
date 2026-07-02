@@ -6,6 +6,8 @@ import Terms from "./pages/Terms";
 import Support from "./pages/Support";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import FarmerDashboard from "./pages/FarmerDashboard";
 import FarmerLogout from "./pages/FarmerLogout";
 import SickCrop from "./pages/SickCrop";
@@ -93,6 +95,8 @@ function App() {
         <Route path="/support" element={<Support />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/Trader/TraderLogin" element={<TraderLogin />} />
         <Route path="/Trader/TraderRegister" element={<TraderRegister />} />
 

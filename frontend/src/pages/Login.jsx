@@ -1,6 +1,6 @@
 import "./Login.css";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import SocialLogin from "../components/SocialLogin";
 
@@ -88,6 +88,10 @@ function Login() {
         <button className="login-btn" onClick={handleLogin}>
           Continue
         </button>
+
+        <p style={{ marginTop: "14px", fontSize: "14px" }}>
+          <Link to="/forgot-password">Forgot password?</Link>
+        </p>
       </div>
     </div>
   );
