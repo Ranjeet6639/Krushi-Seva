@@ -1,34 +1,26 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-let transporter;
+let resendClient;
 
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      family: 4,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS 
-      },
-      connectionTimeout: 10000, 
-      greetingTimeout: 10000,
-      socketTimeout: 10000
-    });
+function getClient() {
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
   }
 
-  return transporter;
+  return resendClient;
 }
 
 export async function sendEmail({ to, subject, html }) {
-  const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+  const { data, error } = await getClient().emails.send({
+    from: process.env.EMAIL_FROM || "Krushi Seva <onboarding@resend.dev>",
     to,
     subject,
     html
-  };
+  });
 
-  await getTransporter().sendMail(mailOptions);
+  if (error) {
+    throw new Error(error.message || "Failed to send email via Resend");
+  }
+
+  return data;
 }
