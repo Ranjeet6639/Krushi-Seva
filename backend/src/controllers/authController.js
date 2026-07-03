@@ -313,12 +313,14 @@ export async function forgotPassword(req, res, next) {
     // user exists. This prevents attackers from using this endpoint to
     // figure out which emails are registered on the platform.
     const genericResponse = {
-      message: "If an account with that email exists, a password reset link has been sent."
+      message: `If an account exists for ${normalizedEmail}, we've sent a password reset link to it. Please check your inbox (and spam folder).`
     };
 
     if (!user) {
       return res.json(genericResponse);
     }
+
+    const isSocialOnly = Boolean(user.firebaseUid) && user.passwordHash === user.firebaseUid;
 
     // Generate a random raw token to send to the user, but only store a
     // hashed version in the database (same principle as storing passwords).
@@ -341,18 +343,25 @@ export async function forgotPassword(req, res, next) {
           <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
             <h2>Reset your password</h2>
             <p>Hi ${user.name || ""},</p>
-            <p>We received a request to reset your Krushi Seva password. Click the button below to choose a new password. This link expires in ${expiryMinutes} minutes.</p>
+            ${
+              isSocialOnly
+                ? `<p>We noticed this account normally signs in with Google. You can keep using "Continue with Google" as usual — or, if you'd like to set up a password as a backup login method, click the button below.</p>`
+                : `<p>We received a request to reset your Krushi Seva password. Click the button below to choose a new password. This link expires in ${expiryMinutes} minutes.</p>`
+            }
             <p style="text-align:center;">
               <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#2e7d32;color:#fff;text-decoration:none;border-radius:6px;">
-                Reset Password
+                ${isSocialOnly ? "Set a Password" : "Reset Password"}
               </a>
             </p>
-            <p>If you didn't request this, you can safely ignore this email — your password will remain unchanged.</p>
+            <p>If you didn't request this, you can safely ignore this email — ${isSocialOnly ? "your Google sign-in will keep working as normal." : "your password will remain unchanged."}</p>
             <p style="color:#888;font-size:12px;">If the button doesn't work, copy and paste this link into your browser:<br />${resetLink}</p>
           </div>
         `
       });
     } catch (emailError) {
+      // Log the real reason the send failed — without this, you'll never
+      // know if it's a Gmail auth issue, app password problem, etc.
+      console.error("Failed to send password reset email:", emailError.message);
       // Roll back the token if the email genuinely fails to send, so the
       // user isn't left with a dangling token they never received.
       user.resetPasswordToken = "";

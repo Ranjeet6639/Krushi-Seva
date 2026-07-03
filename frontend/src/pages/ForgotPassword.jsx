@@ -8,6 +8,7 @@ function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
 
   const handleSubmit = async () => {
     if (!email) {
@@ -22,7 +23,10 @@ function ForgotPassword() {
       // Backend always returns a generic success message here,
       // whether or not the email is registered — that's intentional
       // so no one can use this form to find out who has an account.
-      await api.post("/auth/forgot-password", { email, role: "farmer" });
+      // If the account is a Google-only account, it returns a different
+      // message telling them to use Google Sign-In instead.
+      const response = await api.post("/auth/forgot-password", { email, role: "farmer" });
+      setResultMessage(response.data.message);
       setSubmitted(true);
     } catch (apiError) {
       setError(apiError.response?.data?.message || "Something went wrong. Please try again.");
@@ -45,8 +49,7 @@ function ForgotPassword() {
         {submitted ? (
           <>
             <p className="success-text">
-              If an account exists for <strong>{email}</strong>, we've sent a
-              password reset link to it. Please check your inbox (and spam folder).
+              {resultMessage}
             </p>
             <Link to="/login">
               <button className="login-btn">Back to Login</button>
