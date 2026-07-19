@@ -1,6 +1,53 @@
 import { Router } from "express";
 
 const router = Router();
+const MODELS = [
+  "google/gemma-4-31b-it:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "openai/gpt-oss-20b:free"
+];
+
+async function callOpenRouter(model, prompt) {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.4,
+      max_tokens: 800, 
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+
+  const raw = await response.text(); 
+
+  if (!response.ok) {
+    throw new Error(`OpenRouter ${response.status} (${model}): ${raw.slice(0, 200)}`);
+  }
+
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new Error(`Non-JSON response from ${model}: ${raw.slice(0, 200)}`);
+  }
+
+  if (data.error) {
+    throw new Error(data.error.message || `OpenRouter error (${model})`);
+  }
+
+  const text = data.choices?.[0]?.message?.content;
+  if (!text) throw new Error(`Empty response from ${model}`);
+
+  const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error(`No JSON found in response from ${model}: ${cleaned.slice(0, 200)}`);
+
+  return JSON.parse(jsonMatch[0]);
+}
 
 router.post("/", async (req, res) => {
   const { formData } = req.body;
@@ -11,19 +58,7 @@ router.post("/", async (req, res) => {
 
   const { location, season, soil, irrigation, water, previousCrop, preference, budget } = formData;
 
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "google/gemma-4-31b-it:free",
-        messages: [
-          {
-            role: "user",
-            content: `You are an expert agricultural advisor for Indian farmers.
+  const prompt = `You are an expert agricultural advisor for Indian farmers.
 
 A farmer has provided these details:
 - Location: ${location}
@@ -40,44 +75,28 @@ Recommend the best 3 crops to grow. Respond ONLY in this exact JSON format with 
   "result": "A helpful 2-3 sentence recommendation explaining which crops to grow and why, written simply so a farmer can understand.",
   "crops": ["Crop 1", "Crop 2", "Crop 3"],
   "tips": "One practical farming tip for this season and soil type."
-}`
-          }
-        ]
-      })
-    });
+}`;
 
-    const data = await response.json();
+  let lastError;
 
-    // Check for API-level errors
-    if (data.error) {
-      throw new Error(data.error.message || "OpenRouter API error");
+  for (const model of MODELS) {
+    try {
+      const parsed = await callOpenRouter(model, prompt);
+      return res.json({
+        result: parsed.result || "Could not generate recommendation.",
+        crops: parsed.crops || [],
+        tips: parsed.tips || ""
+      });
+    } catch (error) {
+      console.error(`Recommend error [${model}]:`, error.message);
+      lastError = error;
     }
-
-    const text = data.choices[0].message.content;
-
-    // Strip markdown code fences if present
-    const cleaned = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON found in AI response");
-
-    const parsed = JSON.parse(jsonMatch[0]);
-
-    res.json({
-      result: parsed.result || "Could not generate recommendation.",
-      crops: parsed.crops || [],
-      tips: parsed.tips || ""
-    });
-
-  } catch (error) {
-    console.error("Recommend error:", error.message);
-    res.status(500).json({
-      message: "Error getting recommendation. Please try again."
-    });
   }
+
+  console.error("Recommend: all models failed. Last error:", lastError?.message);
+  res.status(500).json({
+    message: "Error getting recommendation. Please try again."
+  });
 });
 
 export default router;
