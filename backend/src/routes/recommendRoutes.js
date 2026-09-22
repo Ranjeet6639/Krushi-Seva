@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 const router = Router();
-const MODELS = ["openrouter/free"];
+const MODELS = ["nvidia/nemotron-3-super-120b-a12b:free"];
 
 async function callOpenRouter(model, prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
