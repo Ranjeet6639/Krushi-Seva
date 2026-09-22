@@ -1,11 +1,7 @@
 import { Router } from "express";
 
 const router = Router();
-const MODELS = [
-  "google/gemma-4-31b-it:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "openai/gpt-oss-20b:free"
-];
+const MODELS = ["openrouter/free"];
 
 async function callOpenRouter(model, prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
