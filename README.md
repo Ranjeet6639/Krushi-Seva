@@ -208,6 +208,6 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## 👨‍💻 Developer
 
-**Ranjeet** — Full Stack Developer  
+**Ranjeet Shinde** — Full Stack Developer  
 B.Tech Computer Science, Pimpri Chinchwad University, Pune  
 [GitHub](https://github.com/Ranjeet6639) · [LinkedIn](https://www.linkedin.com/in/ranjeet-shinde-411244288/)
