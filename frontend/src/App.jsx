@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 import ProtectedRoute from "./components/ProtectedRoute";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -86,7 +87,7 @@ function Home() {
 function App() {
   return (
     <Router>
-
+      <Analytics />
       <Routes>
         {/* Public routes — no login needed */}
         <Route path="/" element={<Home />} />
