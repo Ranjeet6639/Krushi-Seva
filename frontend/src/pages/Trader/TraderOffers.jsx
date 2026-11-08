@@ -77,18 +77,11 @@ function TraderOffers() {
 
     try {
       await api.post("/offers", {
-        cropId:       selectedCrop._id,
-        cropName:     selectedCrop.name,
-        farmerId:     selectedCrop.farmerId,
-        farmerName:   selectedCrop.farmerName,
-        offerPrice:   Number(form.offerPrice),
-        quantity:     Number(form.quantity),
-        message:      form.message,
-        traderName:   currentUser.name,
-        traderMobile: currentUser.mobile,
-        traderEmail:  currentUser.email,
-        traderAddress: currentUser.address,
-        traderCode:   currentUser.userCode
+        // server fills in crop, farmer and trader details itself
+        cropId:     selectedCrop._id,
+        offerPrice: Number(form.offerPrice),
+        quantity:   Number(form.quantity),
+        message:    form.message
       });
 
       setSuccessMsg(`Offer submitted for ${selectedCrop.name}!`);
@@ -376,6 +369,14 @@ function TraderOffers() {
                 {offer.message && (
                   <p style={{ margin: "4px 0 0", fontSize: "12px", color: "#999" }}>
                     "{offer.message}"
+                  </p>
+                )}
+                {/* BATCH A: farmer contact is only revealed after acceptance */}
+                {offer.status === "Accepted" && offer.farmerContact && (
+                  <p style={{ margin: "6px 0 0", fontSize: "13px", color: "#2e7d32" }}>
+                    Farmer contact: {offer.farmerContact.mobile}
+                    {offer.farmerContact.village ? ` · ${offer.farmerContact.village}` : ""}
+                    {offer.farmerContact.address ? ` · ${offer.farmerContact.address}` : ""}
                   </p>
                 )}
               </div>
