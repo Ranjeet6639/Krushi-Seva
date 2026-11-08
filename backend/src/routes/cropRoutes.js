@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { upload } from "../config/cloudinary.js";
-import { requireAuth } from "../middleware/requireAuth.js";
+import { handleImageUpload } from "../config/cloudinary.js";
+import { requireAuth, requireRole } from "../middleware/requireAuth.js";
 
 import {
   listCrop,
@@ -13,11 +13,19 @@ import {
 const router = Router();
 
 /* Farmer lists crop with image */
-router.post("/", requireAuth, upload.single("image"), listCrop);
+router.post(
+  "/",
+  requireAuth,
+  requireRole("farmer"),
+  handleImageUpload("image"),
+  listCrop
+);
 
 /* Trader sees all crops */
 router.get(
   "/",
+  requireAuth,
+  requireRole("trader"),
   getAllCrops
 );
 
@@ -32,6 +40,7 @@ router.get(
 router.delete(
   "/:id",
   requireAuth,
+  requireRole("farmer"),
   deleteCrop
 );
 
