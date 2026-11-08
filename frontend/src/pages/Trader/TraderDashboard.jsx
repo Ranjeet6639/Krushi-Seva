@@ -15,15 +15,15 @@ function TraderDashboard() {
     if (storedUser) setCurrentUser(JSON.parse(storedUser));
   }, []);
 
-  const displayName     = currentUser?.name     || "Trader";
+  const displayName = currentUser?.name || "Trader";
   const displayLocation = currentUser?.district || currentUser?.state || "Location not added";
   const avatarLabel =
     displayName.split(" ").filter(Boolean).slice(0, 2)
       .map((part) => part[0]?.toUpperCase()).join("") || "T";
 
   const pageTitle = {
-    buy:     "Buy Crops",
-    offers:  "My Offers",
+    buy: "Buy Crops",
+    offers: "My Offers",
     profile: "My Profile"
   }[activePage];
 
@@ -60,13 +60,6 @@ function TraderDashboard() {
           </button>
         </div>
 
-        {/* Trader ID */}
-        <div className="trader-id">
-          {currentUser?.userCode
-            ? `TRADER ID ${currentUser.userCode}`
-            : "TRADER ID"}
-        </div>
-
         {/* Logout below trader ID */}
         <button
           className="logout-btn"
@@ -74,6 +67,13 @@ function TraderDashboard() {
         >
           Logout
         </button>
+
+        {/* Trader ID */}
+        <div className="trader-id">
+          {currentUser?.userCode
+            ? `TRADER ID ${currentUser.userCode}`
+            : "TRADER ID"}
+        </div>
 
       </div>
 
@@ -95,8 +95,8 @@ function TraderDashboard() {
           </div>
         </div>
 
-        {activePage === "buy"     && <BuyCrops />}
-        {activePage === "offers"  && <TraderOffers />}
+        {activePage === "buy" && <BuyCrops />}
+        {activePage === "offers" && <TraderOffers />}
         {activePage === "profile" && <TraderProfile />}
 
       </div>
