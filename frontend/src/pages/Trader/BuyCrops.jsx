@@ -47,7 +47,7 @@ function BuyCrops() {
 
               <h2>{crop.name}</h2>
               <p className="farmer">Farmer: {crop.farmerName}</p>
-              <p className="farmer">Mobile: {crop.farmerMobile || "Not added"}</p>
+              <p className="farmer">Village: {crop.farmerVillage || "Not added"}</p>
 
               <div className="price-box">
                 <span>EXPECTED PRICE</span>
@@ -67,10 +67,12 @@ function BuyCrops() {
           <div className="modal">
             <h2>Farmer Details</h2>
             <p><b>Name:</b> {selectedCrop.farmerName}</p>
-            <p><b>Mobile:</b> {selectedCrop.farmerMobile || "Not added"}</p>
             <p><b>Farmer ID:</b> {selectedCrop.farmerId || "Not added"}</p>
             <p><b>Village:</b> {selectedCrop.farmerVillage || "Not added"}</p>
-            <p><b>Address:</b> {selectedCrop.farmerAddress || "Address not added"}</p>
+            <p style={{ fontSize: "13px", color: "#666" }}>
+              The farmer's mobile number and address are shared with you once
+              they accept your offer (see My Offers).
+            </p>
             <button onClick={() => setSelectedCrop(null)}>Close</button>
           </div>
         </div>
