@@ -12,7 +12,7 @@ function Support() {
         <p>📞 1800-KRUSHI-SEVA</p>
 
         <h2>Email Support</h2>
-        <p>support@krushiseva.in</p>
+        <p>krushiseva.contact@gmail.com</p>
 
       </div>
 
