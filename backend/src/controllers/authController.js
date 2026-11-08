@@ -13,6 +13,24 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+/*
+  BATCH A: the OTP is no longer returned in the API response.
+  It is only returned when you explicitly turn on ALLOW_DEV_OTP=true AND
+  NODE_ENV is not "production" (local testing only).
+*/
+function isDevOtpAllowed() {
+  return (
+    process.env.ALLOW_DEV_OTP === "true" &&
+    process.env.NODE_ENV !== "production"
+  );
+}
+
+function isValidEmail(email = "") {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+}
+
+const OTP_RESEND_COOLDOWN_SECONDS = 60;
+
 function generateToken(user) {
   return jwt.sign(
     {
@@ -97,15 +115,37 @@ async function assertUserDoesNotExist(email, mobile) {
 
 export async function sendOtp(req, res, next) {
   try {
-    const { mobile, role } = req.body;
+    const { mobile, role, email } = req.body;
     const normalizedMobile = normalizeMobile(mobile);
+    const normalizedEmail = String(email || "").trim().toLowerCase();
 
     if (!normalizedMobile || normalizedMobile.length < 10) {
       return res.status(400).json({ message: "Enter a valid mobile number" });
     }
 
+    if (!isValidEmail(normalizedEmail)) {
+      return res.status(400).json({
+        message: "Enter a valid email address first. The OTP is sent to your email."
+      });
+    }
+
     if (!["farmer", "trader"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
+    }
+
+    // BATCH A: 60-second cooldown so this can't be used to spam an inbox
+    const recent = await OtpVerification.findOne({
+      $or: [
+        { mobile: normalizedMobile, role },
+        { email: normalizedEmail }
+      ],
+      createdAt: { $gt: new Date(Date.now() - OTP_RESEND_COOLDOWN_SECONDS * 1000) }
+    });
+
+    if (recent) {
+      return res.status(429).json({
+        message: `Please wait ${OTP_RESEND_COOLDOWN_SECONDS} seconds before requesting another OTP`
+      });
     }
 
     const otp = generateOtp();
@@ -114,13 +154,47 @@ export async function sendOtp(req, res, next) {
     await OtpVerification.create({
       mobile: normalizedMobile,
       role,
+      email: normalizedEmail,
       otp,
       expiresAt: getOtpExpiryDate()
     });
 
+    // BATCH A: actually deliver the OTP (by email) instead of putting it in the response
+    let delivered = false;
+
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      try {
+        const minutes = Number(process.env.OTP_EXPIRY_MINUTES || 10);
+        await sendEmail({
+          to: normalizedEmail,
+          subject: "Your Krushi Seva verification code",
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
+              <h2>Your verification code</h2>
+              <p>Use this code to finish registering on Krushi Seva:</p>
+              <p style="font-size:28px;letter-spacing:6px;font-weight:bold;">${otp}</p>
+              <p>It expires in ${minutes} minutes. If you didn't request it, you can ignore this email.</p>
+            </div>
+          `
+        });
+        delivered = true;
+      } catch (emailError) {
+        console.error("Failed to send OTP email:", emailError.message);
+      }
+    }
+
+    if (!delivered && !isDevOtpAllowed()) {
+      await OtpVerification.deleteMany({ mobile: normalizedMobile, role });
+      return res.status(502).json({
+        message: "We could not send the OTP right now. Please try again in a few minutes."
+      });
+    }
+
     return res.status(201).json({
-      message: "OTP generated successfully",
-      devOtp: otp
+      message: delivered
+        ? "OTP sent to your email"
+        : "OTP generated (development mode)",
+      ...(isDevOtpAllowed() ? { devOtp: otp } : {})
     });
   } catch (error) {
     next(error);
@@ -212,14 +286,18 @@ export async function registerUser(req, res, next) {
       return res.status(400).json({ message: "Name, mobile, email and password are required" });
     }
 
+    // BATCH A: the verified OTP must belong to this mobile AND this email
     const verifiedOtp = await OtpVerification.findOne({
       mobile: normalizedMobile,
       role: normalizedRole,
+      email: normalizedEmail,
       verified: true
     }).sort({ verifiedAt: -1 });
 
     if (!verifiedOtp) {
-      return res.status(400).json({ message: "Phone number is not verified" });
+      return res.status(400).json({
+        message: "Phone number is not verified. If you changed your mobile or email, please verify the OTP again."
+      });
     }
 
     await assertUserDoesNotExist(normalizedEmail, normalizedMobile);
