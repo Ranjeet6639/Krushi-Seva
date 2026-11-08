@@ -6,7 +6,7 @@ import { uploadToCloudinary } from "../config/cloudinary.js";
 const CATEGORIES = ["Vegetable", "Fruit", "Grains", "Pulses"];
 
 /*
-  BATCH A: contact details are NOT sent to everyone browsing the market.
+   contact details are NOT sent to everyone browsing the market.
   Traders get the farmer's mobile + address only after the farmer accepts
   their offer (see GET /api/offers/trader).
 */
@@ -19,7 +19,7 @@ export async function listCrop(req, res, next) {
       return res.status(403).json({ message: "Only farmers can list crops" });
     }
 
-    // only these 4 fields are read from the request.
+    //  only these 4 fields are read from the request.
     // Before, the whole req.body was saved, so anyone could set farmerId etc.
     const name = String(req.body.name || "").trim();
     const quantity = Number(req.body.quantity);
@@ -119,7 +119,7 @@ export async function getFarmerCrops(req, res, next) {
 
 export async function deleteCrop(req, res, next) {
   try {
-    //  bad ids now return 400 instead of crashing with a 500
+    // bad ids now return 400 instead of crashing with a 500
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid crop id" });
     }
