@@ -1,3 +1,6 @@
-serviceAccountKey.json
-node_module
+node_modules
 .env
+.env.*
+!.env.example
+serviceAccountKey.json
+*.log
