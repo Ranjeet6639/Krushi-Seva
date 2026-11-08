@@ -1,44 +1,70 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import { Offer } from "../models/Offer.js";
-import { requireAuth } from "../middleware/requireAuth.js";
+import { Crop } from "../models/Crop.js";
+import { User } from "../models/User.js";
+import { requireAuth, requireRole } from "../middleware/requireAuth.js";
 
 const router = Router();
 
 // POST /api/offers — Trader submits an offer
-router.post("/", requireAuth, async (req, res, next) => {
+// trader role required; crop, farmer and trader details come from the
+// database. Only cropId, offerPrice, quantity and message are read from the request.
+router.post("/", requireAuth, requireRole("trader"), async (req, res, next) => {
   try {
-    const {
-      cropId, cropName, farmerId, farmerName,
-      offerPrice, quantity, message,
-      traderName, traderMobile, traderEmail,
-      traderAddress, traderCode
-    } = req.body;
+    const { cropId, offerPrice, quantity, message } = req.body;
 
-    // Validate all required fields
-    if (!cropId || !cropName || !farmerId || !offerPrice || !quantity) {
-      return res.status(400).json({ message: "All offer details are required" });
+    if (!mongoose.isValidObjectId(cropId)) {
+      return res.status(400).json({ message: "A valid crop is required" });
     }
 
-    if (!traderName || !traderMobile) {
+    const price = Number(offerPrice);
+    const qty = Number(quantity);
+
+    if (!Number.isFinite(price) || price <= 0 || price > 100000) {
+      return res.status(400).json({ message: "Offer price must be a number greater than 0" });
+    }
+
+    if (!Number.isFinite(qty) || qty <= 0 || qty > 1000000) {
+      return res.status(400).json({ message: "Quantity must be a number greater than 0" });
+    }
+
+    const crop = await Crop.findById(cropId);
+    if (!crop || crop.status !== "Active") {
+      return res.status(404).json({ message: "This crop is no longer available" });
+    }
+
+    if (qty > crop.quantity) {
+      return res.status(400).json({
+        message: `Quantity cannot be more than the ${crop.quantity} KG available`
+      });
+    }
+
+    const trader = await User.findById(req.user.id);
+    if (!trader) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!trader.name || !trader.mobile || !trader.address) {
       return res.status(400).json({
         message: "Your profile is incomplete. Please add your mobile number and address before making an offer."
       });
     }
 
     const offer = await Offer.create({
-      traderId:     req.user.id,
-      traderName,
-      traderMobile,
-      traderEmail,
-      traderAddress,
-      traderCode:   req.user.userCode,
-      cropId,
-      cropName,
-      farmerId,
-      farmerName,
-      offerPrice,
-      quantity,
-      message
+      traderId:      String(trader._id),
+      traderName:    trader.name,
+      traderMobile:  trader.mobile,
+      traderEmail:   trader.email,
+      traderAddress: trader.address,
+      traderCode:    trader.userCode,
+      cropId:        crop._id,
+      cropName:      crop.name,
+      farmerId:      crop.farmerId,
+      farmerName:    crop.farmerName,
+      offerPrice:    price,
+      quantity:      qty,
+      message:       String(message || "").trim().slice(0, 500)
     });
 
     res.status(201).json({ message: "Offer submitted successfully", offer });
@@ -49,10 +75,15 @@ router.post("/", requireAuth, async (req, res, next) => {
 });
 
 // GET /api/offers/farmer/:farmerId — Farmer sees all offers for their crops
-router.get("/farmer/:farmerId", requireAuth, async (req, res, next) => {
+// a farmer can only read offers made on their OWN crops
+router.get("/farmer/:farmerId", requireAuth, requireRole("farmer"), async (req, res, next) => {
   try {
+    if (req.params.farmerId !== req.user.userCode) {
+      return res.status(403).json({ message: "You can only view your own offers" });
+    }
+
     const offers = await Offer.find({
-      farmerId: req.params.farmerId
+      farmerId: req.user.userCode
     }).sort({ createdAt: -1 });
 
     res.json({ offers });
@@ -62,25 +93,62 @@ router.get("/farmer/:farmerId", requireAuth, async (req, res, next) => {
 });
 
 // GET /api/offers/trader — Trader sees all their own offers
-router.get("/trader", requireAuth, async (req, res, next) => {
+// once an offer is Accepted, the farmer's contact details are added
+// (farmerContact) so the trader can complete the deal. Pending/Rejected offers
+// never include them.
+router.get("/trader", requireAuth, requireRole("trader"), async (req, res, next) => {
   try {
     const offers = await Offer.find({
       traderId: req.user.id
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).lean();
 
-    res.json({ offers });
+    const acceptedFarmerCodes = [
+      ...new Set(
+        offers.filter((o) => o.status === "Accepted").map((o) => o.farmerId)
+      )
+    ];
+
+    let contacts = {};
+    if (acceptedFarmerCodes.length > 0) {
+      const farmers = await User.find({ userCode: { $in: acceptedFarmerCodes } })
+        .select("userCode mobile address profile.village");
+
+      contacts = Object.fromEntries(
+        farmers.map((f) => [
+          f.userCode,
+          {
+            mobile: f.mobile,
+            address: f.address || "",
+            village: f.profile?.village || ""
+          }
+        ])
+      );
+    }
+
+    res.json({
+      offers: offers.map((o) =>
+        o.status === "Accepted"
+          ? { ...o, farmerContact: contacts[o.farmerId] || null }
+          : o
+      )
+    });
   } catch (err) {
     next(err);
   }
 });
 
 // PATCH /api/offers/:id — Farmer accepts or rejects
-router.patch("/:id", requireAuth, async (req, res, next) => {
+router.patch("/:id", requireAuth, requireRole("farmer"), async (req, res, next) => {
   try {
     const { status } = req.body;
 
     if (!["Accepted", "Rejected"].includes(status)) {
       return res.status(400).json({ message: "Status must be Accepted or Rejected" });
+    }
+
+    // bad ids return 400 instead of a 500 crash
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid offer id" });
     }
 
     const offer = await Offer.findById(req.params.id);
