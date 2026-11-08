@@ -217,7 +217,7 @@
 .trader-dashboard .logout-btn {
   margin-top: 20px;
   background: #e53935;
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   padding: 10px;
   border-radius: 8px;
