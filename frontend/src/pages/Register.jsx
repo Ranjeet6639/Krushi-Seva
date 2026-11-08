@@ -54,6 +54,7 @@ function Register() {
       return;
     }
 
+    // the OTP is now emailed, so an email address is needed first
     if (!form.email) {
       setError("Enter your email address first. The OTP will be sent there.");
       return;
@@ -74,7 +75,7 @@ function Register() {
       setOtpVerified(false);
       setStatus(
         response.data.devOtp
-          ? `${response.data.message}. Demo OTP: ${response.data.devOtp}`
+          ? `Your OTP is ${response.data.devOtp} (demo mode: shown on screen)`
           : response.data.message || "OTP sent to your email."
       );
     } catch (apiError) {
