@@ -12,6 +12,11 @@ const otpVerificationSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true
+    },
     otp: {
       type: String,
       required: true
