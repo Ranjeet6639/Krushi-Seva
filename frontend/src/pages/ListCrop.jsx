@@ -50,11 +50,8 @@ function ListCrop() {
     }
 
     const formDataToSend = new FormData();
-    formDataToSend.append("farmerId",      currentUser?.userCode || "FR-000000");
-    formDataToSend.append("farmerName",    currentUser?.name || "Farmer");
-    formDataToSend.append("farmerMobile",  currentUser?.mobile || "");
-    formDataToSend.append("farmerAddress", currentUser?.address || "");
-    formDataToSend.append("farmerVillage", currentUser?.profile?.village || "");
+    // farmer identity/contact is now taken from the logged-in account
+    // on the server, so only the crop details are sent.
     formDataToSend.append("name",          formData.name);
     formDataToSend.append("quantity",      formData.quantity);
     formDataToSend.append("price",         formData.price);
