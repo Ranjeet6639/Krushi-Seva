@@ -14,15 +14,15 @@ function generateOtp() {
 }
 
 /*
-  BATCH A: the OTP is no longer returned in the API response.
-  It is only returned when you explicitly turn on ALLOW_DEV_OTP=true AND
-  NODE_ENV is not "production" (local testing only).
+  DEMO OTP MODE
+  When ALLOW_DEV_OTP=true (in .env locally, or in Render's Environment tab),
+  the OTP is shown on the page instead of being sent anywhere.
+  This is for demos only: anyone can then register with any mobile number.
+  Remove the variable (or set it to false) before real users sign up.
+  Without it, the OTP is emailed and never returned in the response.
 */
 function isDevOtpAllowed() {
-  return (
-    process.env.ALLOW_DEV_OTP === "true" &&
-    process.env.NODE_ENV !== "production"
-  );
+  return process.env.ALLOW_DEV_OTP === "true";
 }
 
 function isValidEmail(email = "") {
@@ -133,8 +133,9 @@ export async function sendOtp(req, res, next) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    // BATCH A: 60-second cooldown so this can't be used to spam an inbox
-    const recent = await OtpVerification.findOne({
+    // 60-second cooldown so this can't be used to spam an inbox
+    // (skipped in demo mode, where nothing is emailed)
+    const recent = isDevOtpAllowed() ? null : await OtpVerification.findOne({
       $or: [
         { mobile: normalizedMobile, role },
         { email: normalizedEmail }
@@ -159,10 +160,11 @@ export async function sendOtp(req, res, next) {
       expiresAt: getOtpExpiryDate()
     });
 
-    // BATCH A: actually deliver the OTP (by email) instead of putting it in the response
+    // actually deliver the OTP (by email) instead of putting it in the response
     let delivered = false;
 
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    // In demo mode nothing is emailed (also avoids waiting on blocked SMTP on Render)
+    if (!isDevOtpAllowed() && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       try {
         const minutes = Number(process.env.OTP_EXPIRY_MINUTES || 10);
         await sendEmail({
@@ -193,7 +195,7 @@ export async function sendOtp(req, res, next) {
     return res.status(201).json({
       message: delivered
         ? "OTP sent to your email"
-        : "OTP generated (development mode)",
+        : "Demo mode: OTP is shown on screen",
       ...(isDevOtpAllowed() ? { devOtp: otp } : {})
     });
   } catch (error) {
