@@ -31,7 +31,7 @@ function TraderRegister() {
     const { name, value } = e.target;
     setForm((currentForm) => ({ ...currentForm, [name]: value }));
 
-    if (name === "mobile") {
+    if (name === "mobile" || name === "email") {
       setOtpSent(false);
       setOtpVerified(false);
       setOtp("");
@@ -44,6 +44,11 @@ function TraderRegister() {
       setError("Enter mobile number first");
       return;
     }
+    
+    if (!form.email) {
+      setError("Enter your email address first. The OTP will be sent there.");
+      return;
+    }
 
     setError("");
     setStatus("");
@@ -52,6 +57,7 @@ function TraderRegister() {
     try {
       const response = await api.post("/auth/otp/send", {
         mobile: form.mobile,
+        email: form.email,
         role: "trader"
       });
 
@@ -59,8 +65,8 @@ function TraderRegister() {
       setOtpVerified(false);
       setStatus(
         response.data.devOtp
-          ? `OTP sent successfully. Demo OTP: ${response.data.devOtp}`
-          : "OTP sent successfully."
+          ? `${response.data.message}. Demo OTP: ${response.data.devOtp}`
+          : response.data.message || "OTP sent to your email."
       );
     } catch (apiError) {
       setError(apiError.response?.data?.message || "Failed to send OTP");
