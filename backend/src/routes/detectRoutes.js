@@ -1,18 +1,9 @@
 import { Router } from "express";
-import multer from "multer";
+import { requireAuth } from "../middleware/requireAuth.js";
+import { handleImageUpload } from "../config/cloudinary.js";
+import { detectLimiter } from "../middleware/rateLimiters.js";
 
 const router = Router();
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter(_req, file, cb) {
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
-    allowed.includes(file.mimetype)
-      ? cb(null, true)
-      : cb(new Error("Only JPG, PNG, or WEBP images allowed"));
-  }
-});
 
 const MODELS = [
   "google/gemma-4-31b-it:free",
@@ -44,27 +35,37 @@ If the image is not a plant or leaf respond with:
 }`;
 
 async function callOpenRouter(model, base64Image, mimeType) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.4,
-      max_tokens: 600,
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: PROMPT },
-            { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Image}` } }
-          ]
-        }
-      ]
-    })
-  });
+  // 30 s limit so one slow model can't hang the request
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000);
+
+  let response;
+  try {
+    response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.4,
+        max_tokens: 600,
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: PROMPT },
+              { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Image}` } }
+            ]
+          }
+        ]
+      })
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 
   const raw = await response.text();
 
@@ -93,7 +94,8 @@ async function callOpenRouter(model, base64Image, mimeType) {
   return JSON.parse(jsonMatch[0]);
 }
 
-router.post("/", upload.single("image"), async (req, res) => {
+// login required, 20 photos per user per hour, same safe upload rules as crop photos
+router.post("/", requireAuth, detectLimiter, handleImageUpload("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No image uploaded" });
   }
