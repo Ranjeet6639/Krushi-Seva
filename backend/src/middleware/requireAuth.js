@@ -26,3 +26,19 @@ export function requireAuth(req, res, next) {
     });
   }
 }
+
+/*
+  server-side role check.
+  Use AFTER requireAuth, e.g. router.get("/", requireAuth, requireRole("trader"), handler)
+  The role comes from the signed JWT, so it cannot be faked from the browser.
+*/
+export function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "You are not allowed to do this"
+      });
+    }
+    next();
+  };
+}
