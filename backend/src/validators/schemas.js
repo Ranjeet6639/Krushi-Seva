@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { getPasswordProblem } from "../utils/passwordRules.js";
 
 /*
-   one place that describes what every request is allowed to contain.
+  one place that describes what every request is allowed to contain.
   Anything not listed here is dropped, wrong types are rejected (this also stops
   NoSQL injection such as { "email": { "$gt": "" } }), and text lengths are capped.
 */
@@ -36,10 +37,13 @@ const mobile = z
   .transform((v) => v.replace(/\D/g, ""))
   .refine((v) => v.length >= 10 && v.length <= 15, "Enter a valid mobile number");
 
+// stronger rule for new passwords (see utils/passwordRules.js)
 const newPassword = z
   .string({ error: "Password is required" })
-  .min(6, "Password must be at least 6 characters")
-  .max(72, "Password must be 72 characters or fewer");
+  .superRefine((value, ctx) => {
+    const problem = getPasswordProblem(value);
+    if (problem) ctx.addIssue({ code: "custom", message: problem });
+  });
 
 const positiveNumber = (label, max) =>
   z
@@ -117,8 +121,8 @@ export const profileSchema = z.object({
   name: optStr("Name", 100),
   gender: optStr("Gender", 20),
   dob: optStr("Date of birth", 20),
-  // Deliberately lenient: social-login accounts currently store an ID here.
-  // Proper mobile rules + re-verification come in Batch C (issue #12).
+  // Format + OTP re-verification are checked in routes/userRoutes.js (BATCH C),
+  // because old social accounts may still send a non-number here unchanged.
   mobile: optStr("Mobile number", 30),
   state: optStr("State"),
   district: optStr("District"),
