@@ -12,11 +12,14 @@ const otpVerificationSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    // the email this OTP was delivered to. Registration must use the
+    // same email, so the verified code can't be reused for a different account.
     email: {
       type: String,
       trim: true,
       lowercase: true
     },
+    // this now holds a keyed hash (HMAC) of the OTP, never the OTP itself
     otp: {
       type: String,
       required: true
