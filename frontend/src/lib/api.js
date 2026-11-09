@@ -19,7 +19,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // a failed login/OTP call also returns 401 - that should show its message,
+    // not log the user out and reload the page.
+    const isAuthCall = error.config?.url?.startsWith("/auth/");
+    if (error.response?.status === 401 && !isAuthCall) {
       localStorage.removeItem("token");
       localStorage.removeItem("currentUser");
       window.location.href = "/login";
