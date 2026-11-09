@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 import { Crop } from "../models/Crop.js";
 import { User } from "../models/User.js";
 import { uploadToCloudinary } from "../config/cloudinary.js";
-
-const CATEGORIES = ["Vegetable", "Fruit", "Grains", "Pulses"];
+import { isRealMobile } from "../utils/userHelpers.js";
 
 /*
-   contact details are NOT sent to everyone browsing the market.
+  contact details are NOT sent to everyone browsing the market.
   Traders get the farmer's mobile + address only after the farmer accepts
   their offer (see GET /api/offers/trader).
 */
@@ -19,30 +18,21 @@ export async function listCrop(req, res, next) {
       return res.status(403).json({ message: "Only farmers can list crops" });
     }
 
-    //  only these 4 fields are read from the request.
-    // Before, the whole req.body was saved, so anyone could set farmerId etc.
-    const name = String(req.body.name || "").trim();
-    const quantity = Number(req.body.quantity);
-    const price = Number(req.body.price);
-    const category = req.body.category || "Vegetable";
-
-    if (!name || name.length > 80) {
-      return res.status(400).json({ message: "Crop name is required (max 80 characters)" });
-    }
-    if (!Number.isFinite(quantity) || quantity <= 0 || quantity > 1000000) {
-      return res.status(400).json({ message: "Quantity must be a number greater than 0" });
-    }
-    if (!Number.isFinite(price) || price <= 0 || price > 100000) {
-      return res.status(400).json({ message: "Price must be a number greater than 0" });
-    }
-    if (!CATEGORIES.includes(category)) {
-      return res.status(400).json({ message: "Invalid crop category" });
-    }
+    // only these 4 fields are used, already validated by cropSchema
+    const { name, quantity, price, category } = req.body;
 
     // farmer identity + contact come from the database, not the browser
     const farmer = await User.findById(req.user.id);
     if (!farmer) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // traders contact the farmer by phone after an accepted offer,
+    // so the farmer needs a real, verified mobile number first
+    if (!isRealMobile(farmer.mobile)) {
+      return res.status(400).json({
+        message: "Please add and verify your mobile number in your profile before listing a crop."
+      });
     }
 
     const farmerId = farmer.userCode || req.user.userCode;
