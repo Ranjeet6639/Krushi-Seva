@@ -1,3 +1,4 @@
+import { getPasswordError, PASSWORD_HINT } from "../../lib/passwordRules";
 import "./TraderRegister.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -114,6 +115,13 @@ function TraderRegister() {
       return;
     }
 
+    // same password rules as the server
+    const passwordError = getPasswordError(form.password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     if (!otpVerified) {
       setError("Please verify OTP first");
       return;
@@ -195,7 +203,7 @@ function TraderRegister() {
         )}
 
         <input name="email" placeholder="Email" onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} />
+        <input type="password" name="password" placeholder={PASSWORD_HINT} onChange={handleChange} />
         <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
       </div>
 
