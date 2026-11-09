@@ -4,30 +4,19 @@ import { Offer } from "../models/Offer.js";
 import { Crop } from "../models/Crop.js";
 import { User } from "../models/User.js";
 import { requireAuth, requireRole } from "../middleware/requireAuth.js";
+import { isRealMobile } from "../utils/userHelpers.js";
+import { validate } from "../middleware/validate.js";
+import { offerSchema, offerStatusSchema } from "../validators/schemas.js";
 
 const router = Router();
 
 // POST /api/offers — Trader submits an offer
 // trader role required; crop, farmer and trader details come from the
 // database. Only cropId, offerPrice, quantity and message are read from the request.
-router.post("/", requireAuth, requireRole("trader"), async (req, res, next) => {
+router.post("/", requireAuth, requireRole("trader"), validate(offerSchema), async (req, res, next) => {
   try {
-    const { cropId, offerPrice, quantity, message } = req.body;
-
-    if (!mongoose.isValidObjectId(cropId)) {
-      return res.status(400).json({ message: "A valid crop is required" });
-    }
-
-    const price = Number(offerPrice);
-    const qty = Number(quantity);
-
-    if (!Number.isFinite(price) || price <= 0 || price > 100000) {
-      return res.status(400).json({ message: "Offer price must be a number greater than 0" });
-    }
-
-    if (!Number.isFinite(qty) || qty <= 0 || qty > 1000000) {
-      return res.status(400).json({ message: "Quantity must be a number greater than 0" });
-    }
+    // already validated and converted to numbers by offerSchema
+    const { cropId, offerPrice: price, quantity: qty, message } = req.body;
 
     const crop = await Crop.findById(cropId);
     if (!crop || crop.status !== "Active") {
@@ -45,7 +34,8 @@ router.post("/", requireAuth, requireRole("trader"), async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!trader.name || !trader.mobile || !trader.address) {
+    // social accounts have no real mobile until they add and verify one
+    if (!trader.name || !isRealMobile(trader.mobile) || !trader.address) {
       return res.status(400).json({
         message: "Your profile is incomplete. Please add your mobile number and address before making an offer."
       });
@@ -64,7 +54,7 @@ router.post("/", requireAuth, requireRole("trader"), async (req, res, next) => {
       farmerName:    crop.farmerName,
       offerPrice:    price,
       quantity:      qty,
-      message:       String(message || "").trim().slice(0, 500)
+      message
     });
 
     res.status(201).json({ message: "Offer submitted successfully", offer });
@@ -138,13 +128,9 @@ router.get("/trader", requireAuth, requireRole("trader"), async (req, res, next)
 });
 
 // PATCH /api/offers/:id — Farmer accepts or rejects
-router.patch("/:id", requireAuth, requireRole("farmer"), async (req, res, next) => {
+router.patch("/:id", requireAuth, requireRole("farmer"), validate(offerStatusSchema), async (req, res, next) => {
   try {
     const { status } = req.body;
-
-    if (!["Accepted", "Rejected"].includes(status)) {
-      return res.status(400).json({ message: "Status must be Accepted or Rejected" });
-    }
 
     // bad ids return 400 instead of a 500 crash
     if (!mongoose.isValidObjectId(req.params.id)) {
