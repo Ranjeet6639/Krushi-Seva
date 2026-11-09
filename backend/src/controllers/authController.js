@@ -4,13 +4,34 @@ import { OtpVerification } from "../models/OtpVerification.js";
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/sendEmail.js";
+import { escapeHtml } from "../utils/html.js";
+import {
+  isRealMobile,
+  isSocialOnly,
+  normalizeMobile
+} from "../utils/userHelpers.js";
 
-function normalizeMobile(mobile = "") {
-  return mobile.replace(/\D/g, "");
+// after the OTP is verified, registration/profile save must happen within this time
+const VERIFIED_WINDOW_MINUTES = 30;
+
+// OTPs are stored as an HMAC hash, so a database leak doesn't expose live codes
+function hashOtp(mobile, role, otp) {
+  const secret = process.env.OTP_SECRET || process.env.JWT_SECRET;
+  return crypto
+    .createHmac("sha256", secret)
+    .update(`${mobile}:${role}:${otp}`)
+    .digest("hex");
 }
 
+function otpMatches(storedHash, mobile, role, otp) {
+  const a = Buffer.from(String(storedHash || ""), "utf8");
+  const b = Buffer.from(hashOtp(mobile, role, otp), "utf8");
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+// BATCH B: crypto.randomInt instead of Math.random() (which is predictable)
 function generateOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return crypto.randomInt(100000, 1000000).toString();
 }
 
 /*
@@ -31,16 +52,19 @@ function isValidEmail(email = "") {
 
 const OTP_RESEND_COOLDOWN_SECONDS = 60;
 
-function generateToken(user) {
+// exported so social login uses the exact same token.
+// "ver" lets us cancel every old token by bumping user.tokenVersion.
+export function generateToken(user) {
   return jwt.sign(
     {
       id: user._id,
       role: user.role,
-      userCode: user.userCode
+      userCode: user.userCode,
+      ver: user.tokenVersion || 0
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "7d"
+      expiresIn: process.env.JWT_EXPIRES_IN || "7d"
     }
   );
 }
@@ -90,7 +114,8 @@ export function buildUserResponse(user) {
     gender: user.gender,
     dob: user.dob,
     email: user.email,
-    mobile: user.mobile,
+    // BATCH C: social accounts without a phone number get "" (not an internal ID)
+    mobile: isRealMobile(user.mobile) ? user.mobile : "",
     state: user.state,
     district: user.district,
     address: user.address,
@@ -133,7 +158,7 @@ export async function sendOtp(req, res, next) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    // 60-second cooldown so this can't be used to spam an inbox
+    //  60-second cooldown so this can't be used to spam an inbox
     // (skipped in demo mode, where nothing is emailed)
     const recent = isDevOtpAllowed() ? null : await OtpVerification.findOne({
       $or: [
@@ -156,7 +181,7 @@ export async function sendOtp(req, res, next) {
       mobile: normalizedMobile,
       role,
       email: normalizedEmail,
-      otp,
+      otp: hashOtp(normalizedMobile, role, otp),
       expiresAt: getOtpExpiryDate()
     });
 
@@ -235,7 +260,7 @@ export async function verifyOtp(req, res, next) {
     }
 
     // Wrong OTP — increment attempt counter before rejecting
-    if (otpRecord.otp !== otp) {
+    if (!otpMatches(otpRecord.otp, normalizedMobile, role, otp)) {
       otpRecord.attempts += 1;
       await otpRecord.save();
 
@@ -251,6 +276,8 @@ export async function verifyOtp(req, res, next) {
     // OTP is correct — mark as verified
     otpRecord.verified = true;
     otpRecord.verifiedAt = new Date();
+    // give a fixed window to finish registering / saving the profile
+    otpRecord.expiresAt = new Date(Date.now() + VERIFIED_WINDOW_MINUTES * 60 * 1000);
     await otpRecord.save();
 
     return res.json({ message: "Phone number verified successfully" });
@@ -288,12 +315,13 @@ export async function registerUser(req, res, next) {
       return res.status(400).json({ message: "Name, mobile, email and password are required" });
     }
 
-    // BATCH A: the verified OTP must belong to this mobile AND this email
+    // the verified OTP must belong to this mobile AND this email
     const verifiedOtp = await OtpVerification.findOne({
       mobile: normalizedMobile,
       role: normalizedRole,
       email: normalizedEmail,
-      verified: true
+      verified: true,
+      expiresAt: { $gt: new Date() } // BATCH C: expired verifications don't count
     }).sort({ verifiedAt: -1 });
 
     if (!verifiedOtp) {
@@ -378,82 +406,73 @@ export async function loginUser(req, res, next) {
 }
 
 // STEP 1: User submits email -> generate reset token -> email a reset link
-export async function forgotPassword(req, res, next) {
+// the reply is ALWAYS the same and is sent straight away. The lookup and
+// the email happen afterwards, so neither the message nor the response time (nor an
+// email-sending error) reveals whether an account exists.
+async function processForgotPassword(normalizedEmail, role) {
+  const user = await User.findOne({ email: normalizedEmail, role });
+  if (!user) return;
+
+  const socialOnly = isSocialOnly(user);
+
+  // Generate a random raw token to send to the user, but only store a
+  // hashed version in the database (same principle as storing passwords).
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+  const expiryMinutes = Number(process.env.RESET_PASSWORD_EXPIRY_MINUTES || 15);
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
+  await user.save();
+
+  const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+  // role comes from the stored account, not from the request
+  const resetLink = `${clientUrl}/reset-password/${rawToken}?role=${encodeURIComponent(user.role)}`;
+
   try {
-    const { email, role } = req.body;
-    const normalizedEmail = String(email || "").trim().toLowerCase();
-
-    if (!normalizedEmail || !role) {
-      return res.status(400).json({ message: "Email and role are required" });
-    }
-
-    const user = await User.findOne({ email: normalizedEmail, role });
-
-    // IMPORTANT: Always return the same generic response whether or not the
-    // user exists. This prevents attackers from using this endpoint to
-    // figure out which emails are registered on the platform.
-    const genericResponse = {
-      message: `If an account exists for ${normalizedEmail}, we've sent a password reset link to it. Please check your inbox (and spam folder).`
-    };
-
-    if (!user) {
-      return res.json(genericResponse);
-    }
-
-    const isSocialOnly = Boolean(user.firebaseUid) && user.passwordHash === user.firebaseUid;
-
-    // Generate a random raw token to send to the user, but only store a
-    // hashed version in the database (same principle as storing passwords).
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-
-    const expiryMinutes = Number(process.env.RESET_PASSWORD_EXPIRY_MINUTES || 15);
-    user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
+    await sendEmail({
+      to: user.email,
+      subject: "Reset your Krushi Seva password",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
+          <h2>Reset your password</h2>
+          <p>Hi ${escapeHtml(user.name || "")},</p>
+          ${
+            socialOnly
+              ? `<p>We noticed this account normally signs in with Google. You can keep using "Continue with Google" as usual — or, if you'd like to set up a password as a backup login method, click the button below.</p>`
+              : `<p>We received a request to reset your Krushi Seva password. Click the button below to choose a new password. This link expires in ${expiryMinutes} minutes.</p>`
+          }
+          <p style="text-align:center;">
+            <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#2e7d32;color:#fff;text-decoration:none;border-radius:6px;">
+              ${socialOnly ? "Set a Password" : "Reset Password"}
+            </a>
+          </p>
+          <p>If you didn't request this, you can safely ignore this email — ${socialOnly ? "your Google sign-in will keep working as normal." : "your password will remain unchanged."}</p>
+          <p style="color:#888;font-size:12px;">If the button doesn't work, copy and paste this link into your browser:<br />${resetLink}</p>
+        </div>
+      `
+    });
+  } catch (emailError) {
+    // Only the server log sees the real reason (Gmail auth, blocked SMTP on Render, ...)
+    console.error("Failed to send password reset email:", emailError.message);
+    // Roll back the token so no dangling token is left behind
+    user.resetPasswordToken = "";
+    user.resetPasswordExpires = undefined;
     await user.save();
-
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-    const resetLink = `${clientUrl}/reset-password/${rawToken}?role=${role}`;
-
-    try {
-      await sendEmail({
-        to: user.email,
-        subject: "Reset your Krushi Seva password",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
-            <h2>Reset your password</h2>
-            <p>Hi ${user.name || ""},</p>
-            ${
-              isSocialOnly
-                ? `<p>We noticed this account normally signs in with Google. You can keep using "Continue with Google" as usual — or, if you'd like to set up a password as a backup login method, click the button below.</p>`
-                : `<p>We received a request to reset your Krushi Seva password. Click the button below to choose a new password. This link expires in ${expiryMinutes} minutes.</p>`
-            }
-            <p style="text-align:center;">
-              <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#2e7d32;color:#fff;text-decoration:none;border-radius:6px;">
-                ${isSocialOnly ? "Set a Password" : "Reset Password"}
-              </a>
-            </p>
-            <p>If you didn't request this, you can safely ignore this email — ${isSocialOnly ? "your Google sign-in will keep working as normal." : "your password will remain unchanged."}</p>
-            <p style="color:#888;font-size:12px;">If the button doesn't work, copy and paste this link into your browser:<br />${resetLink}</p>
-          </div>
-        `
-      });
-    } catch (emailError) {
-      // Log the real reason the send failed — without this, you'll never
-      // know if it's a Gmail auth issue, app password problem, etc.
-      console.error("Failed to send password reset email:", emailError.message);
-      // Roll back the token if the email genuinely fails to send, so the
-      // user isn't left with a dangling token they never received.
-      user.resetPasswordToken = "";
-      user.resetPasswordExpires = undefined;
-      await user.save();
-      throw emailError;
-    }
-
-    return res.json(genericResponse);
-  } catch (error) {
-    next(error);
   }
+}
+
+export async function forgotPassword(req, res) {
+  const { email, role } = req.body;
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+
+  res.json({
+    message: `If an account exists for ${normalizedEmail}, we've sent a password reset link to it. Please check your inbox (and spam folder).`
+  });
+
+  processForgotPassword(normalizedEmail, role).catch((error) => {
+    console.error("Forgot password processing failed:", error.message);
+  });
 }
 
 // STEP 2: User clicks link, submits new password + token -> verify & update
@@ -465,9 +484,7 @@ export async function resetPassword(req, res, next) {
       return res.status(400).json({ message: "Token and new password are required" });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
-    }
+    // password strength is checked by resetPasswordSchema (validators/schemas.js)
 
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
@@ -481,6 +498,9 @@ export async function resetPassword(req, res, next) {
     }
 
     user.passwordHash = await bcrypt.hash(password, 10);
+    user.hasPassword = true;
+    // every login token issued before this moment stops working
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
     user.resetPasswordToken = "";
     user.resetPasswordExpires = undefined;
     await user.save();
