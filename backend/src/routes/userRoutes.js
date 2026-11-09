@@ -21,7 +21,7 @@ router.get("/me", requireAuth, async (req, res, next) => {
 });
 
 // PATCH /api/user/profile — update profile fields
-// BATCH B: body is validated and cleaned by profileSchema
+// body is validated and cleaned by profileSchema
 router.patch("/profile", requireAuth, validate(profileSchema), async (req, res, next) => {
   try {
     const {
@@ -34,7 +34,7 @@ router.patch("/profile", requireAuth, validate(profileSchema), async (req, res, 
     if (!user) return res.status(404).json({ message: "User not found" });
 
     /*
-      (#12): changing the mobile number needs a verified OTP for the NEW number,
+      changing the mobile number needs a verified OTP for the NEW number,
       the number must be valid, and it must not belong to another account.
       Everything is checked BEFORE anything is changed.
     */
