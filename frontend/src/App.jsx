@@ -1,6 +1,5 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Analytics } from '@vercel/analytics/react';
 import ProtectedRoute from "./components/ProtectedRoute";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -87,7 +86,6 @@ function Home() {
 function App() {
   return (
     <Router>
-      <Analytics />
       <Routes>
         {/* Public routes — no login needed */}
         <Route path="/" element={<Home />} />
@@ -123,9 +121,6 @@ function App() {
         <Route path="/whattogrow" element={
           <ProtectedRoute><WhatToGrow /></ProtectedRoute>
         } />
-        <Route path="/farmerdashboard" element={
-       <ProtectedRoute requiredRole="farmer"><FarmerDashboard /></ProtectedRoute>
-       } />
        <Route path="/editprofile" element={
        <ProtectedRoute><EditProfile /></ProtectedRoute>
        } />
@@ -142,9 +137,6 @@ function App() {
         } />
         <Route path="/Trader/BuyCrops" element={
           <ProtectedRoute><TraderBuyCrops /></ProtectedRoute>
-        } />
-        <Route path="/Trader/TraderDashboard" element={
-        <ProtectedRoute requiredRole="trader"><TraderDashboard /></ProtectedRoute>
         } />
       </Routes>
       

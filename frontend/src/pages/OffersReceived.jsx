@@ -57,7 +57,7 @@ function OffersReceived() {
           className="offers-back-button"
           onClick={() => navigate("/sellmyharvest")}
         >
-          🏠 Back to Sell page
+          <Home size={20} /> Back to Sell page
         </button>
       </div>
 
