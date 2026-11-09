@@ -1,3 +1,4 @@
+import { getPasswordError } from "../lib/passwordRules";
 import "./Login.css";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,8 +19,10 @@ function ResetPassword() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    // same password rules as the server
+    const passwordError = getPasswordError(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -62,7 +65,7 @@ function ResetPassword() {
 
         <input
           type="password"
-          placeholder="New password"
+          placeholder="New password (8+ characters, letters and numbers)"
           className="input-field"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
