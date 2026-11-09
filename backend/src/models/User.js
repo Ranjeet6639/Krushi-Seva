@@ -51,6 +51,18 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    // false for accounts that only use social login (no password set yet)
+    hasPassword: {
+      type: Boolean,
+      default: true,
+    },
+
+    // bump this number to log the user out everywhere (e.g. on password reset)
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
+
     firebaseUid: {
       type: String,
       default: "",
