@@ -1,5 +1,7 @@
+import { logger } from "../utils/logger.js";
+
 /*
-   one place that turns errors into responses.
+  one place that turns errors into responses.
   - problems caused by the request (bad JSON, bad upload, duplicate value...) -> 4xx with a clear message
   - unexpected server errors -> logged on the server, but the client only sees a generic message
     (before, error.message was sent to the browser and could leak internals)
@@ -37,7 +39,7 @@ export function errorHandler(err, req, res, next) {
 
   if (status >= 500) {
     // full details stay in the server log only
-    console.error(`[${req.method} ${req.originalUrl}]`, err);
+    logger.error("Unhandled error", { err, method: req.method, path: req.originalUrl.split("?")[0] });
     message = "Internal server error";
   }
 
