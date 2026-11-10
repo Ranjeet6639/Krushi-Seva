@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import detectRoutes from "./routes/detectRoutes.js";
@@ -10,9 +11,11 @@ import userRoutes from "./routes/userRoutes.js";
 import offerRoutes from "./routes/offerRoutes.js";
 import { apiLimiter } from "./middleware/rateLimiters.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { buildCorsOptions } from "./config/cors.js";
 
 /*
-  the Express app now lives here (server.js only connects the
+  The Express app now lives here (server.js only connects the
   database and starts listening). This also lets tests load the real app.
 */
 const app = express();
@@ -20,6 +23,9 @@ const app = express();
 // Render sits behind a proxy. Without this, every visitor looks like the same
 // IP address and rate limits would hit everyone at once.
 app.set("trust proxy", 1);
+
+// BATCH D: one log line per request
+app.use(requestLogger);
 
 // Security headers (hides X-Powered-By, adds nosniff, etc.)
 app.use(
@@ -31,20 +37,23 @@ app.use(
 
 // CORS runs before the rate limiter so even "429 Too many requests" replies
 // reach the browser with a readable message.
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173"
-  })
-);
+// CLIENT_URL may list several sites (comma separated, * allowed in a host name)
+app.use(cors(buildCorsOptions()));
 
 app.use(express.json({ limit: "100kb" }));
 
 app.use("/uploads", express.static("uploads"));
 
 // before the limiter so Render's health checks never count
+// also reports the database. 503 while MongoDB is not connected.
 app.get("/api/health", (_req, res) => {
-  res.json({
-    message: "Krushi Seva backend is running"
+  const dbUp = mongoose.connection.readyState === 1;
+
+  res.status(dbUp ? 200 : 503).json({
+    message: dbUp
+      ? "Krushi Seva backend is running"
+      : "Backend is running but the database is not connected",
+    db: dbUp ? "connected" : "disconnected"
   });
 });
 
