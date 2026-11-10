@@ -129,4 +129,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// indexes for lookups that had none (email and mobile are already unique)
+userSchema.index({ firebaseUid: 1 });
+userSchema.index({ resetPasswordToken: 1 });
+
 export const User = mongoose.model("User", userSchema);
