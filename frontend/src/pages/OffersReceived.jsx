@@ -28,18 +28,29 @@ function OffersReceived() {
     try {
       const res = await api.patch(`/offers/${offerId}`, { status });
 
-      const updatedOffers = offers.map(o =>
+      const acceptedOffer = offers.find(o => o._id === offerId);
+
+      setOffers(offers.map(o =>
         o._id === offerId ? { ...o, status: res.data.offer.status } : o
-      );
-      setOffers(updatedOffers);
+      ));
 
       if (status === "Accepted") {
-        const acceptedOffer = offers.find(o => o._id === offerId);
         setSelectedOffer(acceptedOffer);
       }
 
+      // accepting the last of a crop automatically closes the other
+      // pending offers for it, so reload the list to show the real statuses
+      api.get(`/offers/farmer/${currentUser.userCode}`)
+        .then(r => setOffers(r.data.offers || []))
+        .catch(() => {});
+
     } catch (err) {
       alert(err?.response?.data?.message || "Failed to update offer.");
+
+      // the offer may have been answered elsewhere: show the current state
+      api.get(`/offers/farmer/${currentUser.userCode}`)
+        .then(r => setOffers(r.data.offers || []))
+        .catch(() => {});
     }
   };
 
