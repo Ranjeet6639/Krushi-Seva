@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import { Router } from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { handleImageUpload } from "../config/cloudinary.js";
@@ -108,7 +109,7 @@ router.post("/", requireAuth, detectLimiter, handleImageUpload("image"), async (
   for (const model of MODELS) {
     try {
       const parsed = await callOpenRouter(model, base64Image, mimeType);
-      console.log(`Detect [${model}] observed: ${parsed.observed} -> ${parsed.disease}`);
+      logger.info("Detect served", { model });
 
       return res.json({
         disease: parsed.disease || "Unknown",
@@ -117,13 +118,13 @@ router.post("/", requireAuth, detectLimiter, handleImageUpload("image"), async (
         pesticide: parsed.pesticide || "None"
       });
     } catch (error) {
-      console.error(`Detect error [${model}]:`, error.message);
+      logger.warn("Detect model failed", { model, reason: error.message });
       lastError = error;
       // try next model
     }
   }
 
-  console.error("Detect: all models failed. Last error:", lastError?.message);
+  logger.error("Detect: all models failed", { reason: lastError?.message });
   res.status(500).json({
     disease: "Detection Failed",
     solution: "Could not analyze the image. Please try again.",
