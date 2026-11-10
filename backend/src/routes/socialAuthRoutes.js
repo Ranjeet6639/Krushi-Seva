@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import { Router } from "express";
 import { auth } from "../config/firebaseAdmin.js";
 import { User } from "../models/User.js";
@@ -17,7 +18,7 @@ import {
 
 const router = Router();
 
-//  rate limit + validation
+// rate limit + validation
 router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), async (req, res, next) => {
   try {
     const { firebaseToken, role } = req.body;
@@ -27,7 +28,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
     try {
       decoded = await auth.verifyIdToken(firebaseToken);
     } catch (tokenError) {
-      console.error("Social login token rejected:", tokenError.code || tokenError.message);
+      logger.warn("Social login token rejected", { code: tokenError.code || tokenError.message });
       return res.status(401).json({
         message: "Social login failed. Please try again."
       });
@@ -35,7 +36,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
 
     const { uid, email, name, picture } = decoded;
 
-    // without a verified email we can't tell who owns this address,
+    // (#5): without a verified email we can't tell who owns this address,
     // so we never create or link an account from it.
     if (!email) {
       return res.status(400).json({
@@ -51,7 +52,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
 
     const normalizedEmail = String(email).trim().toLowerCase();
 
-    // find the account by the provider's stable ID first, then by verified email.
+    // (#5): find the account by the provider's stable ID first, then by verified email.
     // Before, only email + the role chosen by the browser was used.
     let user = await User.findOne({ firebaseUid: uid });
     if (!user) {
@@ -71,7 +72,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
       user = await User.create({
         name: name || normalizedEmail.split("@")[0] || "User",
         email: normalizedEmail,
-        // no more Firebase ID in the mobile and password fields
+        // (#6): no more Firebase ID in the mobile and password fields
         mobile: placeholderMobile(),
         passwordHash: await makeUnusableHash(),
         hasPassword: false,
@@ -89,7 +90,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
         updated = true;
       }
 
-      // upgrade old social accounts that stored the Firebase ID as the password hash
+      // (#6): upgrade old social accounts that stored the Firebase ID as the password hash
       if (user.firebaseUid && user.passwordHash === user.firebaseUid) {
         user.passwordHash = await makeUnusableHash();
         user.hasPassword = false;
@@ -121,7 +122,7 @@ router.post("/social-login", socialLoginLimiter, validate(socialLoginSchema), as
     });
 
   } catch (error) {
-    console.error("Social login error:", error);
+    logger.error("Social login error", error);
     next(error);
   }
 });
