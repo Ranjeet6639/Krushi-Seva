@@ -23,6 +23,12 @@ function getTransporter() {
 }
 
 export async function sendEmail({ to, subject, html }) {
+  // in tests nothing is sent; the message is kept so tests can check it
+  if (process.env.NODE_ENV === "test") {
+    (globalThis.__sentEmails ||= []).push({ to, subject, html });
+    return;
+  }
+
   const mailOptions = {
     from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
     to,
