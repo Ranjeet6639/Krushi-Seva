@@ -28,10 +28,29 @@ function TraderOffers() {
     currentUser?.address
   );
 
+  // crops arrive 12 at a time ("Load more" asks for the next page)
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadCrops = (pageToLoad) =>
+    api.get("/crops", { params: { page: pageToLoad, limit: 12 } }).then((r) => {
+      const incoming = r.data.crops || [];
+      setCrops((prev) => (pageToLoad === 1 ? incoming : [...prev, ...incoming]));
+      setPage(pageToLoad);
+      setHasMore(Boolean(r.data.pagination?.hasMore));
+    });
+
+  const loadMore = () => {
+    setLoadingMore(true);
+    loadCrops(page + 1)
+      .catch(() => alert("Could not load more crops. Please try again."))
+      .finally(() => setLoadingMore(false));
+  };
+
   useEffect(() => {
-    // Fetch all available crops
-    api.get("/crops")
-      .then(r => setCrops(r.data.crops || []))
+    // Fetch the first page of available crops
+    loadCrops(1)
       .catch(() => setError("Failed to load crops."))
       .finally(() => setLoading(false));
 
@@ -216,6 +235,20 @@ function TraderOffers() {
           ))
         )}
       </div>
+
+      {/* the market list is loaded 12 at a time */}
+      {hasMore && (
+        <div style={{ textAlign: "center", margin: "16px 0 32px" }}>
+          <button
+            
+            onClick={loadMore}
+            disabled={loadingMore}
+            style={{ padding: "10px 24px", background: "linear-gradient(135deg, #1b8f5a, #2fbf71)", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "500" }}
+          >
+            {loadingMore ? "Loading..." : "Load more crops"}
+          </button>
+        </div>
+      )}
 
       {/* Offer form modal */}
       {selectedCrop && (
