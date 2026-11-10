@@ -48,4 +48,8 @@ const otpVerificationSchema = new mongoose.Schema(
 
 otpVerificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
+// OTP lookups are always by mobile + role (and email)
+otpVerificationSchema.index({ mobile: 1, role: 1 });
+otpVerificationSchema.index({ email: 1 });
+
 export const OtpVerification = mongoose.model("OtpVerification", otpVerificationSchema);
