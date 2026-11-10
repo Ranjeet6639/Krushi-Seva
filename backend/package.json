@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -22,5 +23,8 @@
     "multer": "^2.1.1",
     "nodemailer": "^10.4.0",
     "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
