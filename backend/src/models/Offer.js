@@ -28,4 +28,9 @@ const offerSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// indexes for the queries the app actually runs
+offerSchema.index({ farmerId: 1, createdAt: -1 });  // offers received by a farmer
+offerSchema.index({ traderId: 1, createdAt: -1 });  // offers sent by a trader
+offerSchema.index({ cropId: 1, status: 1 });        // offers on one crop (sold out / crop deleted)
+
 export const Offer = mongoose.model("Offer", offerSchema);
