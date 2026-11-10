@@ -3,6 +3,9 @@ import { Crop } from "../models/Crop.js";
 import { User } from "../models/User.js";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 import { isRealMobile } from "../utils/userHelpers.js";
+import { Offer } from "../models/Offer.js";
+import { CROP_CATEGORIES } from "../validators/schemas.js";
+import { buildPagination, parsePagination } from "../utils/pagination.js";
 
 /*
   contact details are NOT sent to everyone browsing the market.
@@ -71,16 +74,35 @@ export async function listCrop(req, res, next) {
   }
 }
 
-// route now requires login + trader role (see cropRoutes.js)
+// pagination + optional ?search=tomato&category=Vegetable
+// (route requires login + trader role, see cropRoutes.js)
 export async function getAllCrops(req, res, next) {
   try {
-    const crops = await Crop.find({
-      status: "Active"
-    })
-      .select(PUBLIC_CROP_SELECT)
-      .sort({ createdAt: -1 });
+    const paging = parsePagination(req.query, { defaultLimit: 12, maxLimit: 50 });
+    const filter = { status: "Active" };
 
-    res.json({ crops });
+    if (req.query.category !== undefined && req.query.category !== "") {
+      if (!CROP_CATEGORIES.includes(req.query.category)) {
+        return res.status(400).json({ message: "Invalid crop category" });
+      }
+      filter.category = req.query.category;
+    }
+
+    if (typeof req.query.search === "string" && req.query.search.trim()) {
+      const text = req.query.search.trim().slice(0, 50);
+      filter.name = { $regex: text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    }
+
+    const [crops, total] = await Promise.all([
+      Crop.find(filter)
+        .select(PUBLIC_CROP_SELECT)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(paging.skip)
+        .limit(paging.limit),
+      Crop.countDocuments(filter)
+    ]);
+
+    res.json({ crops, pagination: buildPagination(paging, total) });
 
   } catch (err) {
     next(err);
@@ -96,11 +118,19 @@ export async function getFarmerCrops(req, res, next) {
       });
     }
 
-    const crops = await Crop.find({
-      farmerId: req.params.farmerId
-    }).sort({ createdAt: -1 });
+    // pagination (a farmer's own list is small, so the default is large)
+    const paging = parsePagination(req.query, { defaultLimit: 100, maxLimit: 200 });
+    const filter = { farmerId: req.params.farmerId };
 
-    res.json({ crops });
+    const [crops, total] = await Promise.all([
+      Crop.find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(paging.skip)
+        .limit(paging.limit),
+      Crop.countDocuments(filter)
+    ]);
+
+    res.json({ crops, pagination: buildPagination(paging, total) });
 
   } catch (err) {
     next(err);
@@ -127,6 +157,9 @@ export async function deleteCrop(req, res, next) {
     }
 
     await crop.deleteOne();
+
+    // offers still waiting on a deleted crop can never be accepted, so close them
+    await Offer.updateMany({ cropId: crop._id, status: "Pending" }, { status: "Rejected" });
 
     res.json({ message: "Crop deleted" });
 
