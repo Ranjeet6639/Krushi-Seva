@@ -14,4 +14,8 @@ const cropSchema = new mongoose.Schema({
   status: { type: String, default: "Active" }
 }, { timestamps: true });
 
+// indexes for the queries the app actually runs
+cropSchema.index({ farmerId: 1, createdAt: -1 });   // farmer's own crops
+cropSchema.index({ status: 1, createdAt: -1 });     // market list (Active crops, newest first)
+
 export const Crop = mongoose.model("Crop", cropSchema);
