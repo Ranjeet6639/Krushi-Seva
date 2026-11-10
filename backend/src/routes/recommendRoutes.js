@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import { Router } from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { validate } from "../middleware/validate.js";
@@ -125,20 +126,20 @@ Recommend the best 3 crops to grow. Respond ONLY in this exact JSON format with 
   for (const model of MODELS) {
     try {
       const parsed = await callOpenRouter(model, prompt);
-      console.log(`✅ Recommendation served by ${model}`);
+      logger.info("Recommendation served", { model });
       return res.json({
         result: parsed.result || "Could not generate recommendation.",
         crops: Array.isArray(parsed.crops) ? parsed.crops : [],
         tips: parsed.tips || "",
       });
     } catch (error) {
-      console.error(`❌ Recommend error [${model}]:`, error.message);
+      logger.warn("Recommend model failed", { model, reason: error.message });
       lastError = error;
     }
   }
 
   // Every model failed: return a rule-based answer instead of an error
-  console.error("Recommend: all models failed. Last error:", lastError?.message);
+  logger.error("Recommend: all models failed", { reason: lastError?.message });
   return res.json(buildFallback(formData));
 });
 
