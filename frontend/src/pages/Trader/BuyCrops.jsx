@@ -9,12 +9,31 @@ function BuyCrops() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // crops arrive 12 at a time ("Load more" asks for the next page)
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadCrops = (pageToLoad) =>
+    api.get("/crops", { params: { page: pageToLoad, limit: 12 } }).then((r) => {
+      const incoming = r.data.crops || [];
+      setCrops((prev) => (pageToLoad === 1 ? incoming : [...prev, ...incoming]));
+      setPage(pageToLoad);
+      setHasMore(Boolean(r.data.pagination?.hasMore));
+    });
+
   useEffect(() => {
-    api.get("/crops")
-      .then(r => setCrops(r.data.crops || []))
+    loadCrops(1)
       .catch(() => setError("Failed to load crops. Please try again."))
       .finally(() => setLoading(false));
   }, []);
+
+  const loadMore = () => {
+    setLoadingMore(true);
+    loadCrops(page + 1)
+      .catch(() => alert("Could not load more crops. Please try again."))
+      .finally(() => setLoadingMore(false));
+  };
 
   if (loading) return <p style={{ padding: "2rem" }}>Loading crops...</p>;
   if (error)   return <p style={{ padding: "2rem", color: "red" }}>{error}</p>;
@@ -61,6 +80,20 @@ function BuyCrops() {
           ))
         )}
       </div>
+
+      {/* the market list is loaded 12 at a time */}
+      {hasMore && (
+        <div style={{ textAlign: "center", margin: "16px 0 32px" }}>
+          <button
+            className="farmer-details-btn"
+            onClick={loadMore}
+            disabled={loadingMore}
+            style={{ maxWidth: "240px" }}
+          >
+            {loadingMore ? "Loading..." : "Load more crops"}
+          </button>
+        </div>
+      )}
 
       {selectedCrop && (
         <div className="modal-overlay">
