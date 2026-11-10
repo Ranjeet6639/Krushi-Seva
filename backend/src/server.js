@@ -1,86 +1,65 @@
-import dotenv from "dotenv";
-dotenv.config();
+// must be first: loads .env and stops with a clear message if settings are missing
+import "./config/env.js";
 import dns from "dns";
 dns.setDefaultResultOrder("ipv4first");
-import cors from "cors";
-import express from "express";
+import mongoose from "mongoose";
+import app from "./app.js";
 import { connectDb } from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import cropRoutes from "./routes/cropRoutes.js";
-import detectRoutes from "./routes/detectRoutes.js";
-import recommendRoutes from "./routes/recommendRoutes.js";
-import socialAuthRoutes from "./routes/socialAuthRoutes.js";
-import userRoutes from "./routes/userRoutes.js"; 
-import offerRoutes from "./routes/offerRoutes.js";
-
-
-const app = express();
+import { logger } from "./utils/logger.js";
 
 const port = process.env.PORT || 5000;
 
-app.use(
-  cors({
-    origin:
-      process.env.CLIENT_URL ||
-      "http://localhost:5173"
-  })
-);
+let server;
+let shuttingDown = false;
 
-app.use(express.json());
+/*
+  graceful shutdown. Render sends SIGTERM on every deploy/restart:
+  stop taking new requests, let running ones finish, close MongoDB, then exit.
+*/
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  logger.info("Shutting down", { signal });
 
-/* IMPORTANT ADD THIS */
-app.use(
-  "/uploads",
-  express.static("uploads")
-);
+  const forceExit = setTimeout(() => {
+    logger.error("Shutdown took too long, forcing exit");
+    process.exit(1);
+  }, 10000);
+  forceExit.unref();
 
-app.get("/api/health", (_req, res) => {
-  res.json({
-    message:
-      "Krushi Seva backend is running"
+  if (!server) process.exit(0);
+
+  server.close(async () => {
+    try {
+      await mongoose.connection.close();
+    } catch (error) {
+      logger.error("Error closing MongoDB connection", error);
+    }
+    logger.info("Shutdown complete");
+    process.exit(0);
   });
+  server.closeIdleConnections?.();
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled promise rejection", { err: reason });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/auth", socialAuthRoutes);
-app.use("/api/crops", cropRoutes);
-app.use("/api/detect", detectRoutes);
-app.use("/api/recommend", recommendRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/offers", offerRoutes);
-
-app.use((error, _req, res, _next) => {
-
-  const statusCode =
-    error.statusCode || 500;
-
-  res.status(statusCode).json({
-    message:
-      error.message ||
-      "Internal server error"
-  });
-
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught exception", error);
+  shutdown("uncaughtException");
 });
 
 connectDb()
   .then(() => {
-
-    app.listen(port, () => {
-
-      console.log(
-        `Server running on port ${port}`
-      );
-
+    server = app.listen(port, () => {
+      logger.info("Server running", { port });
     });
-
   })
   .catch((error) => {
-
-    console.error(
-      "Failed to start server",
-      error
-    );
-
+    logger.error("Failed to start server", error);
     process.exit(1);
-
   });
