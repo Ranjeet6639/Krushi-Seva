@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { OtpVerification } from "../models/OtpVerification.js";
@@ -29,7 +30,7 @@ function otpMatches(storedHash, mobile, role, otp) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-// BATCH B: crypto.randomInt instead of Math.random() (which is predictable)
+// crypto.randomInt instead of Math.random() (which is predictable)
 function generateOtp() {
   return crypto.randomInt(100000, 1000000).toString();
 }
@@ -114,7 +115,7 @@ export function buildUserResponse(user) {
     gender: user.gender,
     dob: user.dob,
     email: user.email,
-    // BATCH C: social accounts without a phone number get "" (not an internal ID)
+    // social accounts without a phone number get "" (not an internal ID)
     mobile: isRealMobile(user.mobile) ? user.mobile : "",
     state: user.state,
     district: user.district,
@@ -158,7 +159,7 @@ export async function sendOtp(req, res, next) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    //  60-second cooldown so this can't be used to spam an inbox
+    // 60-second cooldown so this can't be used to spam an inbox
     // (skipped in demo mode, where nothing is emailed)
     const recent = isDevOtpAllowed() ? null : await OtpVerification.findOne({
       $or: [
@@ -206,7 +207,7 @@ export async function sendOtp(req, res, next) {
         });
         delivered = true;
       } catch (emailError) {
-        console.error("Failed to send OTP email:", emailError.message);
+        logger.error("Failed to send OTP email", emailError);
       }
     }
 
@@ -454,7 +455,7 @@ async function processForgotPassword(normalizedEmail, role) {
     });
   } catch (emailError) {
     // Only the server log sees the real reason (Gmail auth, blocked SMTP on Render, ...)
-    console.error("Failed to send password reset email:", emailError.message);
+    logger.error("Failed to send password reset email", emailError);
     // Roll back the token so no dangling token is left behind
     user.resetPasswordToken = "";
     user.resetPasswordExpires = undefined;
@@ -471,7 +472,7 @@ export async function forgotPassword(req, res) {
   });
 
   processForgotPassword(normalizedEmail, role).catch((error) => {
-    console.error("Forgot password processing failed:", error.message);
+    logger.error("Forgot password processing failed", error);
   });
 }
 
