@@ -5,6 +5,7 @@ import { Crop } from "../models/Crop.js";
 import { User } from "../models/User.js";
 import { requireAuth, requireRole } from "../middleware/requireAuth.js";
 import { isRealMobile } from "../utils/userHelpers.js";
+import { buildPagination, parsePagination } from "../utils/pagination.js";
 import { validate } from "../middleware/validate.js";
 import { offerSchema, offerStatusSchema } from "../validators/schemas.js";
 
@@ -72,11 +73,16 @@ router.get("/farmer/:farmerId", requireAuth, requireRole("farmer"), async (req, 
       return res.status(403).json({ message: "You can only view your own offers" });
     }
 
-    const offers = await Offer.find({
-      farmerId: req.user.userCode
-    }).sort({ createdAt: -1 });
+    // pagination (a farmer's own list is small, so the default is large)
+    const paging = parsePagination(req.query, { defaultLimit: 100, maxLimit: 200 });
+    const filter = { farmerId: req.user.userCode };
 
-    res.json({ offers });
+    const [offers, total] = await Promise.all([
+      Offer.find(filter).sort({ createdAt: -1, _id: -1 }).skip(paging.skip).limit(paging.limit),
+      Offer.countDocuments(filter)
+    ]);
+
+    res.json({ offers, pagination: buildPagination(paging, total) });
   } catch (err) {
     next(err);
   }
@@ -88,9 +94,14 @@ router.get("/farmer/:farmerId", requireAuth, requireRole("farmer"), async (req, 
 // never include them.
 router.get("/trader", requireAuth, requireRole("trader"), async (req, res, next) => {
   try {
-    const offers = await Offer.find({
-      traderId: req.user.id
-    }).sort({ createdAt: -1 }).lean();
+    // pagination
+    const paging = parsePagination(req.query, { defaultLimit: 100, maxLimit: 200 });
+    const filter = { traderId: req.user.id };
+
+    const [offers, total] = await Promise.all([
+      Offer.find(filter).sort({ createdAt: -1, _id: -1 }).skip(paging.skip).limit(paging.limit).lean(),
+      Offer.countDocuments(filter)
+    ]);
 
     const acceptedFarmerCodes = [
       ...new Set(
@@ -120,7 +131,8 @@ router.get("/trader", requireAuth, requireRole("trader"), async (req, res, next)
         o.status === "Accepted"
           ? { ...o, farmerContact: contacts[o.farmerId] || null }
           : o
-      )
+      ),
+      pagination: buildPagination(paging, total)
     });
   } catch (err) {
     next(err);
@@ -145,10 +157,70 @@ router.patch("/:id", requireAuth, requireRole("farmer"), validate(offerStatusSch
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    offer.status = status;
-    await offer.save();
+    /*
+      (#11): an offer is answered ONCE.
+      Before, an accepted offer could later be rejected (and the other way round),
+      several offers could be accepted for the same crop, and the crop never
+      changed. Now: Pending -> Accepted or Rejected, and that is final.
+    */
+    if (offer.status !== "Pending") {
+      return res.status(409).json({
+        message: `This offer was already ${offer.status.toLowerCase()} and can't be changed.`
+      });
+    }
 
-    res.json({ message: `Offer ${status}`, offer });
+    // "Pending -> new status" is done in ONE database step, so two quick clicks
+    // (or two devices) can't both succeed.
+    const claimed = await Offer.findOneAndUpdate(
+      { _id: offer._id, status: "Pending" },
+      { status },
+      { new: true }
+    );
+
+    if (!claimed) {
+      return res.status(409).json({ message: "This offer has just been answered already." });
+    }
+
+    if (status === "Rejected") {
+      return res.json({ message: "Offer Rejected", offer: claimed });
+    }
+
+    // Accepted: take the quantity out of the crop (only if that much is still there)
+    const crop = await Crop.findOneAndUpdate(
+      {
+        _id: offer.cropId,
+        farmerId: offer.farmerId,
+        status: "Active",
+        quantity: { $gte: offer.quantity }
+      },
+      { $inc: { quantity: -offer.quantity } },
+      { new: true }
+    );
+
+    if (!crop) {
+      // undo the acceptance: nothing was sold
+      await Offer.updateOne({ _id: offer._id, status: "Accepted" }, { status: "Pending" });
+      return res.status(409).json({
+        message: "This crop is no longer available in the quantity offered, so the offer can't be accepted."
+      });
+    }
+
+    // Everything sold: close the listing and reject the offers that can no longer be met
+    let soldOut = false;
+    if (crop.quantity < 0.001) {
+      crop.quantity = 0;
+      crop.status = "Sold";
+      await crop.save();
+      await Offer.updateMany({ cropId: crop._id, status: "Pending" }, { status: "Rejected" });
+      soldOut = true;
+    }
+
+    return res.json({
+      message: "Offer Accepted",
+      offer: claimed,
+      cropQuantityLeft: crop.quantity,
+      soldOut
+    });
   } catch (err) {
     next(err);
   }
