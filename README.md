@@ -2,7 +2,7 @@
 
 > Connecting farmers and traders with AI-powered crop intelligence.
 
-**Krushi Seva** is a full-stack MERN web application built for Indian farmers and agricultural traders. It provides role-based dashboards, a crop marketplace, AI-powered crop disease detection, and smart crop recommendation — all in a simple, mobile-friendly interface accessible in English and Hindi.
+**Krushi Seva** is a full-stack MERN web application built for Indian farmers and agricultural traders. It provides role-based dashboards, a crop marketplace, AI-powered crop disease detection, and smart crop recommendation — all in a simple, mobile-friendly interface accessible in English.
 
 ---
 
