@@ -34,7 +34,7 @@ function TraderDashboard() {
       <div className="sidebar">
 
         {/* Logo */}
-        <h2 className="logo">🌱 Krushi Seva</h2>
+        <h2 className="logo notranslate" translate="no">🌱 Krushi Seva</h2>
 
         {/* Nav buttons wrapped for mobile row layout */}
         <div className="sidebar-nav">
