@@ -4,13 +4,10 @@ function Header() {
   return (
     <header className="header">
 
-      <div className="logo">
+      <div className="logo notranslate" translate="no">
         🌱 <span>Krushi Seva</span>
       </div>
 
-      <button className="lang-btn">
-        🌐 English / हिन्दी
-      </button>
 
     </header>
   );
