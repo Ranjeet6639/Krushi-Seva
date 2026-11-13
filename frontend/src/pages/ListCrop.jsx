@@ -79,7 +79,7 @@ function ListCrop() {
   return (
     <div className="list-container">
       <div className="list-header">
-        <div className="logo">Krushi Seva</div>
+        <div className="logo notranslate" translate="no">Krushi Seva</div>
         <div className="menu">☰</div>
       </div>
 
