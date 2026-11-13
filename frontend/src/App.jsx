@@ -22,18 +22,16 @@ import TraderLogout from "./pages/Trader/TraderLogout";
 import TraderProfile from "./pages/Trader/TraderProfile";
 import TraderBuyCrops from "./pages/Trader/BuyCrops";
 import EditProfile from "./pages/EditProfile";
+import GoogleTranslate from "./components/GoogleTranslate";
 
 function Home() {
   return (
     <div className="container">
 
       <header className="header">
-        <div className="logo">
+        <div className="logo notranslate" translate="no">
           🌱 <span>Krushi Seva</span>
         </div>
-        <button className="lang-btn">
-          🌐 English / हिन्दी
-        </button>
       </header>
 
       <section className="hero">
@@ -86,6 +84,9 @@ function Home() {
 function App() {
   return (
     <Router>
+      {/* Global language switcher — visible on every page */}
+      <GoogleTranslate />
+
       <Routes>
         {/* Public routes — no login needed */}
         <Route path="/" element={<Home />} />
