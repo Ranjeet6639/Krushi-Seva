@@ -83,13 +83,10 @@ export default function WhatToGrow() {
     <div className="grow-container">
 
       <header className="grow-header">
-        <div className="logo">
+        <div className="logo notranslate" translate="no">
           🌱 <span>Krushi Seva</span>
         </div>
 
-        <button className="lang-btn">
-          🌐 English / हिन्दी
-        </button>
       </header>
 
       <div className="grow-title">
