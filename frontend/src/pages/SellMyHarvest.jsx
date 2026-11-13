@@ -58,8 +58,7 @@ function SellMyHarvest() {
     <>
       <div className="Sell-Header">
         <header className="header">
-          <div className="logo">🌱 <span>Krushi Seva</span></div>
-          <button className="lang-btn">🌐 English / हिन्दी</button>
+          <div className="logo notranslate" translate="no">🌱 <span>Krushi Seva</span></div>
         </header>
       </div>
 
