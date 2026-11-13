@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/googleTranslate.css";
 
 /**
@@ -32,6 +32,11 @@ if (typeof Node === "function" && !window.__gtReactPatched) {
 }
 
 function GoogleTranslate() {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
+  const openedAt = useRef(0);
+
+  // Load Google Translate once
   useEffect(() => {
     // Called by Google's script once it has loaded
     window.googleTranslateElementInit = () => {
@@ -63,10 +68,61 @@ function GoogleTranslate() {
     }
   }, []);
 
+  // Close on outside click/tap, on scroll, on Escape, and after choosing a language
+  useEffect(() => {
+    if (!open) return;
+
+    const close = () => setOpen(false);
+
+    const onPointerDown = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) close();
+    };
+    const onScroll = () => {
+      // ignore tiny scroll jitters right after opening (mobile address bar)
+      if (Date.now() - openedAt.current > 400) close();
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") close();
+    };
+    const onChange = () => setTimeout(close, 150); // language picked
+
+    const wrapper = wrapperRef.current;
+    document.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("scroll", onScroll, true);
+    document.addEventListener("keydown", onKey);
+    wrapper?.addEventListener("change", onChange);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("scroll", onScroll, true);
+      document.removeEventListener("keydown", onKey);
+      wrapper?.removeEventListener("change", onChange);
+    };
+  }, [open]);
+
+  const toggle = () => {
+    openedAt.current = Date.now();
+    setOpen((o) => !o);
+  };
+
   return (
-    <div className="gt-wrapper notranslate" translate="no">
-      <span className="gt-icon" aria-hidden="true">🌐</span>
-      <div id="google_translate_element" />
+    <div
+      ref={wrapperRef}
+      className={`gt-wrapper notranslate ${open ? "gt-open" : "gt-closed"}`}
+      translate="no"
+    >
+      <button
+        type="button"
+        className="gt-toggle"
+        onClick={toggle}
+        aria-label="Change language"
+        aria-expanded={open}
+      >
+        🌐
+      </button>
+      <div className="gt-select-area">
+        <div id="google_translate_element" />
+      </div>
     </div>
   );
 }

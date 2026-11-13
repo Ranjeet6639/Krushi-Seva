@@ -14,9 +14,29 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
-.gt-icon {
-  font-size: 16px;
+.gt-toggle {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  font-size: 20px;
   line-height: 1;
+  cursor: pointer;
+}
+
+/* Collapsed = only the 🌐 icon. Open = icon + language dropdown. */
+.gt-select-area {
+  overflow: hidden;
+  max-width: 240px;
+  opacity: 1;
+  transition: max-width 0.25s ease, opacity 0.2s ease;
+}
+.gt-closed {
+  gap: 0;
+}
+.gt-closed .gt-select-area {
+  max-width: 0;
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Hide "Powered by Google" text, keep only the dropdown */
