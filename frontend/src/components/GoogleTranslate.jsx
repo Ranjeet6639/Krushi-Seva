@@ -43,7 +43,7 @@ function GoogleTranslate() {
         {
           pageLanguage: "en",
           includedLanguages: LANGUAGES,
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
           autoDisplay: false,
         },
         "google_translate_element"
