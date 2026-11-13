@@ -67,12 +67,9 @@ function SickCrop() {
 
       {/* Header */}
       <header className="sick-header">
-      <div className="sick-logo">
+      <div className="sick-logo notranslate" translate="no">
       🌱 <span>Krushi Seva</span>
      </div>
-     <button className="lang-btn">
-      🌐 English / हिन्दी
-    </button>
   </header>
 
    {/* Back button row — below header, like WhatToGrow */}
